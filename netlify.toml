@@ -1,0 +1,8 @@
+[build]
+  # Directorio base dentro del repositorio. Usa "." para indicar la raíz del proyecto (donde se encuentra package.json)
+  base = "."
+  command = "npm run build"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"

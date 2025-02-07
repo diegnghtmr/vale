@@ -1,0 +1,100 @@
+{
+  "common": {
+    "language": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español",
+    "appTitle": "Planificador de Horarios",
+    "appDescription": "Planifica tu horario académico agregando cursos y visualizándolos en un calendario semanal."
+  },
+  "courseForm": {
+    "title": "Detalles del Curso",
+    "courseName": "Nombre del Curso",
+    "courseNamePlaceholder": "ej., Matemáticas 101",
+    "credits": "Créditos",
+    "creditsPlaceholder": "Ingrese número de créditos",
+    "semester": "Semestre",
+    "semesterPlaceholder": "Ingrese número de semestre (1-10)",
+    "timeSlot": "Jornada",
+    "timeSlotDay": "Diurna",
+    "timeSlotNight": "Nocturna",
+    "group": "Grupo",
+    "groupPlaceholder": "Ingrese número/código de grupo",
+    "schedule": "Horario",
+    "addCourse": "Agregar Curso",
+    "updateSuccess": "¡Curso actualizado exitosamente!",
+    "addSuccess": "¡Curso agregado exitosamente!",
+    "submit": "Guardar Curso",
+    "cancel": "Cancelar",
+    "addTimeSlot": "Agregar Horario",
+    "remove": "Eliminar",
+    "day": "Día",
+    "startTime": "Hora de Inicio",
+    "endTime": "Hora de Fin",
+    "noTimeSlots": "No hay horarios agregados. Haz clic en \"Agregar Horario\" para comenzar.",
+    "errorNoTimeSlot": "Por favor agrega al menos un horario",
+    "days": {
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes"
+    }
+  },
+  "courseList": {
+    "title": "Cursos",
+    "noCourses": "No hay cursos disponibles",
+    "deleteSuccess": "¡Curso eliminado exitosamente!",
+    "actions": {
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "addToCalendar": "Agregar al Calendario",
+      "removeFromCalendar": "Quitar del Calendario"
+    }
+  },
+  "courseFilters": {
+    "title": "Filtros",
+    "semester": "Semestre",
+    "timeSlot": "Jornada",
+    "credits": "Créditos",
+    "allSemesters": "Todos los Semestres",
+    "allTimeSlots": "Todas las Jornadas",
+    "allCredits": "Todos los Créditos",
+    "searchByName": "Buscar por nombre",
+    "semesterNumber": "Semestre {{number}}",
+    "creditValue_one": "{{count}} Crédito",
+    "creditValue_other": "{{count}} Créditos"
+  },
+  "fileUpload": {
+    "dragAndDrop": "Arrastra y suelta un archivo JSON o CSV aquí, o haz clic para seleccionar",
+    "dropHere": "Suelta el archivo aquí...",
+    "browse": "Explorar archivos",
+    "uploading": "Subiendo...",
+    "success": "¡Archivo subido exitosamente!",
+    "supportedFormats": "Solo se admiten archivos JSON y CSV",
+    "readAborted": "La lectura del archivo fue interrumpida",
+    "readError": "La lectura del archivo ha fallado",
+    "invalidFormat": "Formato de archivo inválido: se esperaba un array de cursos",
+    "unknownError": "Ocurrió un error desconocido",
+    "processingError": "Error procesando archivo: {{error}}",
+    "missingColumns": "Faltan columnas requeridas: {{columns}}",
+    "missingData": "Fila {{row}}: Faltan datos requeridos",
+    "invalidDay": "Fila {{row}}: Día inválido \"{{day}}\"",
+    "invalidTimeSlot": "Fila {{row}}: Jornada inválida \"{{timeSlot}}\". Debe ser \"day\" o \"night\"",
+    "invalidTimeFormat": "Fila {{row}}: Formato de hora inválido",
+    "uploadSchedule": "Importar Cursos"
+  },
+  "calendar": {
+    "today": "Hoy",
+    "month": "Mes",
+    "week": "Semana",
+    "day": "Día",
+    "conflictDetected": "Conflicto de Horario Detectado:",
+    "courseToAdd": "Curso a agregar",
+    "conflictsWith": "Conflicto con",
+    "timeOverlap": "Superposición de tiempo",
+    "existingSlot": "Horario existente",
+    "selectDifferentTime": "Por favor selecciona un horario diferente para este curso.",
+    "courseAdded": "¡Curso agregado al calendario!",
+    "courseRemoved": "¡Curso removido del calendario!"
+  }
+}

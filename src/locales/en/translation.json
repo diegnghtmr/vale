@@ -1,0 +1,100 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "spanish": "Spanish",
+    "appTitle": "Course Schedule Planner",
+    "appDescription": "Plan your academic schedule by adding courses and viewing them in a weekly calendar."
+  },
+  "courseForm": {
+    "title": "Course Details",
+    "courseName": "Course Name",
+    "courseNamePlaceholder": "e.g., Mathematics 101",
+    "credits": "Credits",
+    "creditsPlaceholder": "Enter number of credits",
+    "semester": "Semester",
+    "semesterPlaceholder": "Enter semester number (1-10)",
+    "timeSlot": "Time Slot",
+    "timeSlotDay": "Day (Diurna)",
+    "timeSlotNight": "Night (Nocturna)",
+    "group": "Group",
+    "groupPlaceholder": "Enter group number/code",
+    "schedule": "Schedule",
+    "addCourse": "Add Course",
+    "updateSuccess": "Course updated successfully!",
+    "addSuccess": "Course added successfully!",
+    "submit": "Save Course",
+    "cancel": "Cancel",
+    "addTimeSlot": "Add Time Slot",
+    "remove": "Remove",
+    "day": "Day",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "noTimeSlots": "No time slots added yet. Click \"Add Time Slot\" to begin.",
+    "errorNoTimeSlot": "Please add at least one time slot",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday"
+    }
+  },
+  "courseList": {
+    "title": "Courses",
+    "noCourses": "No courses available",
+    "deleteSuccess": "Course deleted successfully!",
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "addToCalendar": "Add to Calendar",
+      "removeFromCalendar": "Remove from Calendar"
+    }
+  },
+  "courseFilters": {
+    "title": "Filters",
+    "semester": "Semester",
+    "timeSlot": "Time Slot",
+    "credits": "Credits",
+    "allSemesters": "All Semesters",
+    "allTimeSlots": "All Time Slots",
+    "allCredits": "All Credits",
+    "searchByName": "Search by name",
+    "semesterNumber": "Semester {{number}}",
+    "creditValue_one": "{{count}} Credit",
+    "creditValue_other": "{{count}} Credits"
+  },
+  "fileUpload": {
+    "dragAndDrop": "Drag and drop a JSON or CSV file here, or click to select",
+    "dropHere": "Drop the file here...",
+    "browse": "Browse files",
+    "uploading": "Uploading...",
+    "success": "File uploaded successfully!",
+    "supportedFormats": "Only JSON and CSV files are supported",
+    "readAborted": "File reading was aborted",
+    "readError": "File reading has failed",
+    "invalidFormat": "Invalid file format: expected an array of courses",
+    "unknownError": "Unknown error occurred",
+    "processingError": "Error processing file: {{error}}",
+    "missingColumns": "Missing required columns: {{columns}}",
+    "missingData": "Row {{row}}: Missing required data",
+    "invalidDay": "Row {{row}}: Invalid day \"{{day}}\"",
+    "invalidTimeSlot": "Row {{row}}: Invalid time slot \"{{timeSlot}}\". Must be \"day\" or \"night\"",
+    "invalidTimeFormat": "Row {{row}}: Invalid time format",
+    "uploadSchedule": "Import Courses"
+  },
+  "calendar": {
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "conflictDetected": "Schedule Conflict Detected:",
+    "courseToAdd": "Course to add",
+    "conflictsWith": "Conflicts with",
+    "timeOverlap": "Time overlap",
+    "existingSlot": "Existing slot",
+    "selectDifferentTime": "Please select a different time slot for this course.",
+    "courseAdded": "Course added to calendar!",
+    "courseRemoved": "Course removed from calendar!"
+  }
+}
