@@ -117,7 +117,7 @@ export function Calendar({ events }: CalendarProps) {
         allDaySlot={false}
         slotMinTime="06:00:00"
         slotMaxTime="23:00:00"
-        weekends={false}
+        weekends={true}
         events={events}
         height="100%"
         slotDuration="00:30:00"

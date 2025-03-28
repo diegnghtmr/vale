@@ -94,6 +94,7 @@ function AppContent() {
           wednesday: 2,
           thursday: 3,
           friday: 4,
+          saturday: 5,
         }[slot.day];
 
         const slotDate = new Date(monday);

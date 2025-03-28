@@ -40,7 +40,8 @@ export const translations = {
         tuesday: "Tuesday",
         wednesday: "Wednesday",
         thursday: "Thursday",
-        friday: "Friday"
+        friday: "Friday",
+        saturday: "Saturday"
       }
     },
     courseList: {
@@ -142,7 +143,8 @@ export const translations = {
         tuesday: "Martes",
         wednesday: "Miércoles",
         thursday: "Jueves",
-        friday: "Viernes"
+        friday: "Viernes",
+        saturday: "Sábado"
       }
     },
     courseList: {
