@@ -9,7 +9,7 @@ interface CourseFormProps {
   initialData?: Course | null;
 }
 
-const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as const;
+const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
 
 const initialCourse: Course = {
   name: '',
