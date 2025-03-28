@@ -12,7 +12,7 @@ export interface Course {
 }
 
 export interface Schedule {
-  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
+  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
   startTime: string;
   endTime: string;
 }

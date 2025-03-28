@@ -37,7 +37,7 @@ export function FileUpload({ onUpload }: FileUploadProps) {
         continue;
       }
 
-      const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+      const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
       if (!validDays.includes(row.day.toLowerCase())) {
         toast.error(t('fileUpload.invalidDay', { row: i + 1, day: row.day }));
         continue;
