@@ -37,7 +37,8 @@
       "tuesday": "Martes",
       "wednesday": "Miércoles",
       "thursday": "Jueves",
-      "friday": "Viernes"
+      "friday": "Viernes",
+      "saturday": "Sábado"
     }
   },
   "courseList": {
