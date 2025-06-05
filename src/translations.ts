@@ -4,8 +4,8 @@ export const translations = {
       language: "Language",
       english: "English",
       spanish: "Spanish",
-      appTitle: "Course Schedule Planner",
-      appDescription: "Plan your academic schedule by adding courses and viewing them in a weekly calendar.",
+      appTitle: "vale",
+      appDescription: "Versatile Academic Logistics Environment",
       languageChangeError: "Failed to change language",
       languageChanged: "Changed to English"
     },
@@ -107,8 +107,8 @@ export const translations = {
       language: "Idioma",
       english: "Inglés",
       spanish: "Español",
-      appTitle: "Planificador de Horarios",
-      appDescription: "Planifica tu horario académico agregando cursos y visualizándolos en un calendario semanal.",
+      appTitle: "vale",
+      appDescription: "Entorno Logístico Académico Versátil",
       languageChangeError: "Error al cambiar el idioma",
       languageChanged: "Cambiado a Español"
     },
