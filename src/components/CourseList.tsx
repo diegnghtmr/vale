@@ -1,4 +1,3 @@
-import React from 'react';
 import { Pencil, Trash2, CalendarPlus, CalendarX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '../types';
