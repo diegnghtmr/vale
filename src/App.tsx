@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar as CalendarIcon, Upload as UploadIcon } from 'lucide-react';
 import { Course, CourseEvent, Schedule } from './types';
 import { CourseForm } from './components/CourseForm';
@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { CourseList } from './components/CourseList';
 import { CourseFilters, CourseFilters as CourseFiltersType } from './components/CourseFilters';
+import * as api from './services/api';
+import { checkConflict } from './utils/schedule';
 
 function AppContent() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -25,6 +27,18 @@ function AppContent() {
     credits: '',
   });
 
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const fetchedCourses = await api.getCourses();
+        setCourses(fetchedCourses);
+      } catch (error) {
+        toast.error('Failed to fetch courses.');
+      }
+    };
+    fetchCourses();
+  }, []);
+
   const filteredCourses = courses.filter(course => {
     if (filters.semester && course.semester.toString() !== filters.semester) return false;
     if (filters.timeSlot && course.timeSlot !== filters.timeSlot) return false;
@@ -33,15 +47,20 @@ function AppContent() {
     return true;
   });
 
-  const handleCourseSubmit = (course: Course) => {
-    if (editingCourse) {
-      setCourses(prev => prev.map(c => c.id === editingCourse.id ? { ...course, id: editingCourse.id } : c));
-      setEditingCourse(null);
-      toast.success(t('courseForm.updateSuccess'));
-    } else {
-      const newCourse = { ...course, id: crypto.randomUUID(), isInCalendar: false };
-      setCourses((prev) => [...prev, newCourse]);
-      toast.success(t('courseForm.addSuccess'));
+  const handleCourseSubmit = async (course: Course) => {
+    try {
+      if (editingCourse) {
+        const updatedCourse = await api.updateCourse(editingCourse.id!, { ...course, id: editingCourse.id });
+        setCourses(prev => prev.map(c => c.id === editingCourse.id ? updatedCourse : c));
+        setEditingCourse(null);
+        toast.success(t('courseForm.updateSuccess'));
+      } else {
+        const newCourse = await api.addCourse(course);
+        setCourses((prev) => [...prev, newCourse]);
+        toast.success(t('courseForm.addSuccess'));
+      }
+    } catch (error) {
+      toast.error('Failed to save course.');
     }
   };
 
@@ -129,13 +148,25 @@ function AppContent() {
   };
 
   const handleEditCourse = (course: Course) => {
-    setEditingCourse(course);
-    setActiveTab('form');
+    if (editingCourse && editingCourse.id === course.id) {
+      // If we are already editing this course, do nothing special,
+      // let the submit handler do the work.
+      // This case is for the inline editor.
+      handleCourseSubmit(course);
+    } else {
+      setEditingCourse(course);
+      setActiveTab('form');
+    }
   };
 
-  const handleDeleteCourse = (id: string) => {
-    setCourses(courses.filter(course => course.id !== id));
-    toast.success(t('courseList.deleteSuccess'));
+  const handleDeleteCourse = async (id: string) => {
+    try {
+      await api.deleteCourse(id);
+      setCourses(courses.filter(course => course.id !== id));
+      toast.success(t('courseList.deleteSuccess'));
+    } catch (error) {
+      toast.error('Failed to delete course.');
+    }
   };
 
   const handleToggleCalendar = (id: string, add: boolean) => {
@@ -143,45 +174,20 @@ function AppContent() {
       const courseToAdd = courses.find(c => c.id === id);
       if (!courseToAdd) return;
 
-      let conflictDetails: { existingCourse: Course; newSlot: Schedule; existingSlot: Schedule } | null = null;
-
-      for (const existingCourse of courses.filter(c => c.isInCalendar && c.id !== id)) {
-        for (const newSlot of courseToAdd.schedule) {
-          for (const existingSlot of existingCourse.schedule) {
-            if (newSlot.day === existingSlot.day) {
-              const newStart = new Date(`1970-01-01T${newSlot.startTime}`);
-              const newEnd = new Date(`1970-01-01T${newSlot.endTime}`);
-              const existingStart = new Date(`1970-01-01T${existingSlot.startTime}`);
-              const existingEnd = new Date(`1970-01-01T${existingSlot.endTime}`);
-
-              if (
-                (newStart >= existingStart && newStart < existingEnd) ||
-                (newEnd > existingStart && newEnd <= existingEnd) ||
-                (newStart <= existingStart && newEnd >= existingEnd)
-              ) {
-                conflictDetails = {
-                  existingCourse,
-                  newSlot,
-                  existingSlot
-                };
-                break;
-              }
-            }
-          }
-          if (conflictDetails) break;
-        }
-        if (conflictDetails) break;
-      }
+      const conflictDetails = checkConflict(
+        courses.filter(c => c.isInCalendar),
+        courseToAdd
+      );
 
       if (conflictDetails) {
-        const { existingCourse, newSlot, existingSlot } = conflictDetails;
+        const { conflictingCourse, newSlot, conflictingSlot } = conflictDetails;
         const message = [
           t('calendar.conflictDetected'),
           `\n• ${t('calendar.courseToAdd')}: "${courseToAdd.name}"`,
-          `\n• ${t('calendar.conflictsWith')}: "${existingCourse.name}"`,
+          `\n• ${t('calendar.conflictsWith')}: "${conflictingCourse.name}"`,
           `\n• ${t('calendar.day')}: ${t(`courseForm.days.${newSlot.day}`)}`,
           `\n• ${t('calendar.timeOverlap')}: ${newSlot.startTime}-${newSlot.endTime}`,
-          `\n• ${t('calendar.existingSlot')}: ${existingSlot.startTime}-${existingSlot.endTime}`,
+          `\n• ${t('calendar.existingSlot')}: ${conflictingSlot.startTime}-${conflictingSlot.endTime}`,
           `\n\n${t('calendar.selectDifferentTime')}`
         ].join('');
         
@@ -252,7 +258,11 @@ function AppContent() {
 
             <div className="p-6">
               {activeTab === 'form' ? (
-                <CourseForm onSubmit={handleCourseSubmit} initialData={editingCourse} />
+                <CourseForm 
+                  onSubmit={handleCourseSubmit} 
+                  initialData={editingCourse}
+                  allCourses={courses}
+                />
               ) : (
                 <FileUpload onUpload={handleFileUpload} />
               )}

@@ -52,7 +52,9 @@ export const translations = {
         edit: "Edit",
         delete: "Delete",
         addToCalendar: "Add to Calendar",
-        removeFromCalendar: "Remove from Calendar"
+        removeFromCalendar: "Remove from Calendar",
+        save: "Save",
+        cancel: "Cancel"
       }
     },
     courseFilters: {
@@ -88,6 +90,7 @@ export const translations = {
       uploadSchedule: "Import Courses"
     },
     calendar: {
+      title: "Schedule",
       today: "Today",
       month: "Month",
       week: "Week",
@@ -155,7 +158,9 @@ export const translations = {
         edit: "Editar",
         delete: "Eliminar",
         addToCalendar: "Agregar al Calendario",
-        removeFromCalendar: "Quitar del Calendario"
+        removeFromCalendar: "Quitar del Calendario",
+        save: "Guardar",
+        cancel: "Cancelar"
       }
     },
     courseFilters: {
@@ -191,6 +196,7 @@ export const translations = {
       uploadSchedule: "Importar Cursos"
     },
     calendar: {
+      title: "Horario",
       today: "Hoy",
       month: "Mes",
       week: "Semana",

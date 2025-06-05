@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, GraduationCap, Save, Plus, Trash2 } from 'lucide-react';
+import { Clock, GraduationCap, Save, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { Course, Schedule } from '../types';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
+import { checkConflict } from '../utils/schedule';
 
 interface CourseFormProps {
   onSubmit: (course: Course) => void;
   initialData?: Course | null;
+  allCourses: Course[];
 }
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
@@ -20,20 +22,50 @@ const initialCourse: Course = {
   schedule: [],
 };
 
-export function CourseForm({ onSubmit, initialData }: CourseFormProps) {
+export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProps) {
   const { t } = useTranslation();
   const [course, setCourse] = useState<Course>(initialData || initialCourse);
+  const [conflictError, setConflictError] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialData) {
       setCourse(initialData);
+    } else {
+      setCourse(initialCourse);
     }
   }, [initialData]);
+
+  useEffect(() => {
+    if (course.schedule.length > 0) {
+      const coursesInCalendar = allCourses.filter(c => c.isInCalendar);
+      const conflict = checkConflict(coursesInCalendar, course, initialData?.id);
+      
+      if (conflict) {
+        const { conflictingCourse, newSlot, conflictingSlot } = conflict;
+        const message = [
+          t('calendar.conflictDetected'),
+          `\n• ${t('calendar.conflictsWith')}: "${conflictingCourse.name}"`,
+          `(${conflictingSlot.startTime} - ${conflictingSlot.endTime})`,
+          `\n• ${t('calendar.day')}: ${t(`courseForm.days.${newSlot.day}`)}`,
+          `${newSlot.startTime} - ${newSlot.endTime}`,
+        ].join(' ');
+        setConflictError(message);
+      } else {
+        setConflictError(null);
+      }
+    } else {
+      setConflictError(null);
+    }
+  }, [course.schedule, allCourses, initialData, t]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (course.schedule.length === 0) {
       toast.error(t('courseForm.errorNoTimeSlot'));
+      return;
+    }
+    if (conflictError) {
+      toast.error(t('calendar.selectDifferentTime'));
       return;
     }
     onSubmit({ ...course, credits: Number(course.credits) });
@@ -152,6 +184,20 @@ export function CourseForm({ onSubmit, initialData }: CourseFormProps) {
         </div>
 
         <div className="space-y-4">
+          {conflictError && (
+            <div className="p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-r-lg">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <AlertTriangle className="h-5 w-5 text-red-500" aria-hidden="true" />
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700 dark:text-red-300 whitespace-pre-line">
+                    {conflictError}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           {course.schedule.map((schedule, index) => (
             <div
               key={index}

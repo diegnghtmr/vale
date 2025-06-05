@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
+import * as api from '../services/api';
 
 type LanguageContextType = {
   currentLanguage: string;
@@ -18,30 +19,48 @@ export function useLanguage() {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { i18n: i18nInstance } = useTranslation();
-  const [currentLanguage, setCurrentLanguage] = useState(() => {
-    // Get initial language from localStorage or browser
-    const savedLanguage = localStorage.getItem('i18nextLng');
-    return savedLanguage || i18n.language || 'en';
-  });
+  const [currentLanguage, setCurrentLanguage] = useState('en');
+
+  useEffect(() => {
+    const fetchAndSetLanguage = async () => {
+      try {
+        const prefs = await api.getUserPreferences();
+        if (prefs.language) {
+          await i18nInstance.changeLanguage(prefs.language);
+        } else {
+          const savedLanguage = localStorage.getItem('i18nextLng') || i18n.language;
+          if (savedLanguage) {
+            await i18nInstance.changeLanguage(savedLanguage);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch language preferences, using fallback.", error);
+        const savedLanguage = localStorage.getItem('i18nextLng') || i18n.language;
+        if (savedLanguage) {
+          await i18nInstance.changeLanguage(savedLanguage);
+        }
+      }
+    };
+    fetchAndSetLanguage();
+  }, []);
 
   const changeLanguage = async (lang: string) => {
     try {
       await i18nInstance.changeLanguage(lang);
       setCurrentLanguage(lang);
       localStorage.setItem('i18nextLng', lang);
+      // Sync with backend
+      if (lang === 'en' || lang === 'es') {
+        api.updateUserPreferences({ language: lang }).catch(err => {
+          console.error("Failed to sync language preference.", err);
+        });
+      }
       // Force a re-render of components using translations
       window.dispatchEvent(new Event('languageChanged'));
     } catch (error) {
       console.error('Failed to change language:', error);
     }
   };
-
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('i18nextLng');
-    if (savedLanguage && savedLanguage !== currentLanguage) {
-      changeLanguage(savedLanguage);
-    }
-  }, []);
 
   useEffect(() => {
     const handleLanguageChanged = () => {
