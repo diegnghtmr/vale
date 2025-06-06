@@ -3,6 +3,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Transición global para propiedades que cambien con el tema */
+  transition: background-color var(--duration-normal) var(--ease-out), 
+              color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
 }
 
 html {
@@ -25,15 +30,23 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  transition: background-color var(--duration-normal) var(--ease-out), 
+              color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
 }
 
 input, select, textarea {
   font-family: inherit;
+  transition: background-color var(--duration-normal) var(--ease-out), 
+              color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out);
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--duration-normal) var(--ease-out);
 }
 
 ul, ol {
@@ -45,6 +58,14 @@ img {
   height: auto;
 }
 
+/* Transiciones específicas para elementos con fondos */
+.card, .btn, .form-input, .modal, .calendar-day {
+  transition: background-color var(--duration-normal) var(--ease-out), 
+              color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out) !important;
+}
+
 /* Accesibilidad */
 :focus-visible {
   outline: 2px solid var(--accent-primary);
@@ -54,4 +75,16 @@ img {
 /* Scroll suave */
 html {
   scroll-behavior: smooth;
+}
+
+/* Optimización para transiciones de tema */
+.theme-transition-active * {
+  transition-duration: 0ms !important;
+}
+
+/* Mejoras específicas para iconos y SVGs */
+svg {
+  transition: color var(--duration-normal) var(--ease-out),
+              fill var(--duration-normal) var(--ease-out),
+              stroke var(--duration-normal) var(--ease-out);
 }

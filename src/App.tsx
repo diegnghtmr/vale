@@ -5,6 +5,7 @@ import { CourseForm } from './components/CourseForm';
 import { FileUpload } from './components/FileUpload';
 import { Calendar } from './components/Calendar';
 import { ThemeToggle } from './components/ThemeToggle';
+import { ThemeTransition } from './components/ThemeTransition';
 import { LanguageSelector } from './components/LanguageSelector';
 import { useTheme } from './context/ThemeContext';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +44,7 @@ function ExportButton({ onClick, text }: ExportButtonProps) {
 function AppContent() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [activeTab, setActiveTab] = useState<'form' | 'upload'>('form');
-  const { theme } = useTheme();
+  const { theme, isTransitioning } = useTheme();
   const { t } = useTranslation();
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [filters, setFilters] = useState<CourseFiltersType>({
@@ -340,260 +341,265 @@ function AppContent() {
   };
 
   return (
-    <div className="container animate-fade-in" style={{ minHeight: '100vh', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-8)' }}>
-      <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 var(--space-4)' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-          {/* Header */}
-          <header className="card-elevated animate-slide-in-left" style={{ 
-            padding: 'var(--space-8)',
-            borderRadius: '16px'
-          }}>
-            <div className="header-layout">
-              <style>
-                {`
-                  .header-layout {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: var(--space-4);
-                    justify-content: space-between;
-                    align-items: center;
-                  }
-                  .header-text {
-                    flex: 1;
-                    min-width: 280px;
-                  }
-                  .header-actions {
-                    display: flex;
-                    align-items: center;
-                    gap: var(--space-3);
-                    flex-shrink: 0;
-                  }
-                  @media (max-width: 767px) {
+    <>
+      {/* Theme Transition Overlay */}
+      <ThemeTransition isTransitioning={isTransitioning} targetTheme={theme} />
+      
+      <div className="container animate-fade-in" style={{ minHeight: '100vh', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-8)' }}>
+        <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 var(--space-4)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+            {/* Header */}
+            <header className="card-elevated animate-slide-in-left" style={{ 
+              padding: 'var(--space-8)',
+              borderRadius: '16px'
+            }}>
+              <div className="header-layout">
+                <style>
+                  {`
                     .header-layout {
-                      flex-direction: column;
+                      display: flex;
+                      flex-wrap: wrap;
+                      gap: var(--space-4);
+                      justify-content: space-between;
                       align-items: center;
                     }
                     .header-text {
-                      width: 100%;
-                      text-align: center;
+                      flex: 1;
+                      min-width: 280px;
                     }
                     .header-actions {
-                      order: -1;
-                      width: 100%;
-                      justify-content: center;
-                      margin-bottom: var(--space-6);
+                      display: flex;
+                      align-items: center;
+                      gap: var(--space-3);
+                      flex-shrink: 0;
+                    }
+                    @media (max-width: 767px) {
+                      .header-layout {
+                        flex-direction: column;
+                        align-items: center;
+                      }
+                      .header-text {
+                        width: 100%;
+                        text-align: center;
+                      }
+                      .header-actions {
+                        order: -1;
+                        width: 100%;
+                        justify-content: center;
+                        margin-bottom: var(--space-6);
+                      }
+                    }
+                  `}
+                </style>
+                <div className="header-text">
+                  <h1 className="title-section" style={{ 
+                    background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                    margin: '0 0 var(--space-2) 0',
+                    fontSize: 'var(--text-5xl)',
+                    fontWeight: 'var(--font-extrabold)',
+                    letterSpacing: '-0.02em'
+                  }}>
+                    {t('common.appTitle')}
+                  </h1>
+                  <p className="text-body" style={{ 
+                    margin: '0',
+                    color: 'var(--text-secondary)',
+                    fontWeight: 'var(--font-medium)',
+                    fontSize: 'var(--text-lg)',
+                    lineHeight: 'var(--leading-relaxed)'
+                  }}>
+                    {t('common.appDescription')}
+                  </p>
+                </div>
+                <div className="header-actions">
+                  <LanguageSelector />
+                  <ThemeToggle />
+                </div>
+              </div>
+            </header>
+
+            {/* Contenido Principal con Layout Horizontal */}
+            <main style={{ 
+              display: 'grid',
+              gap: 'var(--space-6)',
+              alignItems: 'start'
+            }} className="main-layout">
+              <style>
+                {`
+                  .main-layout {
+                    grid-template-columns: 1fr;
+                    grid-template-areas:
+                      "forms"
+                      "courses"
+                      "filters"
+                      "calendar";
+                  }
+                  
+                  @media (min-width: 768px) {
+                    .main-layout {
+                      grid-template-columns: 1fr 1fr;
+                      grid-template-areas:
+                        "forms courses"
+                        "filters filters"
+                        "calendar calendar";
                     }
                   }
+
+                  .area-forms { grid-area: forms; }
+                  .area-courses { grid-area: courses; }
+                  .area-filters { grid-area: filters; }
+                  .area-calendar { grid-area: calendar; }
                 `}
               </style>
-              <div className="header-text">
-                <h1 className="title-section" style={{ 
-                  background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                  margin: '0 0 var(--space-2) 0',
-                  fontSize: 'var(--text-5xl)',
-                  fontWeight: 'var(--font-extrabold)',
-                  letterSpacing: '-0.02em'
-                }}>
-                  {t('common.appTitle')}
-                </h1>
-                <p className="text-body" style={{ 
-                  margin: '0',
-                  color: 'var(--text-secondary)',
-                  fontWeight: 'var(--font-medium)',
-                  fontSize: 'var(--text-lg)',
-                  lineHeight: 'var(--leading-relaxed)'
-                }}>
-                  {t('common.appDescription')}
-                </p>
-              </div>
-              <div className="header-actions">
-                <LanguageSelector />
-                <ThemeToggle />
-              </div>
-            </div>
-          </header>
 
-          {/* Contenido Principal con Layout Horizontal */}
-          <main style={{ 
-            display: 'grid',
-            gap: 'var(--space-6)',
-            alignItems: 'start'
-          }} className="main-layout">
-            <style>
-              {`
-                .main-layout {
-                  grid-template-columns: 1fr;
-                  grid-template-areas:
-                    "forms"
-                    "courses"
-                    "filters"
-                    "calendar";
-                }
-                
-                @media (min-width: 768px) {
-                  .main-layout {
-                    grid-template-columns: 1fr 1fr;
-                    grid-template-areas:
-                      "forms courses"
-                      "filters filters"
-                      "calendar calendar";
-                  }
-                }
-
-                .area-forms { grid-area: forms; }
-                .area-courses { grid-area: courses; }
-                .area-filters { grid-area: filters; }
-                .area-calendar { grid-area: calendar; }
-              `}
-            </style>
-
-            {/* Área de Formularios */}
-            <section ref={formSectionRef} className="card animate-fade-in area-forms" style={{ 
-              overflow: 'hidden',
-              padding: '0',
-              borderRadius: '12px'
-            }}>
-              <div style={{ 
-                display: 'flex', 
-                background: 'var(--bg-secondary)',
-                borderRadius: '12px 12px 0 0'
+              {/* Área de Formularios */}
+              <section ref={formSectionRef} className="card animate-fade-in area-forms" style={{ 
+                overflow: 'hidden',
+                padding: '0',
+                borderRadius: '12px'
               }}>
-                <button
-                  onClick={() => setActiveTab('form')}
-                  className="btn"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--space-2)',
-                    padding: 'var(--space-4) var(--space-6)',
-                    backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
-                    color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    border: 'none',
-                    borderRadius: '12px 12px 0 0',
-                    fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
-                    fontSize: 'var(--text-base)',
-                    height: 'auto',
-                    flex: '1',
-                    justifyContent: 'center',
-                    transition: 'all var(--duration-normal) var(--ease-out)',
-                    boxShadow: activeTab === 'form' ? '0 -2px 0 var(--accent-primary)' : 'none'
-                  }}
-                >
-                  <CalendarIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-                  {t('courseForm.addCourse')}
-                </button>
-                <button
-                  onClick={() => setActiveTab('upload')}
-                  className="btn"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--space-2)',
-                    padding: 'var(--space-4) var(--space-6)',
-                    backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
-                    color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                    border: 'none',
-                    borderRadius: '12px 12px 0 0',
-                    fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
-                    fontSize: 'var(--text-base)',
-                    height: 'auto',
-                    flex: '1',
-                    justifyContent: 'center',
-                    transition: 'all var(--duration-normal) var(--ease-out)',
-                    boxShadow: activeTab === 'upload' ? '0 -2px 0 var(--accent-primary)' : 'none'
-                  }}
-                >
-                  <UploadIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-                  {t('fileUpload.uploadSchedule')}
-                </button>
-              </div>
-
-              <div style={{ 
-                padding: 'var(--space-8)',
-                backgroundColor: 'var(--bg-primary)',
-                borderRadius: '0 0 12px 12px'
-              }}>
-                {activeTab === 'form' ? (
-                  <CourseForm 
-                    onSubmit={handleCourseSubmit} 
-                    initialData={editingCourse}
-                    allCourses={courses}
-                  />
-                ) : (
-                  <FileUpload onUpload={handleFileUpload} />
-                )}
-              </div>
-            </section>
-
-            {/* Área de Lista de Cursos */}
-            <section 
-              className="card animate-fade-in content-section area-courses"
-              style={{
-                height: isDesktop && formHeight > 0 ? `${formHeight}px` : 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden'
-              }}
-            >
-              <div className="section-header">
-                <h2 className="section-title">
-                  {t('courseList.title', 'Courses')}
-                </h2>
-                <div className="section-badge">
-                  {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                <div style={{ 
+                  display: 'flex', 
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '12px 12px 0 0'
+                }}>
+                  <button
+                    onClick={() => setActiveTab('form')}
+                    className="btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-4) var(--space-6)',
+                      backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
+                      color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRadius: '12px 12px 0 0',
+                      fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                      fontSize: 'var(--text-base)',
+                      height: 'auto',
+                      flex: '1',
+                      justifyContent: 'center',
+                      transition: 'all var(--duration-normal) var(--ease-out)',
+                      boxShadow: activeTab === 'form' ? '0 -2px 0 var(--accent-primary)' : 'none'
+                    }}
+                  >
+                    <CalendarIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
+                    {t('courseForm.addCourse')}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('upload')}
+                    className="btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-4) var(--space-6)',
+                      backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
+                      color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRadius: '12px 12px 0 0',
+                      fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                      fontSize: 'var(--text-base)',
+                      height: 'auto',
+                      flex: '1',
+                      justifyContent: 'center',
+                      transition: 'all var(--duration-normal) var(--ease-out)',
+                      boxShadow: activeTab === 'upload' ? '0 -2px 0 var(--accent-primary)' : 'none'
+                    }}
+                  >
+                    <UploadIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
+                    {t('fileUpload.uploadSchedule')}
+                  </button>
                 </div>
-              </div>
-              <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
-                  <div style={{padding: 'var(--space-6)'}}>
-                      <CourseList
-                          courses={filteredCourses}
-                          onEdit={handleEditCourse}
-                          onDelete={handleDeleteCourse}
-                          onToggleCalendar={handleToggleCalendar}
-                      />
-                  </div>
-              </div>
-            </section>
 
-            {/* Área de Filtros */}
-            <section className="card animate-fade-in content-section area-filters">
-              <div className="section-header">
-                <h2 className="section-title">
-                  {t('courseFilters.title', 'Course Filters')}
-                </h2>
-              </div>
-              <div className="content-body">
-                <CourseFilters onFilterChange={setFilters} courses={courses} />
-              </div>
-            </section>
-            
-            {/* Área del Calendario */}
-            <section className="card animate-fade-in content-section area-calendar">
-              <div className="section-header">
-                <h2 className="section-title">
-                  {t('calendar.title', 'Schedule')}
-                </h2>
-                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                  <ExportButton onClick={handleExportICS} text="iCal" />
-                  <ExportButton onClick={handleExportCSV} text="CSV" />
+                <div style={{ 
+                  padding: 'var(--space-8)',
+                  backgroundColor: 'var(--bg-primary)',
+                  borderRadius: '0 0 12px 12px'
+                }}>
+                  {activeTab === 'form' ? (
+                    <CourseForm 
+                      onSubmit={handleCourseSubmit} 
+                      initialData={editingCourse}
+                      allCourses={courses}
+                    />
+                  ) : (
+                    <FileUpload onUpload={handleFileUpload} />
+                  )}
                 </div>
-              </div>
-              <div className="content-body">
-                <div style={{ overflowX: 'auto', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
-                  <div style={{ minWidth: '700px' }}>
-                    <Calendar events={generateCalendarEvents(filteredCourses.filter(course => course.isInCalendar))} />
+              </section>
+
+              {/* Área de Lista de Cursos */}
+              <section 
+                className="card animate-fade-in content-section area-courses"
+                style={{
+                  height: isDesktop && formHeight > 0 ? `${formHeight}px` : 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden'
+                }}
+              >
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('courseList.title', 'Courses')}
+                  </h2>
+                  <div className="section-badge">
+                    {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
                   </div>
                 </div>
-              </div>
-            </section>
-          </main>
+                <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+                    <div style={{padding: 'var(--space-6)'}}>
+                        <CourseList
+                            courses={filteredCourses}
+                            onEdit={handleEditCourse}
+                            onDelete={handleDeleteCourse}
+                            onToggleCalendar={handleToggleCalendar}
+                        />
+                    </div>
+                </div>
+              </section>
+
+              {/* Área de Filtros */}
+              <section className="card animate-fade-in content-section area-filters">
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('courseFilters.title', 'Course Filters')}
+                  </h2>
+                </div>
+                <div className="content-body">
+                  <CourseFilters onFilterChange={setFilters} courses={courses} />
+                </div>
+              </section>
+              
+              {/* Área del Calendario */}
+              <section className="card animate-fade-in content-section area-calendar">
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('calendar.title', 'Schedule')}
+                  </h2>
+                  <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                    <ExportButton onClick={handleExportICS} text="iCal" />
+                    <ExportButton onClick={handleExportCSV} text="CSV" />
+                  </div>
+                </div>
+                <div className="content-body">
+                  <div style={{ overflowX: 'auto', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
+                    <div style={{ minWidth: '700px' }}>
+                      <Calendar events={generateCalendarEvents(filteredCourses.filter(course => course.isInCalendar))} />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

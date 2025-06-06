@@ -7,7 +7,10 @@ export const translations = {
       appTitle: "vale",
       appDescription: "Versatile Academic Logistics Environment",
       languageChangeError: "Failed to change language",
-      languageChanged: "Changed to English"
+      languageChanged: "Changed to English",
+      changingTheme: "Switching to {{theme}} mode...",
+      darkMode: "dark",
+      lightMode: "light"
     },
     courseForm: {
       title: "Course Details",
@@ -114,7 +117,10 @@ export const translations = {
       appTitle: "vale",
       appDescription: "Entorno Logístico Académico Versátil",
       languageChangeError: "Error al cambiar el idioma",
-      languageChanged: "Cambiado a Español"
+      languageChanged: "Cambiado a Español",
+      changingTheme: "Cambiando a modo {{theme}}...",
+      darkMode: "oscuro",
+      lightMode: "claro"
     },
     courseForm: {
       title: "Detalles del Curso",
