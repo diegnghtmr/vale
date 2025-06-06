@@ -122,22 +122,96 @@ export function FileUpload({ onUpload }: FileUploadProps) {
   return (
     <div
       {...getRootProps()}
-      className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors
-        ${isDragActive 
-          ? 'border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-900/20' 
-          : 'border-gray-300 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-400'
-        } dark:bg-gray-800`}
+      style={{
+        padding: 'var(--space-12)',
+        border: `2px dashed ${isDragActive ? 'var(--accent-primary)' : 'var(--border-primary)'}`,
+        borderRadius: '16px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        transition: 'all var(--duration-normal) var(--ease-in-out)',
+        backgroundColor: isDragActive ? 'var(--bg-secondary)' : 'var(--bg-tertiary)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      onMouseEnter={(e) => {
+        if (!isDragActive) {
+          e.currentTarget.style.borderColor = 'var(--accent-secondary)';
+          e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+          e.currentTarget.style.transform = 'translateY(-2px)';
+          e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
+        }
+      }}
+      onMouseLeave={(e) => {
+        if (!isDragActive) {
+          e.currentTarget.style.borderColor = 'var(--border-primary)';
+          e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
+          e.currentTarget.style.transform = 'translateY(0)';
+          e.currentTarget.style.boxShadow = 'none';
+        }
+      }}
     >
       <input {...getInputProps()} />
-      <Upload className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+      
+      {/* Icono de upload con animación */}
+      <div style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '80px',
+        height: '80px',
+        backgroundColor: isDragActive ? 'var(--accent-primary)' : 'var(--bg-secondary)',
+        borderRadius: '50%',
+        marginBottom: 'var(--space-6)',
+        transition: 'all var(--duration-normal) var(--ease-in-out)',
+        transform: isDragActive ? 'scale(1.1)' : 'scale(1)'
+      }}>
+        <Upload 
+          style={{ 
+            height: '32px', 
+            width: '32px', 
+            color: isDragActive ? 'var(--bg-primary)' : 'var(--accent-primary)',
+            transition: 'color var(--duration-normal) var(--ease-in-out)'
+          }} 
+        />
+      </div>
+
+      {/* Texto principal */}
+      <p style={{
+        margin: '0 0 var(--space-3) 0',
+        fontSize: 'var(--text-lg)',
+        fontWeight: 'var(--font-semibold)',
+        color: 'var(--text-primary)',
+        lineHeight: 'var(--leading-snug)'
+      }}>
         {isDragActive
           ? t('fileUpload.dropHere')
           : t('fileUpload.dragAndDrop')}
       </p>
-      <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+
+      {/* Texto secundario */}
+      <p style={{
+        margin: '0',
+        fontSize: 'var(--text-sm)',
+        color: 'var(--text-secondary)',
+        lineHeight: 'var(--leading-normal)'
+      }}>
         {t('fileUpload.supportedFormats')}
       </p>
+
+      {/* Decoración de fondo */}
+      {isDragActive && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `linear-gradient(45deg, transparent 30%, var(--accent-tertiary) 50%, transparent 70%)`,
+          opacity: 0.1,
+          pointerEvents: 'none',
+          animation: 'slideInLeft var(--duration-slow) var(--ease-out)'
+        }} />
+      )}
     </div>
   );
 }
