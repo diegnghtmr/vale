@@ -37,6 +37,7 @@ export function FileUpload({ onUpload }: FileUploadProps) {
     const rows = text.split('\n').filter(row => row.trim());
     const headers = rows[0].split(',').map(h => h.trim());
     
+    // Solo estos campos son requeridos
     const requiredHeaders = ['name', 'credits', 'semester', 'timeSlot', 'group', 'day', 'startTime', 'endTime'];
     const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
     
@@ -52,6 +53,7 @@ export function FileUpload({ onUpload }: FileUploadProps) {
 
       const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
       
+      // Validar solo los campos requeridos
       if (!row.name || !row.credits || !row.semester || !row.timeSlot || !row.group ||
           !row.day || !row.startTime || !row.endTime) {
         toast.error(t('fileUpload.missingData', { row: i + 1 }));
@@ -81,18 +83,32 @@ export function FileUpload({ onUpload }: FileUploadProps) {
         endTime: row.endTime
       };
 
-      if (courses.has(row.name)) {
-        const course = courses.get(row.name)!;
+      // Usar nombre + grupo + semestre como clave única para evitar mezclar cursos diferentes
+      const courseKey = `${row.name}-${row.group}-${row.semester}`;
+
+      if (courses.has(courseKey)) {
+        const course = courses.get(courseKey)!;
         course.schedule.push(schedule);
       } else {
-        courses.set(row.name, {
+        // Crear el curso con todos los campos disponibles (incluyendo opcionales)
+        const courseData: Course = {
           name: row.name,
           credits: Number(row.credits),
           semester: Number(row.semester),
           timeSlot: row.timeSlot.toLowerCase() as 'day' | 'night',
           group: row.group,
           schedule: [schedule]
-        });
+        };
+
+        // Agregar campos opcionales si están presentes y no están vacíos
+        if (row.classroom && row.classroom.trim() !== '') {
+          courseData.classroom = row.classroom;
+        }
+        if (row.details && row.details.trim() !== '') {
+          courseData.details = row.details;
+        }
+
+        courses.set(courseKey, courseData);
       }
     }
 
