@@ -11,10 +11,10 @@ export function LanguageSelector() {
     const newLanguage = currentLanguage === 'en' ? 'es' : 'en';
     try {
       await changeLanguage(newLanguage);
-      toast.success(t('common.languageChanged'));
+      // toast.success(t('common.languageChanged'));
     } catch (error) {
-      console.error('Failed to change language:', error);
       toast.error(t('common.languageChangeError'));
+      console.error("Failed to change language", error);
     }
   };
 

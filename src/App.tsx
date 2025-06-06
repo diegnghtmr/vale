@@ -55,6 +55,16 @@ function AppContent() {
 
   const formSectionRef = React.useRef<HTMLDivElement>(null);
   const [formHeight, setFormHeight] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -338,14 +348,45 @@ function AppContent() {
             padding: 'var(--space-8)',
             borderRadius: '16px'
           }}>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'flex-start',
-              flexWrap: 'wrap',
-              gap: 'var(--space-4)'
-            }}>
-              <div style={{ flex: '1', minWidth: '280px' }}>
+            <div className="header-layout">
+              <style>
+                {`
+                  .header-layout {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: var(--space-4);
+                    justify-content: space-between;
+                    align-items: center;
+                  }
+                  .header-text {
+                    flex: 1;
+                    min-width: 280px;
+                  }
+                  .header-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space-3);
+                    flex-shrink: 0;
+                  }
+                  @media (max-width: 767px) {
+                    .header-layout {
+                      flex-direction: column;
+                      align-items: center;
+                    }
+                    .header-text {
+                      width: 100%;
+                      text-align: center;
+                    }
+                    .header-actions {
+                      order: -1;
+                      width: 100%;
+                      justify-content: center;
+                      margin-bottom: var(--space-6);
+                    }
+                  }
+                `}
+              </style>
+              <div className="header-text">
                 <h1 className="title-section" style={{ 
                   background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
                   WebkitBackgroundClip: 'text',
@@ -369,12 +410,7 @@ function AppContent() {
                   {t('common.appDescription')}
                 </p>
               </div>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: 'var(--space-3)',
-                flexShrink: 0
-              }}>
+              <div className="header-actions">
                 <LanguageSelector />
                 <ThemeToggle />
               </div>
@@ -497,7 +533,7 @@ function AppContent() {
             <section 
               className="card animate-fade-in content-section area-courses"
               style={{
-                height: formHeight > 0 ? `${formHeight}px` : 'auto',
+                height: isDesktop && formHeight > 0 ? `${formHeight}px` : 'auto',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden'
