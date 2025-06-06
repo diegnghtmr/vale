@@ -6,19 +6,23 @@ interface CustomTimePickerProps {
   onClose: () => void;
 }
 
-const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
+const hours = Array.from({ length: 16 }, (_, i) => (i + 7).toString().padStart(2, '0'));
 const minutes = Array.from({ length: 12 }, (_, i) => (i * 5).toString().padStart(2, '0'));
 
 export function CustomTimePicker({ value, onChange, onClose }: CustomTimePickerProps) {
-  const [selectedHour, setSelectedHour] = useState('00');
+  const [selectedHour, setSelectedHour] = useState('07');
   const [selectedMinute, setSelectedMinute] = useState('00');
   const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (value) {
       const [h, m] = value.split(':');
-      setSelectedHour(h || '00');
-      setSelectedMinute(m || '00');
+      if (hours.includes(h)) {
+        setSelectedHour(h);
+      }
+      if (m && minutes.includes(m)) {
+        setSelectedMinute(m);
+      }
     }
   }, [value]);
 

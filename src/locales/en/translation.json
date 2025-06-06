@@ -32,6 +32,7 @@
     "endTime": "End Time",
     "noTimeSlots": "No time slots added yet. Click \"Add Time Slot\" to begin.",
     "errorNoTimeSlot": "Please add at least one time slot",
+    "errorSelfConflict": "The course has conflicting time slots. Please check the schedules.",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -96,6 +97,7 @@
     "existingSlot": "Existing slot",
     "selectDifferentTime": "Please select a different time slot for this course.",
     "courseAdded": "Course added to calendar!",
-    "courseRemoved": "Course removed from calendar!"
+    "courseRemoved": "Course removed from calendar!",
+    "allDay": "All day"
   }
 }

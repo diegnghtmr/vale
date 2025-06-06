@@ -32,6 +32,7 @@
     "endTime": "Hora de Fin",
     "noTimeSlots": "No hay horarios agregados. Haz clic en \"Agregar Horario\" para comenzar.",
     "errorNoTimeSlot": "Por favor agrega al menos un horario",
+    "errorSelfConflict": "El curso tiene horarios que se solapan. Por favor, revisa los horarios.",
     "days": {
       "monday": "Lunes",
       "tuesday": "Martes",
@@ -96,6 +97,7 @@
     "existingSlot": "Horario existente",
     "selectDifferentTime": "Por favor selecciona un horario diferente para este curso.",
     "courseAdded": "¡Curso agregado al calendario!",
-    "courseRemoved": "¡Curso removido del calendario!"
+    "courseRemoved": "¡Curso removido del calendario!",
+    "allDay": "Todo el día"
   }
 }

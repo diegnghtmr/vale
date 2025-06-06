@@ -31,4 +31,25 @@ export function checkConflict(
   }
 
   return null;
+}
+
+export function checkSelfConflict(schedule: Schedule[]): boolean {
+  for (let i = 0; i < schedule.length; i++) {
+    for (let j = i + 1; j < schedule.length; j++) {
+      const slotA = schedule[i];
+      const slotB = schedule[j];
+
+      if (slotA.day === slotB.day) {
+        const startA = new Date(`1970-01-01T${slotA.startTime}`);
+        const endA = new Date(`1970-01-01T${slotA.endTime}`);
+        const startB = new Date(`1970-01-01T${slotB.startTime}`);
+        const endB = new Date(`1970-01-01T${slotB.endTime}`);
+
+        if (startA < endB && endA > startB) {
+          return true; // Conflicto encontrado
+        }
+      }
+    }
+  }
+  return false; // No hay conflictos internos
 } 

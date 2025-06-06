@@ -3,8 +3,9 @@ import { GraduationCap, Save, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { Course, Schedule } from '../types';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { checkConflict } from '../utils/schedule';
+import { checkConflict, checkSelfConflict } from '../utils/schedule';
 import { TimeInput } from './TimeInput';
+import { FormError } from './FormError';
 
 interface CourseFormProps {
   onSubmit: (course: Course) => void;
@@ -24,9 +25,10 @@ const initialCourse: Course = {
 };
 
 export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [course, setCourse] = useState<Course>(initialData || initialCourse);
   const [conflictError, setConflictError] = useState<string | null>(null);
+  const [hasSelfConflict, setHasSelfConflict] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -34,10 +36,11 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
     } else {
       setCourse(initialCourse);
     }
+    setHasSelfConflict(false);
   }, [initialData]);
 
   useEffect(() => {
-    if (course.schedule.length > 0) {
+    if (course.schedule.length > 0 && initialData?.isInCalendar) {
       const coursesInCalendar = allCourses.filter(c => c.isInCalendar);
       const conflict = checkConflict(coursesInCalendar, course, initialData?.id);
       
@@ -65,6 +68,12 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
       toast.error(t('courseForm.errorNoTimeSlot'));
       return;
     }
+
+    if (checkSelfConflict(course.schedule)) {
+      setHasSelfConflict(true);
+      return;
+    }
+
     if (conflictError) {
       toast.error(t('calendar.selectDifferentTime'));
       return;
@@ -74,12 +83,14 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
   };
 
   const handleScheduleChange = (index: number, field: keyof Schedule, value: string) => {
+    if (hasSelfConflict) setHasSelfConflict(false);
     const newSchedule = [...course.schedule];
     newSchedule[index] = { ...newSchedule[index], [field]: value };
     setCourse({ ...course, schedule: newSchedule });
   };
 
   const addSchedule = () => {
+    if (hasSelfConflict) setHasSelfConflict(false);
     setCourse({
       ...course,
       schedule: [...course.schedule, { day: 'monday', startTime: '', endTime: '' }],
@@ -87,6 +98,7 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
   };
 
   const removeSchedule = (index: number) => {
+    if (hasSelfConflict) setHasSelfConflict(false);
     const newSchedule = course.schedule.filter((_, i) => i !== index);
     setCourse({ ...course, schedule: newSchedule });
   };
@@ -233,31 +245,18 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-          {conflictError && (
-            <div style={{ 
-              padding: 'var(--space-6)', 
-              borderLeft: `4px solid var(--error)`,
-              borderRadius: '0 12px 12px 0',
-              backgroundColor: 'var(--bg-secondary)',
-              margin: 'var(--space-2) 0'
-            }}>
-              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                <div style={{ flexShrink: 0 }}>
-                  <AlertTriangle style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--error)' }} />
-                </div>
-                <div>
-                  <p className="text-body-sm" style={{ 
-                    color: 'var(--error)', 
-                    whiteSpace: 'pre-line',
-                    margin: '0'
-                  }}>
-                    {conflictError}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          {conflictError && <FormError message={conflictError} />}
           
+          {hasSelfConflict && (
+            <FormError 
+              message={
+                i18n.language === 'es'
+                  ? 'El curso tiene horarios que se solapan. Por favor, revisa los horarios.'
+                  : 'The course has conflicting time slots. Please check the schedules.'
+              }
+            />
+          )}
+
           {course.schedule.map((schedule, index) => (
             <div
               key={index}
