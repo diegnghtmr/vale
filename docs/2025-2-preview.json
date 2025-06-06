@@ -2,7 +2,7 @@
     "courses": [
       {
         "name": "CÁLCULO MULTIVARIADO VECTORIAL",
-        "credits": 0,
+        "credits": 4,
         "semester": 4,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -16,7 +16,7 @@
       },
       {
         "name": "ECUACIONES DIFERENCIALES",
-        "credits": 0,
+        "credits": 3,
         "semester": 4,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -28,7 +28,7 @@
       },
       {
         "name": "PROGRAMACIÓN III (Lenguaje Java)",
-        "credits": 0,
+        "credits": 3,
         "semester": 4,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -40,7 +40,7 @@
       },
       {
         "name": "FUNDAMENTOS DE INFRAESTRUCTURA COMPUTACIONAL",
-        "credits": 0,
+        "credits": 3,
         "semester": 4,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -52,7 +52,7 @@
       },
       {
         "name": "CÁLCULO MULTIVARIADO VECTORIAL",
-        "credits": 0,
+        "credits": 4,
         "semester": 4,
         "timeSlot": "Nocturno",
         "group": "02 N",
@@ -66,7 +66,7 @@
       },
       {
         "name": "TEORÍA DE GRAFOS",
-        "credits": 0,
+        "credits": 3,
         "semester": 5,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -78,7 +78,7 @@
       },
       {
         "name": "ESTRUCTURA DE DATOS (Lenguaje Java)",
-        "credits": 0,
+        "credits": 3,
         "semester": 5,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -90,7 +90,7 @@
       },
       {
         "name": "ESTADÍSTICA Y PROBABILIDAD",
-        "credits": 0,
+        "credits": 3,
         "semester": 5,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -102,7 +102,7 @@
       },
       {
         "name": "SISTEMA DE INFORMACIÓN",
-        "credits": 0,
+        "credits": 3,
         "semester": 5,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -114,7 +114,7 @@
       },
       {
         "name": "ESTRUCTURA DE DATOS (Lenguaje Java)",
-        "credits": 0,
+        "credits": 3,
         "semester": 5,
         "timeSlot": "Nocturno",
         "group": "02 N",
@@ -126,7 +126,7 @@
       },
       {
         "name": "INFRAESTRUCTURA COMPUTACIONAL",
-        "credits": 0,
+        "credits": 4,
         "semester": 6,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -140,7 +140,7 @@
       },
       {
         "name": "INGENIERÍA DE SOFTWARE I",
-        "credits": 0,
+        "credits": 3,
         "semester": 6,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -152,7 +152,7 @@
       },
       {
         "name": "BASES DE DATOS I",
-        "credits": 0,
+        "credits": 3,
         "semester": 6,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -164,7 +164,7 @@
       },
       {
         "name": "ANÁLISIS NUMÉRICO",
-        "credits": 0,
+        "credits": 3,
         "semester": 6,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -176,7 +176,7 @@
       },
       {
         "name": "DIRECCIÓN ESTRATÉGICA DE T.I.",
-        "credits": 0,
+        "credits": 3,
         "semester": 6,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -188,7 +188,7 @@
       },
       {
         "name": "INGENIERÍA DE SOFTWARE II",
-        "credits": 0,
+        "credits": 3,
         "semester": 7,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -200,7 +200,7 @@
       },
       {
         "name": "BASES DE DATOS II",
-        "credits": 0,
+        "credits": 3,
         "semester": 7,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -212,7 +212,7 @@
       },
       {
         "name": "PROGRAMACIÓN AVANZADA (Lenguaje Java)",
-        "credits": 0,
+        "credits": 3,
         "semester": 7,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -224,7 +224,7 @@
       },
       {
         "name": "TEORÍA DE LENGUAJES FORMALES",
-        "credits": 0,
+        "credits": 3,
         "semester": 7,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -235,32 +235,22 @@
         ]
       },
       {
-        "name": "INFRAESTRUCTURA DE COMUNICACIONES-TEORÍA",
-        "credits": 0,
+        "name": "INFRAESTRUCTURA DE COMUNICACIONES",
+        "credits": 4,
         "semester": 7,
         "timeSlot": "Nocturno",
         "group": "01 N",
-        "classroom": "D4-402 / D4-407",
+        "classroom": "D4-402 / D4-407 / F1-108",
+        "details": "Teoría y Práctica - Práctica en Bloque de Educación",
         "schedule": [
           { "day": "VIERNES",   "startTime": "18:00", "endTime": "20:00" },
-          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" }
-        ]
-      },
-      {
-        "name": "INFRAESTRUCTURA DE COMUNICACIONES-PRÁCTICA",
-        "credits": 0,
-        "semester": 7,
-        "timeSlot": "Nocturno",
-        "group": "01 N",
-        "classroom": "F1-108",
-        "details": "Bloque de Educación",
-        "schedule": [
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" },
           { "day": "SÁBADO",    "startTime": "14:00", "endTime": "16:00" }
         ]
       },
       {
         "name": "INGENIERÍA DE SOFTWARE III",
-        "credits": 0,
+        "credits": 3,
         "semester": 8,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -272,7 +262,7 @@
       },
       {
         "name": "ADMINISTRACIÓN DE INFRAESTRUCTURA DE T.I.",
-        "credits": 0,
+        "credits": 3,
         "semester": 8,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -284,7 +274,7 @@
       },
       {
         "name": "INGENIERÍA ECONÓMICA",
-        "credits": 0,
+        "credits": 3,
         "semester": 8,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -296,7 +286,7 @@
       },
       {
         "name": "FUNDAMENTOS DE HCI",
-        "credits": 0,
+        "credits": 3,
         "semester": 8,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -308,7 +298,7 @@
       },
       {
         "name": "SEMINARIO DE INVESTIGACIÓN",
-        "credits": 0,
+        "credits": 3,
         "semester": 8,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -320,7 +310,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN – VISUALIZACIÓN DE DATOS",
-        "credits": 0,
+        "credits": 3,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -332,7 +322,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN INTRODUCCIÓN AL BIG DATA",
-        "credits": 0,
+        "credits": 3,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -344,7 +334,7 @@
       },
       {
         "name": "ANÁLISIS DE ALGORITMOS",
-        "credits": 0,
+        "credits": 3,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -356,7 +346,7 @@
       },
       {
         "name": "ADMINISTRACIÓN",
-        "credits": 0,
+        "credits": 2,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -368,7 +358,7 @@
       },
       {
         "name": "FORMULACIÓN Y EVALUACIÓN DE PROYECTOS",
-        "credits": 0,
+        "credits": 2,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -379,7 +369,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN INTELIGENCIA ARTIFICIAL PARA EL ANÁLISIS DE DATOS BIOMÉTRICOS Y VISUALES",
-        "credits": 0,
+        "credits": 3,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "02 N",
@@ -391,7 +381,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN COMPUTACIÓN EN LA NUBE",
-        "credits": 0,
+        "credits": 3,
         "semester": 9,
         "timeSlot": "Nocturno",
         "group": "02 N",
@@ -403,7 +393,7 @@
       },
       {
         "name": "LEGISLACIÓN LABORAL Y PROPIEDAD INTELECTUAL",
-        "credits": 0,
+        "credits": 2,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -414,7 +404,7 @@
       },
       {
         "name": "INTELIGENCIA ARTIFICIAL",
-        "credits": 0,
+        "credits": 3,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -426,7 +416,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN – DISEÑO CENTRADO EN EL USUARIO",
-        "credits": 0,
+        "credits": 3,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -438,7 +428,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN – VISIÓN ARTIFICIAL",
-        "credits": 0,
+        "credits": 3,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -450,7 +440,7 @@
       },
       {
         "name": "SEMINARIO DE INGENIERÍA",
-        "credits": 0,
+        "credits": 2,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -462,7 +452,7 @@
       },
       {
         "name": "ADMINISTRACIÓN DE PROYECTOS",
-        "credits": 0,
+        "credits": 2,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "01 N",
@@ -473,7 +463,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN – USABILIDAD Y EXPERIENCIA DE USUARIO",
-        "credits": 0,
+        "credits": 3,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "02 N",
@@ -485,7 +475,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN – GESTIÓN DE SERVICIOS DE T.I.",
-        "credits": 0,
+        "credits": 3,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "02 N",
@@ -497,7 +487,7 @@
       },
       {
         "name": "PROFUNDIZACIÓN – ARQUITECTURA ORIENTADA A MICROSERVICIOS",
-        "credits": 0,
+        "credits": 3,
         "semester": 10,
         "timeSlot": "Nocturno",
         "group": "03 N",
@@ -509,7 +499,7 @@
       },
       {
       "name": "ÉTICA PROFESIONAL",
-      "credits": 0,
+      "credits": 2,
       "semester": 11,
       "timeSlot": "Nocturno",
       "group": "01 N",
@@ -521,7 +511,7 @@
     },
     {
       "name": "TRABAJO DE GRADO",
-      "credits": 0,
+      "credits": 6,
       "semester": 11,
       "timeSlot": "Nocturno",
       "group": "01 N",
@@ -532,7 +522,7 @@
     },
     {
       "name": "TRABAJO DE GRADO",
-      "credits": 0,
+      "credits": 6,
       "semester": 10,
       "timeSlot": "Nocturno",
       "group": "01 N",
