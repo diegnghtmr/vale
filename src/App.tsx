@@ -471,9 +471,9 @@ function AppContent() {
                   .main-layout {
                     grid-template-columns: 1fr;
                     grid-template-areas:
-                      "forms"
-                      "courses"
                       "filters"
+                      "courses"
+                      "forms"
                       "calendar";
                   }
                   
@@ -481,8 +481,8 @@ function AppContent() {
                     .main-layout {
                       grid-template-columns: 1fr 1fr;
                       grid-template-areas:
-                        "forms courses"
                         "filters filters"
+                        "forms courses"
                         "calendar calendar";
                     }
                   }
@@ -493,6 +493,48 @@ function AppContent() {
                   .area-calendar { grid-area: calendar; }
                 `}
               </style>
+
+              {/* Área de Filtros */}
+              <section className="card animate-fade-in content-section area-filters">
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('courseFilters.title', 'Course Filters')}
+                  </h2>
+                </div>
+                <div className="content-body">
+                  <CourseFilters onFilterChange={setFilters} courses={courses} />
+                </div>
+              </section>
+
+              {/* Área de Lista de Cursos */}
+              <section 
+                className="card animate-fade-in content-section area-courses"
+                style={{
+                  height: isDesktop && formHeight > 0 ? `${formHeight}px` : 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden'
+                }}
+              >
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('courseList.title', 'Courses')}
+                  </h2>
+                  <div className="section-badge">
+                    {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                  </div>
+                </div>
+                <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+                    <div style={{padding: 'var(--space-6)'}}>
+                        <CourseList
+                            courses={filteredCourses}
+                            onEdit={handleEditCourse}
+                            onDelete={handleDeleteCourse}
+                            onToggleCalendar={handleToggleCalendar}
+                        />
+                    </div>
+                </div>
+              </section>
 
               {/* Área de Formularios */}
               <section ref={formSectionRef} className="card animate-fade-in area-forms" style={{ 
@@ -592,48 +634,6 @@ function AppContent() {
                   ) : (
                     <FileUpload onUpload={handleFileUpload} />
                   )}
-                </div>
-              </section>
-
-              {/* Área de Lista de Cursos */}
-              <section 
-                className="card animate-fade-in content-section area-courses"
-                style={{
-                  height: isDesktop && formHeight > 0 ? `${formHeight}px` : 'auto',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  overflow: 'hidden'
-                }}
-              >
-                <div className="section-header">
-                  <h2 className="section-title">
-                    {t('courseList.title', 'Courses')}
-                  </h2>
-                  <div className="section-badge">
-                    {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
-                  </div>
-                </div>
-                <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
-                    <div style={{padding: 'var(--space-6)'}}>
-                        <CourseList
-                            courses={filteredCourses}
-                            onEdit={handleEditCourse}
-                            onDelete={handleDeleteCourse}
-                            onToggleCalendar={handleToggleCalendar}
-                        />
-                    </div>
-                </div>
-              </section>
-
-              {/* Área de Filtros */}
-              <section className="card animate-fade-in content-section area-filters">
-                <div className="section-header">
-                  <h2 className="section-title">
-                    {t('courseFilters.title', 'Course Filters')}
-                  </h2>
-                </div>
-                <div className="content-body">
-                  <CourseFilters onFilterChange={setFilters} courses={courses} />
                 </div>
               </section>
               
