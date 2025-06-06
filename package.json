@@ -17,6 +17,7 @@
     "@fullcalendar/timegrid": "^6.1.11",
     "axios": "^1.6.7",
     "clsx": "^2.1.0",
+    "gsap": "^3.13.0",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.2",
     "ics": "^3.8.1",

@@ -15,6 +15,10 @@ import { CourseFilters, CourseFilters as CourseFiltersType } from './components/
 import * as api from './services/api';
 import { checkConflict } from './utils/schedule';
 import * as ics from 'ics';
+import { FloatingParticles, DecorativeWaves, ScrollResponsiveWaves } from './components/FloatingParticles';
+import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon, DownloadIcon as AnimatedDownloadIcon } from './components/AnimatedIcons';
+import { animations } from './utils/animations';
+import { RippleEffect, SparkleEffect } from './components/CreativeEffects';
 
 interface ExportButtonProps {
   onClick: () => void;
@@ -22,8 +26,29 @@ interface ExportButtonProps {
 }
 
 function ExportButton({ onClick, text }: ExportButtonProps) {
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (buttonRef.current) {
+      const hoverAnimation = animations.hoverScale(buttonRef.current);
+      
+      const handleMouseEnter = () => hoverAnimation.play();
+      const handleMouseLeave = () => hoverAnimation.reverse();
+      
+      const button = buttonRef.current;
+      button.addEventListener('mouseenter', handleMouseEnter);
+      button.addEventListener('mouseleave', handleMouseLeave);
+      
+      return () => {
+        button.removeEventListener('mouseenter', handleMouseEnter);
+        button.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }
+  }, []);
+
   return (
     <button
+      ref={buttonRef}
       onClick={onClick}
       className="btn btn-secondary btn-sm"
       style={{
@@ -35,7 +60,7 @@ function ExportButton({ onClick, text }: ExportButtonProps) {
         minWidth: 'auto'
       }}
     >
-      <Download style={{ width: 'var(--space-4)', height: 'var(--space-4)' }} />
+      <AnimatedDownloadIcon size={16} isActive={false} />
       <span>{text}</span>
     </button>
   );
@@ -345,8 +370,14 @@ function AppContent() {
       {/* Theme Transition Overlay */}
       <ThemeTransition isTransitioning={isTransitioning} targetTheme={theme} />
       
-      <div className="container animate-fade-in" style={{ minHeight: '100vh', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-8)' }}>
-        <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 var(--space-4)' }}>
+      {/* Partículas flotantes de fondo */}
+      <FloatingParticles count={15} maxSize={8} minSize={3} />
+      
+      <div className="container animate-fade-in" style={{ minHeight: '100vh', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-20)', position: 'relative' }}>
+        {/* Ondas decorativas fijas en la parte inferior */}
+        <DecorativeWaves />
+        
+        <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 var(--space-4)', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
             {/* Header */}
             <header className="card-elevated animate-slide-in-left" style={{ 
@@ -467,54 +498,58 @@ function AppContent() {
                   background: 'var(--bg-secondary)',
                   borderRadius: '12px 12px 0 0'
                 }}>
-                  <button
-                    onClick={() => setActiveTab('form')}
-                    className="btn"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-2)',
-                      padding: 'var(--space-4) var(--space-6)',
-                      backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
-                      color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                      border: 'none',
-                      borderRadius: '12px 12px 0 0',
-                      fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
-                      fontSize: 'var(--text-base)',
-                      height: 'auto',
-                      flex: '1',
-                      justifyContent: 'center',
-                      transition: 'all var(--duration-normal) var(--ease-out)',
-                      boxShadow: activeTab === 'form' ? '0 -2px 0 var(--accent-primary)' : 'none'
-                    }}
-                  >
-                    <CalendarIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-                    {t('courseForm.addCourse')}
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('upload')}
-                    className="btn"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-2)',
-                      padding: 'var(--space-4) var(--space-6)',
-                      backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
-                      color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                      border: 'none',
-                      borderRadius: '12px 12px 0 0',
-                      fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
-                      fontSize: 'var(--text-base)',
-                      height: 'auto',
-                      flex: '1',
-                      justifyContent: 'center',
-                      transition: 'all var(--duration-normal) var(--ease-out)',
-                      boxShadow: activeTab === 'upload' ? '0 -2px 0 var(--accent-primary)' : 'none'
-                    }}
-                  >
-                    <UploadIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-                    {t('fileUpload.uploadSchedule')}
-                  </button>
+                  <RippleEffect>
+                    <button
+                      onClick={() => setActiveTab('form')}
+                      className="btn"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-2)',
+                        padding: 'var(--space-4) var(--space-6)',
+                        backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
+                        color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        border: 'none',
+                        borderRadius: '12px 12px 0 0',
+                        fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                        fontSize: 'var(--text-base)',
+                        height: 'auto',
+                        flex: '1',
+                        justifyContent: 'center',
+                        transition: 'all var(--duration-normal) var(--ease-out)',
+                        boxShadow: activeTab === 'form' ? '0 -2px 0 var(--accent-primary)' : 'none'
+                      }}
+                    >
+                      <AnimatedCalendarIcon size={20} isActive={activeTab === 'form'} />
+                      {t('courseForm.addCourse')}
+                    </button>
+                  </RippleEffect>
+                  <RippleEffect>
+                    <button
+                      onClick={() => setActiveTab('upload')}
+                      className="btn"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-2)',
+                        padding: 'var(--space-4) var(--space-6)',
+                        backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
+                        color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        border: 'none',
+                        borderRadius: '12px 12px 0 0',
+                        fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                        fontSize: 'var(--text-base)',
+                        height: 'auto',
+                        flex: '1',
+                        justifyContent: 'center',
+                        transition: 'all var(--duration-normal) var(--ease-out)',
+                        boxShadow: activeTab === 'upload' ? '0 -2px 0 var(--accent-primary)' : 'none'
+                      }}
+                    >
+                      <AnimatedUploadIcon size={20} isActive={activeTab === 'upload'} />
+                      {t('fileUpload.uploadSchedule')}
+                    </button>
+                  </RippleEffect>
                 </div>
 
                 <div style={{ 

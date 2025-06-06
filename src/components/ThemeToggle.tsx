@@ -1,12 +1,38 @@
-import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { ThemeIcon } from './AnimatedIcons';
+import { useEffect, useRef } from 'react';
+import { animations } from '../utils/animations';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (buttonRef.current) {
+      const hoverAnimation = animations.hoverScale(buttonRef.current);
+      
+      const handleMouseEnter = () => hoverAnimation.play();
+      const handleMouseLeave = () => hoverAnimation.reverse();
+      
+      const button = buttonRef.current;
+      button.addEventListener('mouseenter', handleMouseEnter);
+      button.addEventListener('mouseleave', handleMouseLeave);
+      
+      return () => {
+        button.removeEventListener('mouseenter', handleMouseEnter);
+        button.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }
+  }, []);
+
+  const handleClick = () => {
+    toggleTheme();
+  };
 
   return (
     <button
-      onClick={toggleTheme}
+      ref={buttonRef}
+      onClick={handleClick}
       className="btn btn-secondary btn-md"
       style={{
         padding: 'var(--space-3)',
@@ -16,15 +42,16 @@ export function ThemeToggle() {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: '10px',
-        transition: 'all var(--duration-normal) var(--ease-out)'
+        transition: 'all var(--duration-normal) var(--ease-out)',
+        overflow: 'hidden',
       }}
       aria-label="Toggle theme"
     >
-      {theme === 'light' ? (
-        <Moon style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-primary)' }} />
-      ) : (
-        <Sun style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-primary)' }} />
-      )}
+      <ThemeIcon 
+        size={20} 
+        isDark={theme === 'dark'}
+        color="var(--text-primary)"
+      />
     </button>
   );
 }
