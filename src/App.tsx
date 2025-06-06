@@ -547,7 +547,11 @@ function AppContent() {
                 </div>
               </div>
               <div className="content-body">
-                <Calendar events={generateCalendarEvents(filteredCourses.filter(course => course.isInCalendar))} />
+                <div style={{ overflowX: 'auto', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
+                  <div style={{ minWidth: '700px' }}>
+                    <Calendar events={generateCalendarEvents(filteredCourses.filter(course => course.isInCalendar))} />
+                  </div>
+                </div>
               </div>
             </section>
           </main>
