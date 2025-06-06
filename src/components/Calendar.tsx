@@ -24,9 +24,17 @@ function ExportButton({ onClick, text }: ExportButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 dark:text-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+      className="btn btn-secondary btn-sm"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--space-2)',
+        padding: 'var(--space-2) var(--space-3)',
+        fontSize: 'var(--text-xs)',
+        minWidth: 'auto'
+      }}
     >
-      <Download className="w-4 h-4" />
+      <Download style={{ width: 'var(--space-4)', height: 'var(--space-4)' }} />
       <span>{text}</span>
     </button>
   );
@@ -95,100 +103,43 @@ export function Calendar({ events }: CalendarProps) {
   };
 
   return (
-    <div className="flex flex-col h-[650px] bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md transition-colors border dark:border-gray-700">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('calendar.title')}</h2>
-        <div className="flex items-center gap-2">
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '650px',
+      backgroundColor: 'var(--bg-primary)',
+      padding: 'var(--space-4)',
+      borderRadius: '12px',
+      border: '1px solid var(--border-secondary)',
+      transition: 'all var(--duration-normal) var(--ease-out)',
+      overflow: 'hidden'
+    }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 'var(--space-4)',
+        paddingBottom: 'var(--space-3)',
+        borderBottom: '1px solid var(--border-secondary)'
+      }}>
+        <h2 style={{
+          fontSize: 'var(--text-lg)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--text-primary)',
+          margin: '0'
+        }}>
+          {t('calendar.title')}
+        </h2>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 'var(--space-2)'
+        }}>
           <ExportButton onClick={handleExportICS} text="iCal" />
           <ExportButton onClick={handleExportCSV} text="CSV" />
         </div>
       </div>
-      <div className="flex-grow">
-        <style>{`
-        .fc {
-          font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-        }
-        
-        /* Calendar header and text */
-        .fc-toolbar-title {
-          color: ${isDark ? '#f3f4f6' : '#111827'} !important;
-          font-weight: 600 !important;
-          font-size: 1.125rem !important;
-        }
-        
-        /* Grid lines and borders */
-        .fc-timegrid-slot,
-        .fc-timegrid-axis,
-        .fc-col-header-cell {
-          border-color: ${isDark ? '#374151' : '#e5e7eb'} !important;
-        }
-        
-        /* Background colors */
-        .fc-timegrid-axis,
-        .fc-col-header-cell {
-          background-color: ${isDark ? '#1f2937' : '#f9fafb'} !important;
-        }
-        
-        /* Time labels */
-        .fc-timegrid-axis-cushion,
-        .fc-timegrid-slot-label-cushion {
-          color: ${isDark ? '#9ca3af' : '#4b5563'} !important;
-          font-weight: 500;
-        }
-        
-        /* Day headers */
-        .fc-col-header-cell-cushion {
-          color: ${isDark ? '#e5e7eb' : '#111827'} !important;
-          font-weight: 600;
-          padding: 8px 0;
-        }
-        
-        /* Current time indicator */
-        .fc-timegrid-now-indicator-line {
-          border-color: ${isDark ? '#ef4444' : '#dc2626'} !important;
-        }
-        
-        .fc-timegrid-now-indicator-arrow {
-          border-color: ${isDark ? '#ef4444' : '#dc2626'} !important;
-        }
-        
-        /* Event styles */
-        .fc-event {
-          border-radius: 6px !important;
-          padding: 2px 4px !important;
-          margin: 1px 1px !important;
-        }
-        
-        /* Time slots highlighting */
-        .fc-timegrid-slot {
-          height: 48px !important;
-        }
-        
-        .fc-timegrid-slot:hover {
-          background-color: ${isDark ? '#374151' : '#f3f4f6'} !important;
-        }
-        
-        /* Event content container */
-        .fc-event-main {
-          padding: 2px !important;
-        }
-        
-        /* Theme system overrides */
-        .fc-theme-standard td, 
-        .fc-theme-standard th {
-          border-color: ${isDark ? '#374151' : '#e5e7eb'} !important;
-        }
-        
-        /* Event selection state */
-        .fc-event:hover {
-          filter: brightness(${isDark ? '1.2' : '0.95'});
-        }
-        
-        /* Time grid columns */
-        .fc-timegrid-col.fc-day {
-          background-color: ${isDark ? '#111827' : '#ffffff'} !important;
-        }
-      `}</style>
+      <div style={{ flex: '1', minHeight: '0' }}>
         <FullCalendar
           plugins={[timeGridPlugin]}
           initialView="timeGridWeek"
@@ -205,9 +156,32 @@ export function Calendar({ events }: CalendarProps) {
           expandRows={true}
           eventContent={(eventInfo) => {
             return (
-              <div className="w-full h-full flex flex-col p-1 overflow-hidden">
-                <div className="font-semibold truncate text-xs">{eventInfo.event.title}</div>
-                <div className="truncate text-[11px] opacity-90">{eventInfo.event.extendedProps.description}</div>
+              <div style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: 'var(--space-1)',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  fontWeight: 'var(--font-semibold)',
+                  fontSize: 'var(--text-xs)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {eventInfo.event.title}
+                </div>
+                <div style={{
+                  fontSize: 'var(--text-xs)',
+                  opacity: '0.9',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {eventInfo.event.extendedProps.description}
+                </div>
               </div>
             );
           }}

@@ -775,4 +775,237 @@ button {
 
 input, select, textarea {
   font-family: inherit;
+}
+
+/* FullCalendar custom styles with our design tokens */
+.fc {
+  font-family: var(--font-primary) !important;
+  height: 100% !important;
+  position: relative;
+}
+
+/* Basic FullCalendar structure */
+.fc-view-harness {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.fc-scroller {
+  overflow: auto;
+  position: relative;
+  height: 100%;
+}
+
+.fc-scrollgrid {
+  border: 1px solid var(--border-secondary);
+  width: 100%;
+  table-layout: fixed;
+}
+
+.fc-scrollgrid-section {
+  height: auto;
+}
+
+.fc-scrollgrid-section table,
+.fc-scrollgrid-section td,
+.fc-scrollgrid-section th {
+  border: 0;
+}
+
+/* Day grid structure */
+.fc-timegrid {
+  position: relative;
+}
+
+.fc-timegrid-body {
+  position: relative;
+  z-index: 1;
+}
+
+.fc-timegrid-axis,
+.fc-timegrid-col-bg,
+.fc-timegrid-cols,
+.fc-timegrid-divider {
+  position: relative;
+}
+
+/* Headers */
+.fc-col-header {
+  background-color: var(--bg-secondary);
+}
+
+.fc-col-header-cell {
+  text-align: center;
+  vertical-align: middle;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border-secondary);
+  border-right: 1px solid var(--border-secondary);
+}
+
+.fc-col-header-cell:last-child {
+  border-right: 0;
+}
+
+.fc-col-header-cell-cushion {
+  display: inline-block;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+}
+
+/* Time axis */
+.fc-timegrid-axis {
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-secondary);
+  width: 60px;
+  text-align: right;
+}
+
+.fc-timegrid-axis-cushion {
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+  font-size: var(--text-xs);
+}
+
+/* Time slots */
+.fc-timegrid-slot {
+  height: 48px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.fc-timegrid-slot:hover {
+  background-color: var(--bg-secondary);
+}
+
+.fc-timegrid-slot-minor {
+  border-bottom-style: dotted;
+}
+
+/* Columns */
+.fc-timegrid-col {
+  position: relative;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-secondary);
+}
+
+.fc-timegrid-col:last-child {
+  border-right: 0;
+}
+
+/* Events */
+.fc-event {
+  position: absolute;
+  z-index: 1;
+  background-color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+  border-radius: 6px;
+  padding: var(--space-1) var(--space-2);
+  margin: 1px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--bg-primary);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.fc-event:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+  z-index: 2;
+}
+
+.fc-event-main {
+  padding: var(--space-1);
+  position: relative;
+  height: 100%;
+}
+
+.fc-event-title,
+.fc-event-time {
+  color: inherit;
+  font-size: var(--text-xs);
+  line-height: 1.2;
+}
+
+.fc-event-title {
+  font-weight: var(--font-semibold);
+}
+
+/* Now indicator */
+.fc-timegrid-now-indicator-line {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  border-top: 2px solid var(--accent-primary);
+}
+
+.fc-timegrid-now-indicator-arrow {
+  position: absolute;
+  z-index: 3;
+  top: -6px;
+  border-style: solid;
+  border-color: var(--accent-primary);
+  border-width: 6px 0 6px 6px;
+  border-right-color: transparent;
+}
+
+/* Scrollbars */
+.fc-scroller::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.fc-scroller::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.fc-scroller::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 4px;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Table styling */
+.fc-scrollgrid table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fc-scrollgrid td,
+.fc-scrollgrid th {
+  border: 0;
+  vertical-align: top;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fc-timegrid-axis {
+    width: 50px;
+  }
+  
+  .fc-timegrid-axis-cushion {
+    padding: var(--space-1) var(--space-2);
+    font-size: 10px;
+  }
+  
+  .fc-col-header-cell-cushion {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+  }
+  
+  .fc-timegrid-slot {
+    height: 36px;
+  }
+  
+  .fc-event {
+    font-size: 10px;
+    padding: 1px var(--space-1);
+  }
 } 
