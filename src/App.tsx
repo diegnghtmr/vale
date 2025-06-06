@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, Upload as UploadIcon, Download } from 'lucide-react';
 import { Course, CourseEvent } from './types';
 import { CourseForm } from './components/CourseForm';
 import { FileUpload } from './components/FileUpload';
@@ -15,10 +14,9 @@ import { CourseFilters, CourseFilters as CourseFiltersType } from './components/
 import * as api from './services/api';
 import { checkConflict } from './utils/schedule';
 import * as ics from 'ics';
-import { FloatingParticles, DecorativeWaves, ScrollResponsiveWaves } from './components/FloatingParticles';
+import { FloatingParticles, DecorativeWaves } from './components/FloatingParticles';
 import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon, DownloadIcon as AnimatedDownloadIcon } from './components/AnimatedIcons';
 import { animations } from './utils/animations';
-import { RippleEffect, SparkleEffect } from './components/CreativeEffects';
 
 interface ExportButtonProps {
   onClick: () => void;
@@ -216,14 +214,17 @@ function AppContent() {
         events.push({
           id: `${course.id}-${slot.day}`,
           title: `${course.name} - S${course.semester} G${course.group} (${course.credits} cr)`,
-          description: `${slot.startTime} - ${slot.endTime}`,
+          description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`,
           start: start.toISOString(),
           end: end.toISOString(),
           backgroundColor: colors[colorIndex].bg,
           borderColor: colors[colorIndex].border,
           textColor: colors[colorIndex].text,
           extendedProps: {
-            credits: course.credits
+            credits: course.credits,
+            classroom: course.classroom,
+            details: course.details,
+            description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`
           }
         });
       });
@@ -241,6 +242,7 @@ function AppContent() {
       return {
         title: event.title,
         description: event.extendedProps?.description || '',
+        location: event.extendedProps?.classroom || '',
         start: [start.getUTCFullYear(), start.getUTCMonth() + 1, start.getUTCDate(), start.getUTCHours(), start.getUTCMinutes()],
         end: [end.getUTCFullYear(), end.getUTCMonth() + 1, end.getUTCDate(), end.getUTCHours(), end.getUTCMinutes()],
         status: 'CONFIRMED',
@@ -266,7 +268,7 @@ function AppContent() {
 
   const handleExportCSV = () => {
     const eventsToExport = generateCalendarEvents(courses.filter(c => c.isInCalendar));
-    const headers = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time', 'Description'];
+    const headers = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time', 'Description', 'Location'];
     const rows = eventsToExport.map(event => {
       const start = new Date(event.start);
       const end = new Date(event.end);
@@ -277,6 +279,7 @@ function AppContent() {
         end.toLocaleDateString(),
         end.toLocaleTimeString(),
         `"${event.extendedProps?.description || ''}"`,
+        `"${event.extendedProps?.classroom || ''}"`,
       ].join(',');
     });
 

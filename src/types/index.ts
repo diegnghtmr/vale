@@ -7,6 +7,8 @@ export interface Course {
   semester: string | number;
   timeSlot: TimeSlot;
   group: string;
+  classroom?: string;
+  details?: string;
   schedule: Schedule[];
   isInCalendar?: boolean;
 }
@@ -28,6 +30,8 @@ export interface CourseEvent {
   textColor?: string;
   extendedProps?: {
     credits: string | number;
+    classroom?: string;
+    details?: string;
     description?: string;
   };
 }

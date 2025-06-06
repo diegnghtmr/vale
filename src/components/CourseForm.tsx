@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Save, Plus, Trash2, AlertTriangle, Hash, Bookmark, Users } from 'lucide-react';
+import { GraduationCap, Save, Plus, Trash2, Hash, Bookmark, Users, MapPin, FileText } from 'lucide-react';
 import { Course, Schedule } from '../types';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -22,6 +22,8 @@ const initialCourse: Course = {
   semester: '',
   timeSlot: 'day',
   group: '',
+  classroom: '',
+  details: '',
   schedule: [],
 };
 
@@ -33,7 +35,11 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
 
   useEffect(() => {
     if (initialData) {
-      setCourse(initialData);
+      setCourse({
+        ...initialData,
+        classroom: initialData.classroom || '',
+        details: initialData.details || ''
+      });
     } else {
       setCourse(initialCourse);
     }
@@ -241,6 +247,54 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
                 className="form-input"
                 style={{ paddingLeft: 'var(--space-10)' }}
                 placeholder={t('courseForm.groupPlaceholder')}
+              />
+            </div>
+          </div>
+
+          {/* Classroom */}
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">{t('courseForm.classroom')}</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: 'var(--space-3)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>
+                <MapPin style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-tertiary)' }} />
+              </div>
+              <input
+                type="text"
+                value={course.classroom || ''}
+                onChange={(e) => setCourse({ ...course, classroom: e.target.value })}
+                className="form-input"
+                style={{ paddingLeft: 'var(--space-10)' }}
+                placeholder={t('courseForm.classroomPlaceholder')}
+              />
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">{t('courseForm.details')}</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: 'var(--space-3)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>
+                <FileText style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-tertiary)' }} />
+              </div>
+              <input
+                type="text"
+                value={course.details || ''}
+                onChange={(e) => setCourse({ ...course, details: e.target.value })}
+                className="form-input"
+                style={{ paddingLeft: 'var(--space-10)' }}
+                placeholder={t('courseForm.detailsPlaceholder')}
               />
             </div>
           </div>

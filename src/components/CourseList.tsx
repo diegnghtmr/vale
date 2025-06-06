@@ -63,6 +63,32 @@ export function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: Cour
                   {course.timeSlot === 'day' ? t('courseForm.timeSlotDay') : t('courseForm.timeSlotNight')}
                 </p>
               </div>
+              
+              {/* Classroom and Details */}
+              {(course.classroom || course.details) && (
+                <div style={{
+                  marginTop: 'var(--space-1)',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 'var(--space-2)',
+                  alignItems: 'center'
+                }}>
+                  {course.classroom && (
+                    <>
+                      <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                        {t('courseForm.classroom')}: {course.classroom}
+                      </p>
+                      {course.details && <span style={{ color: 'var(--text-tertiary)' }}>•</span>}
+                    </>
+                  )}
+                  {course.details && (
+                    <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                      {t('courseForm.details')}: {course.details}
+                    </p>
+                  )}
+                </div>
+              )}
+              
               <div style={{ marginTop: 'var(--space-1)', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                 {course.schedule.map((slot, index) => (
                   <p key={index} className="text-caption" style={{ color: 'var(--text-secondary)' }}>
