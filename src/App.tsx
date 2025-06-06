@@ -194,9 +194,24 @@ function AppContent() {
         toast.error(message, {
           duration: 6000,
           style: {
+            background: 'var(--bg-tertiary)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--error)',
+            borderLeft: '4px solid var(--error)',
+            borderRadius: '12px',
+            fontSize: 'var(--text-sm)',
+            fontFamily: 'var(--font-primary)',
+            fontWeight: 'var(--font-medium)',
+            padding: 'var(--space-5) var(--space-6)',
             maxWidth: '500px',
-            padding: '16px',
-            whiteSpace: 'pre-line'
+            minWidth: '380px',
+            whiteSpace: 'pre-line',
+            lineHeight: 'var(--leading-relaxed)',
+            boxShadow: '0 8px 25px rgba(201, 87, 77, 0.15)',
+          },
+          iconTheme: {
+            primary: '#c9574d',
+            secondary: '#ffffff',
           },
         });
         return;
@@ -211,7 +226,7 @@ function AppContent() {
 
   return (
     <div className="container animate-fade-in" style={{ minHeight: '100vh', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-8)' }}>
-      <div style={{ maxWidth: 'var(--max-width-2xl)', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 var(--space-4)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
           {/* Header */}
           <header className="card-elevated animate-slide-in-left" style={{ 
@@ -261,142 +276,163 @@ function AppContent() {
             </div>
           </header>
 
-          {/* Navigation Tabs */}
-          <nav className="card animate-fade-in" style={{ 
-            overflow: 'hidden',
-            padding: '0',
-            borderRadius: '12px'
-          }}>
-            <div style={{ 
-              display: 'flex', 
-              background: 'var(--bg-secondary)',
-              borderRadius: '12px 12px 0 0'
-            }}>
-              <button
-                onClick={() => setActiveTab('form')}
-                className="btn"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--space-2)',
-                  padding: 'var(--space-4) var(--space-6)',
-                  backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
-                  color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  border: 'none',
-                  borderRadius: '12px 12px 0 0',
-                  fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
-                  fontSize: 'var(--text-base)',
-                  height: 'auto',
-                  flex: '1',
-                  justifyContent: 'center',
-                  transition: 'all var(--duration-normal) var(--ease-out)',
-                  boxShadow: activeTab === 'form' ? '0 -2px 0 var(--accent-primary)' : 'none'
-                }}
-              >
-                <CalendarIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-                {t('courseForm.addCourse')}
-              </button>
-              <button
-                onClick={() => setActiveTab('upload')}
-                className="btn"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 'var(--space-2)',
-                  padding: 'var(--space-4) var(--space-6)',
-                  backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
-                  color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  border: 'none',
-                  borderRadius: '12px 12px 0 0',
-                  fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
-                  fontSize: 'var(--text-base)',
-                  height: 'auto',
-                  flex: '1',
-                  justifyContent: 'center',
-                  transition: 'all var(--duration-normal) var(--ease-out)',
-                  boxShadow: activeTab === 'upload' ? '0 -2px 0 var(--accent-primary)' : 'none'
-                }}
-              >
-                <UploadIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-                {t('fileUpload.uploadSchedule')}
-              </button>
-            </div>
-
-            <div style={{ 
-              padding: 'var(--space-8)',
-              backgroundColor: 'var(--bg-primary)',
-              borderRadius: '0 0 12px 12px'
-            }}>
-              {activeTab === 'form' ? (
-                <CourseForm 
-                  onSubmit={handleCourseSubmit} 
-                  initialData={editingCourse}
-                  allCourses={courses}
-                />
-              ) : (
-                <FileUpload onUpload={handleFileUpload} />
-              )}
-            </div>
-          </nav>
-
-          {/* Content Grid */}
+          {/* Contenido Principal con Layout Horizontal */}
           <main style={{ 
-            display: 'grid', 
-            gridTemplateColumns: '1fr',
+            display: 'grid',
             gap: 'var(--space-6)',
             alignItems: 'start'
-          }} className="content-grid">
+          }} className="main-layout">
             <style>
               {`
-                @media (min-width: var(--breakpoint-lg)) {
-                  .content-grid {
+                /* Layout móvil - todo apilado verticalmente */
+                .main-layout {
+                  display: grid !important;
+                  gap: var(--space-6) !important;
+                  grid-template-columns: 1fr !important;
+                }
+                
+                /* Layout tablet/desktop - Course Details | Courses arriba, Filters y Schedule abajo ocupando todo el ancho */
+                @media (min-width: 768px) {
+                  .main-layout {
                     grid-template-columns: 1fr 1fr !important;
+                    grid-template-rows: auto auto auto !important;
+                  }
+                  
+                  .area-forms {
+                    grid-column: 1 !important;
+                    grid-row: 1 !important;
+                  }
+                  
+                  .area-courses {
+                    grid-column: 2 !important;
+                    grid-row: 1 !important;
+                  }
+                  
+                  .area-filters {
+                    grid-column: 1 / -1 !important;
+                    grid-row: 2 !important;
+                  }
+                  
+                  .area-calendar {
+                    grid-column: 1 / -1 !important;
+                    grid-row: 3 !important;
                   }
                 }
               `}
             </style>
-            
-            {/* Left Column - Filters and Course List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-              {/* Course Filters */}
-              <section className="card animate-fade-in content-section">
-                <div className="section-header">
-                  <h2 className="section-title">
-                    {t('courseFilters.title', 'Course Filters')}
-                  </h2>
-                </div>
-                <div className="content-body">
-                  <CourseFilters onFilterChange={setFilters} courses={courses} />
-                </div>
-              </section>
-              
-              {/* Course List */}
-              <section className="card animate-fade-in content-section">
-                <div className="section-header">
-                  <h2 className="section-title">
-                    {t('courseList.title', 'Courses')}
-                  </h2>
-                  <div className="section-badge">
-                    {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
-                  </div>
-                </div>
-                <div className="content-body">
-                  <CourseList
-                    courses={filteredCourses}
-                    onEdit={handleEditCourse}
-                    onDelete={handleDeleteCourse}
-                    onToggleCalendar={handleToggleCalendar}
-                  />
-                </div>
-              </section>
-            </div>
-            
-            {/* Right Column - Calendar */}
-            <section className="card animate-fade-in content-section" style={{ 
-              height: 'fit-content',
-              position: 'sticky',
-              top: 'var(--space-6)'
+
+            {/* Área de Formularios */}
+            <section className="card animate-fade-in area-forms" style={{ 
+              overflow: 'hidden',
+              padding: '0',
+              borderRadius: '12px'
             }}>
+              <div style={{ 
+                display: 'flex', 
+                background: 'var(--bg-secondary)',
+                borderRadius: '12px 12px 0 0'
+              }}>
+                <button
+                  onClick={() => setActiveTab('form')}
+                  className="btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-2)',
+                    padding: 'var(--space-4) var(--space-6)',
+                    backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
+                    color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    border: 'none',
+                    borderRadius: '12px 12px 0 0',
+                    fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                    fontSize: 'var(--text-base)',
+                    height: 'auto',
+                    flex: '1',
+                    justifyContent: 'center',
+                    transition: 'all var(--duration-normal) var(--ease-out)',
+                    boxShadow: activeTab === 'form' ? '0 -2px 0 var(--accent-primary)' : 'none'
+                  }}
+                >
+                  <CalendarIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
+                  {t('courseForm.addCourse')}
+                </button>
+                <button
+                  onClick={() => setActiveTab('upload')}
+                  className="btn"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-2)',
+                    padding: 'var(--space-4) var(--space-6)',
+                    backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
+                    color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    border: 'none',
+                    borderRadius: '12px 12px 0 0',
+                    fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                    fontSize: 'var(--text-base)',
+                    height: 'auto',
+                    flex: '1',
+                    justifyContent: 'center',
+                    transition: 'all var(--duration-normal) var(--ease-out)',
+                    boxShadow: activeTab === 'upload' ? '0 -2px 0 var(--accent-primary)' : 'none'
+                  }}
+                >
+                  <UploadIcon style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
+                  {t('fileUpload.uploadSchedule')}
+                </button>
+              </div>
+
+              <div style={{ 
+                padding: 'var(--space-8)',
+                backgroundColor: 'var(--bg-primary)',
+                borderRadius: '0 0 12px 12px'
+              }}>
+                {activeTab === 'form' ? (
+                  <CourseForm 
+                    onSubmit={handleCourseSubmit} 
+                    initialData={editingCourse}
+                    allCourses={courses}
+                  />
+                ) : (
+                  <FileUpload onUpload={handleFileUpload} />
+                )}
+              </div>
+            </section>
+
+            {/* Área de Lista de Cursos */}
+            <section className="card animate-fade-in content-section area-courses">
+              <div className="section-header">
+                <h2 className="section-title">
+                  {t('courseList.title', 'Courses')}
+                </h2>
+                <div className="section-badge">
+                  {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                </div>
+              </div>
+              <div className="content-body">
+                <CourseList
+                  courses={filteredCourses}
+                  onEdit={handleEditCourse}
+                  onDelete={handleDeleteCourse}
+                  onToggleCalendar={handleToggleCalendar}
+                />
+              </div>
+            </section>
+
+            {/* Área de Filtros */}
+            <section className="card animate-fade-in content-section area-filters">
+              <div className="section-header">
+                <h2 className="section-title">
+                  {t('courseFilters.title', 'Course Filters')}
+                </h2>
+              </div>
+              <div className="content-body">
+                <CourseFilters onFilterChange={setFilters} courses={courses} />
+              </div>
+            </section>
+            
+            {/* Área del Calendario */}
+            <section className="card animate-fade-in content-section area-calendar">
               <div className="section-header">
                 <h2 className="section-title">
                   {t('calendar.title', 'Schedule')}

@@ -369,14 +369,14 @@ select.form-input.form-select,
   background-repeat: no-repeat !important;
   background-size: 16px 12px !important;
   padding-right: var(--space-10) !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23877070' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23c5775b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
 }
 
 html[data-theme="dark"] select.form-input.form-select,
 html[data-theme="dark"] .form-input.form-select,
 [data-theme="dark"] select.form-input.form-select,
 [data-theme="dark"] .form-input.form-select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239a9997' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23d1968c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
 }
 
 .calendar-grid {
@@ -1030,4 +1030,67 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
+}
+
+/* Mejoras para react-hot-toast */
+[data-sonner-toaster] {
+  z-index: 9999 !important;
+}
+
+/* Animaciones personalizadas para toasts */
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Aplicar animaciones a los contenedores de toast */
+[data-hot-toast] {
+  animation: toastSlideIn var(--duration-normal) var(--ease-out) !important;
+}
+
+[data-hot-toast][data-visible="false"] {
+  animation: toastSlideOut var(--duration-normal) var(--ease-in) !important;
+}
+
+/* Mejorar el hover de los toasts */
+[data-hot-toast]:hover {
+  transform: scale(1.02) !important;
+  transition: transform var(--duration-fast) var(--ease-out) !important;
+}
+
+/* Estilos específicos para iconos de toast */
+[data-hot-toast] svg {
+  flex-shrink: 0 !important;
+}
+
+/* Mejorar separación entre icono y texto */
+[data-hot-toast] > div {
+  gap: var(--space-3) !important;
+  align-items: flex-start !important;
+}
+
+/* Responsive para toasts en móvil */
+@media (max-width: 480px) {
+  [data-hot-toast] {
+    max-width: calc(100vw - var(--space-8)) !important;
+    min-width: 280px !important;
+    margin: 0 var(--space-4) !important;
+  }
 } 

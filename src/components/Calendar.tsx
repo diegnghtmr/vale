@@ -140,22 +140,22 @@ export function Calendar({ events }: CalendarProps) {
         </div>
       </div>
       <div style={{ flex: '1', minHeight: '0' }}>
-        <FullCalendar
-          plugins={[timeGridPlugin]}
-          initialView="timeGridWeek"
+      <FullCalendar
+        plugins={[timeGridPlugin]}
+        initialView="timeGridWeek"
           headerToolbar={false}
-          locales={locales}
-          locale={currentLanguage === 'es' ? 'es' : 'en'}
-          allDaySlot={false}
-          slotMinTime="06:00:00"
-          slotMaxTime="23:00:00"
-          weekends={true}
-          events={events}
-          height="100%"
-          slotDuration="00:30:00"
-          expandRows={true}
-          eventContent={(eventInfo) => {
-            return (
+        locales={locales}
+        locale={currentLanguage === 'es' ? 'es' : 'en'}
+        allDaySlot={false}
+        slotMinTime="06:00:00"
+        slotMaxTime="23:00:00"
+        weekends={true}
+        events={events}
+        height="100%"
+        slotDuration="00:30:00"
+        expandRows={true}
+        eventContent={(eventInfo) => {
+          return (
               <div style={{
                 width: '100%',
                 height: '100%',
@@ -182,18 +182,18 @@ export function Calendar({ events }: CalendarProps) {
                 }}>
                   {eventInfo.event.extendedProps.description}
                 </div>
-              </div>
-            );
-          }}
-          slotLabelFormat={{
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-          }}
-          titleFormat={{ month: 'long', year: 'numeric' }}
-          nowIndicator={true}
-          scrollTime="07:00:00"
-        />
+            </div>
+          );
+        }}
+        slotLabelFormat={{
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        }}
+        titleFormat={{ month: 'long', year: 'numeric' }}
+        nowIndicator={true}
+        scrollTime="07:00:00"
+      />
       </div>
     </div>
   );
