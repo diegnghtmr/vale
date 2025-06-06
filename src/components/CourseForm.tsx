@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Save, Plus, Trash2, AlertTriangle } from 'lucide-react';
+import { GraduationCap, Save, Plus, Trash2, AlertTriangle, Hash, Bookmark, Users } from 'lucide-react';
 import { Course, Schedule } from '../types';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -155,32 +155,56 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
           {/* Credits */}
           <div className="form-group">
             <label className="form-label">{t('courseForm.credits')}</label>
-            <input
-              type="number"
-              required
-              min="1"
-              value={course.credits}
-              onInput={handleNumericInput}
-              onChange={(e) => setCourse({ ...course, credits: e.target.value })}
-              className="form-input"
-              placeholder={t('courseForm.creditsPlaceholder')}
-            />
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: 'var(--space-3)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>
+                <Hash style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-tertiary)' }} />
+              </div>
+              <input
+                type="number"
+                required
+                min="1"
+                value={course.credits}
+                onInput={handleNumericInput}
+                onChange={(e) => setCourse({ ...course, credits: e.target.value })}
+                className="form-input"
+                style={{ paddingLeft: 'var(--space-10)' }}
+                placeholder={t('courseForm.creditsPlaceholder')}
+              />
+            </div>
           </div>
 
           {/* Semester */}
           <div className="form-group">
             <label className="form-label">{t('courseForm.semester')}</label>
-            <input
-              type="number"
-              required
-              min="1"
-              max="10"
-              value={course.semester}
-              onInput={handleNumericInput}
-              onChange={(e) => setCourse({ ...course, semester: e.target.value })}
-              className="form-input"
-              placeholder={t('courseForm.semesterPlaceholder')}
-            />
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: 'var(--space-3)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>
+                <Bookmark style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-tertiary)' }} />
+              </div>
+              <input
+                type="number"
+                required
+                min="1"
+                max="11"
+                value={course.semester}
+                onInput={handleNumericInput}
+                onChange={(e) => setCourse({ ...course, semester: e.target.value })}
+                className="form-input"
+                style={{ paddingLeft: 'var(--space-10)' }}
+                placeholder={t('courseForm.semesterPlaceholder')}
+              />
+            </div>
           </div>
 
           {/* Time Slot */}
@@ -199,14 +223,26 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
           {/* Group */}
           <div className="form-group" style={{ gridColumn: '1 / -1' }}>
             <label className="form-label">{t('courseForm.group')}</label>
-            <input
-              type="text"
-              required
-              value={course.group}
-              onChange={(e) => setCourse({ ...course, group: e.target.value })}
-              className="form-input"
-              placeholder={t('courseForm.groupPlaceholder')}
-            />
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: 'var(--space-3)',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>
+                <Users style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-tertiary)' }} />
+              </div>
+              <input
+                type="text"
+                required
+                value={course.group}
+                onChange={(e) => setCourse({ ...course, group: e.target.value })}
+                className="form-input"
+                style={{ paddingLeft: 'var(--space-10)' }}
+                placeholder={t('courseForm.groupPlaceholder')}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -395,7 +431,7 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
           }}
         >
           <Save style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
-          {t('courseForm.submit')}
+          {initialData ? t('courseForm.updateCourse') : t('courseForm.submit')}
         </button>
       </div>
     </form>

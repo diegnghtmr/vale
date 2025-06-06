@@ -255,14 +255,12 @@ function AppContent() {
   };
 
   const handleEditCourse = (course: Course) => {
-    if (editingCourse && editingCourse.id === course.id) {
-      // If we are already editing this course, do nothing special,
-      // let the submit handler do the work.
-      // This case is for the inline editor.
-      handleCourseSubmit(course);
-    } else {
-      setEditingCourse(course);
-      setActiveTab('form');
+    setEditingCourse(course);
+    setActiveTab('form');
+    // Scroll to the top of the form for better visibility on mobile
+    const formElement = document.querySelector('.area-forms');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
