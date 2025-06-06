@@ -27,6 +27,29 @@ function AppContent() {
     credits: '',
   });
 
+  const formSectionRef = React.useRef<HTMLDivElement>(null);
+  const [formHeight, setFormHeight] = useState(0);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => {
+      const height = entries[0]?.contentRect.height;
+      if (height) {
+        setFormHeight(height);
+      }
+    });
+
+    const node = formSectionRef.current;
+    if (node) {
+      observer.observe(node);
+    }
+
+    return () => {
+      if (node) {
+        observer.unobserve(node);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -284,45 +307,34 @@ function AppContent() {
           }} className="main-layout">
             <style>
               {`
-                /* Layout móvil - todo apilado verticalmente */
                 .main-layout {
-                  display: grid !important;
-                  gap: var(--space-6) !important;
-                  grid-template-columns: 1fr !important;
+                  grid-template-columns: 1fr;
+                  grid-template-areas:
+                    "forms"
+                    "courses"
+                    "filters"
+                    "calendar";
                 }
                 
-                /* Layout tablet/desktop - Course Details | Courses arriba, Filters y Schedule abajo ocupando todo el ancho */
                 @media (min-width: 768px) {
                   .main-layout {
-                    grid-template-columns: 1fr 1fr !important;
-                    grid-template-rows: auto auto auto !important;
-                  }
-                  
-                  .area-forms {
-                    grid-column: 1 !important;
-                    grid-row: 1 !important;
-                  }
-                  
-                  .area-courses {
-                    grid-column: 2 !important;
-                    grid-row: 1 !important;
-                  }
-                  
-                  .area-filters {
-                    grid-column: 1 / -1 !important;
-                    grid-row: 2 !important;
-                  }
-                  
-                  .area-calendar {
-                    grid-column: 1 / -1 !important;
-                    grid-row: 3 !important;
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-areas:
+                      "forms courses"
+                      "filters filters"
+                      "calendar calendar";
                   }
                 }
+
+                .area-forms { grid-area: forms; }
+                .area-courses { grid-area: courses; }
+                .area-filters { grid-area: filters; }
+                .area-calendar { grid-area: calendar; }
               `}
             </style>
 
             {/* Área de Formularios */}
-            <section className="card animate-fade-in area-forms" style={{ 
+            <section ref={formSectionRef} className="card animate-fade-in area-forms" style={{ 
               overflow: 'hidden',
               padding: '0',
               borderRadius: '12px'
@@ -400,7 +412,15 @@ function AppContent() {
             </section>
 
             {/* Área de Lista de Cursos */}
-            <section className="card animate-fade-in content-section area-courses">
+            <section 
+              className="card animate-fade-in content-section area-courses"
+              style={{
+                height: formHeight > 0 ? `${formHeight}px` : 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden'
+              }}
+            >
               <div className="section-header">
                 <h2 className="section-title">
                   {t('courseList.title', 'Courses')}
@@ -409,13 +429,15 @@ function AppContent() {
                   {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
                 </div>
               </div>
-              <div className="content-body">
-                <CourseList
-                  courses={filteredCourses}
-                  onEdit={handleEditCourse}
-                  onDelete={handleDeleteCourse}
-                  onToggleCalendar={handleToggleCalendar}
-                />
+              <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+                  <div style={{padding: 'var(--space-6)'}}>
+                      <CourseList
+                          courses={filteredCourses}
+                          onEdit={handleEditCourse}
+                          onDelete={handleDeleteCourse}
+                          onToggleCalendar={handleToggleCalendar}
+                      />
+                  </div>
               </div>
             </section>
 

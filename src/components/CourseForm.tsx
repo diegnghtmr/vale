@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { checkConflict, checkSelfConflict } from '../utils/schedule';
 import { TimeInput } from './TimeInput';
 import { FormError } from './FormError';
+import { handleNumericInput } from '../utils/input';
 
 interface CourseFormProps {
   onSubmit: (course: Course) => void;
@@ -159,6 +160,7 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
               required
               min="1"
               value={course.credits}
+              onInput={handleNumericInput}
               onChange={(e) => setCourse({ ...course, credits: e.target.value })}
               className="form-input"
               placeholder={t('courseForm.creditsPlaceholder')}
@@ -174,6 +176,7 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
               min="1"
               max="10"
               value={course.semester}
+              onInput={handleNumericInput}
               onChange={(e) => setCourse({ ...course, semester: e.target.value })}
               className="form-input"
               placeholder={t('courseForm.semesterPlaceholder')}
