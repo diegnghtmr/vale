@@ -5,6 +5,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
 import App from './App';
 import { i18nInstance } from './i18n';
+import './styles/tokens.css';
 import './index.css';
 
 const rootElement = document.getElementById('root')!;

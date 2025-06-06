@@ -91,125 +91,204 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg transition-colors">
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t('courseForm.title')}</h2>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+        <h2 className="title-subsection" style={{ marginBottom: 'var(--space-2)' }}>
+          {t('courseForm.title')}
+        </h2>
         
-        {/* Course Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.courseName')}</label>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <GraduationCap className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+        {/* Course Info Grid */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr',
+          gap: 'var(--space-6)'
+        }} className="course-info-grid">
+          <style>
+            {`
+              @media (min-width: var(--breakpoint-md)) {
+                .course-info-grid {
+                  grid-template-columns: 1fr 1fr !important;
+                }
+              }
+            `}
+          </style>
+          
+          {/* Course Name */}
+          <div className="form-group">
+            <label className="form-label">{t('courseForm.courseName')}</label>
+            <div style={{ position: 'relative' }}>
+              <div style={{ 
+                position: 'absolute', 
+                left: 'var(--space-3)', 
+                top: '50%', 
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none'
+              }}>
+                <GraduationCap style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-tertiary)' }} />
+              </div>
+              <input
+                type="text"
+                required
+                value={course.name}
+                onChange={(e) => setCourse({ ...course, name: e.target.value })}
+                className="form-input"
+                style={{ paddingLeft: 'var(--space-10)' }}
+                placeholder={t('courseForm.courseNamePlaceholder')}
+              />
             </div>
+          </div>
+
+          {/* Credits */}
+          <div className="form-group">
+            <label className="form-label">{t('courseForm.credits')}</label>
+            <input
+              type="number"
+              required
+              min="1"
+              value={course.credits}
+              onChange={(e) => setCourse({ ...course, credits: e.target.value })}
+              className="form-input"
+              placeholder={t('courseForm.creditsPlaceholder')}
+            />
+          </div>
+
+          {/* Semester */}
+          <div className="form-group">
+            <label className="form-label">{t('courseForm.semester')}</label>
+            <input
+              type="number"
+              required
+              min="1"
+              max="10"
+              value={course.semester}
+              onChange={(e) => setCourse({ ...course, semester: e.target.value })}
+              className="form-input"
+              placeholder={t('courseForm.semesterPlaceholder')}
+            />
+          </div>
+
+          {/* Time Slot */}
+          <div className="form-group">
+            <label className="form-label">{t('courseForm.timeSlot')}</label>
+            <select
+              value={course.timeSlot}
+              onChange={(e) => setCourse({ ...course, timeSlot: e.target.value as 'day' | 'night' })}
+              className="form-input form-select"
+            >
+              <option value="day">{t('courseForm.timeSlotDay')}</option>
+              <option value="night">{t('courseForm.timeSlotNight')}</option>
+            </select>
+          </div>
+
+          {/* Group */}
+          <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+            <label className="form-label">{t('courseForm.group')}</label>
             <input
               type="text"
               required
-              value={course.name}
-              onChange={(e) => setCourse({ ...course, name: e.target.value })}
-              className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-3 py-2 sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-colors"
-              placeholder={t('courseForm.courseNamePlaceholder')}
+              value={course.group}
+              onChange={(e) => setCourse({ ...course, group: e.target.value })}
+              className="form-input"
+              placeholder={t('courseForm.groupPlaceholder')}
             />
           </div>
-        </div>
-
-        {/* Credits */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.credits')}</label>
-          <input
-            type="number"
-            required
-            min="1"
-            value={course.credits}
-            onChange={(e) => setCourse({ ...course, credits: e.target.value })}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-colors"
-            placeholder={t('courseForm.creditsPlaceholder')}
-          />
-        </div>
-
-        {/* Semester */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.semester')}</label>
-          <input
-            type="number"
-            required
-            min="1"
-            max="10"
-            value={course.semester}
-            onChange={(e) => setCourse({ ...course, semester: e.target.value })}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-colors"
-            placeholder={t('courseForm.semesterPlaceholder')}
-          />
-        </div>
-
-        {/* Time Slot */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.timeSlot')}</label>
-          <select
-            value={course.timeSlot}
-            onChange={(e) => setCourse({ ...course, timeSlot: e.target.value as 'day' | 'night' })}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors"
-          >
-            <option value="day">{t('courseForm.timeSlotDay')}</option>
-            <option value="night">{t('courseForm.timeSlotNight')}</option>
-          </select>
-        </div>
-
-        {/* Group */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.group')}</label>
-          <input
-            type="text"
-            required
-            value={course.group}
-            onChange={(e) => setCourse({ ...course, group: e.target.value })}
-            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-colors"
-            placeholder={t('courseForm.groupPlaceholder')}
-          />
         </div>
       </div>
 
       {/* Schedule Section */}
-      <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t('courseForm.schedule')}</h2>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 'var(--space-6)', 
+        paddingTop: 'var(--space-8)', 
+        borderTop: '1px solid var(--border-secondary)' 
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 'var(--space-4)',
+          marginBottom: 'var(--space-2)'
+        }}>
+          <h2 className="title-subsection" style={{ margin: '0' }}>
+            {t('courseForm.schedule')}
+          </h2>
           <button
             type="button"
             onClick={addSchedule}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition-colors"
+            className="btn btn-accent btn-md"
+            style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: 'var(--space-2)',
+              minWidth: 'auto',
+              whiteSpace: 'nowrap'
+            }}
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
             {t('courseForm.addTimeSlot')}
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
           {conflictError && (
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-r-lg">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <AlertTriangle className="h-5 w-5 text-red-500" aria-hidden="true" />
+            <div style={{ 
+              padding: 'var(--space-6)', 
+              borderLeft: `4px solid var(--error)`,
+              borderRadius: '0 12px 12px 0',
+              backgroundColor: 'var(--bg-secondary)',
+              margin: 'var(--space-2) 0'
+            }}>
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                <div style={{ flexShrink: 0 }}>
+                  <AlertTriangle style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--error)' }} />
                 </div>
-                <div className="ml-3">
-                  <p className="text-sm text-red-700 dark:text-red-300 whitespace-pre-line">
+                <div>
+                  <p className="text-body-sm" style={{ 
+                    color: 'var(--error)', 
+                    whiteSpace: 'pre-line',
+                    margin: '0'
+                  }}>
                     {conflictError}
                   </p>
                 </div>
               </div>
             </div>
           )}
+          
           {course.schedule.map((schedule, index) => (
             <div
               key={index}
-              className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 transition-colors"
+              className="card"
+              style={{ 
+                padding: 'var(--space-6)',
+                border: '1px solid var(--border-primary)',
+                borderRadius: '12px'
+              }}
             >
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.day')}</label>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: '1fr',
+                gap: 'var(--space-6)',
+                alignItems: 'end'
+              }} className="schedule-grid">
+                <style>
+                  {`
+                    @media (min-width: var(--breakpoint-md)) {
+                      .schedule-grid {
+                        grid-template-columns: 2fr 1.5fr 1.5fr auto !important;
+                      }
+                    }
+                  `}
+                </style>
+                
+                <div className="form-group">
+                  <label className="form-label">{t('courseForm.day')}</label>
                   <select
                     value={schedule.day}
                     onChange={(e) => handleScheduleChange(index, 'day', e.target.value as Schedule['day'])}
-                    className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors"
+                    className="form-input form-select"
                   >
                     {DAYS.map((day) => (
                       <option key={day} value={day}>
@@ -219,66 +298,128 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
                   </select>
                 </div>
 
-                <div className="md:col-span-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.startTime')}</label>
-                  <div className="relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <div className="form-group">
+                  <label className="form-label">{t('courseForm.startTime')}</label>
+                  <div style={{ position: 'relative' }}>
+                    <div style={{ 
+                      position: 'absolute', 
+                      left: 'var(--space-3)', 
+                      top: '50%', 
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none'
+                    }}>
+                      <Clock style={{ height: 'var(--space-4)', width: 'var(--space-4)', color: 'var(--text-tertiary)' }} />
                     </div>
                     <input
                       type="time"
                       required
                       value={schedule.startTime}
                       onChange={(e) => handleScheduleChange(index, 'startTime', e.target.value)}
-                      className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-colors"
+                      className="form-input"
+                      style={{ paddingLeft: 'var(--space-10)' }}
                     />
                   </div>
                 </div>
 
-                <div className="md:col-span-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('courseForm.endTime')}</label>
-                  <div className="relative rounded-md shadow-sm">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <div className="form-group">
+                  <label className="form-label">{t('courseForm.endTime')}</label>
+                  <div style={{ position: 'relative' }}>
+                    <div style={{ 
+                      position: 'absolute', 
+                      left: 'var(--space-3)', 
+                      top: '50%', 
+                      transform: 'translateY(-50%)',
+                      pointerEvents: 'none'
+                    }}>
+                      <Clock style={{ height: 'var(--space-4)', width: 'var(--space-4)', color: 'var(--text-tertiary)' }} />
                     </div>
                     <input
                       type="time"
                       required
                       value={schedule.endTime}
                       onChange={(e) => handleScheduleChange(index, 'endTime', e.target.value)}
-                      className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-colors"
+                      className="form-input"
+                      style={{ paddingLeft: 'var(--space-10)' }}
                     />
                   </div>
                 </div>
 
-                <div className="md:col-span-1 flex items-end justify-end">
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <button
                     type="button"
                     onClick={() => removeSchedule(index)}
-                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800 transition-colors"
+                    className="btn btn-secondary btn-sm"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      color: 'var(--error)',
+                      borderColor: 'var(--error)',
+                      padding: 'var(--space-2) var(--space-3)',
+                      minWidth: 'auto'
+                    }}
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    {t('courseForm.remove')}
+                    <Trash2 style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
+                    <span style={{ display: 'none' }} className="remove-text">
+                      {t('courseForm.remove')}
+                    </span>
                   </button>
+                  <style>
+                    {`
+                      @media (min-width: var(--breakpoint-md)) {
+                        .remove-text {
+                          display: inline !important;
+                        }
+                      }
+                    `}
+                  </style>
                 </div>
               </div>
             </div>
           ))}
 
           {course.schedule.length === 0 && (
-            <div className="text-center py-6 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
-              <p className="text-gray-500 dark:text-gray-400">{t('courseForm.noTimeSlots')}</p>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: 'var(--space-8)', 
+              backgroundColor: 'var(--bg-secondary)', 
+              borderRadius: '12px', 
+              border: '2px dashed var(--border-primary)',
+              margin: 'var(--space-4) 0'
+            }}>
+              <p style={{ 
+                color: 'var(--text-secondary)',
+                margin: '0',
+                fontSize: 'var(--text-base)',
+                fontWeight: 'var(--font-medium)'
+              }}>
+                {t('courseForm.noTimeSlots')}
+              </p>
             </div>
           )}
         </div>
       </div>
 
-      <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
+      {/* Submit Button */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        paddingTop: 'var(--space-8)', 
+        borderTop: '1px solid var(--border-secondary)' 
+      }}>
         <button
           type="submit"
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition-all transform hover:scale-105"
+          className="btn btn-primary btn-lg animate-scale-in"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 'var(--space-3)',
+            padding: 'var(--space-4) var(--space-8)',
+            minWidth: '200px',
+            justifyContent: 'center'
+          }}
         >
-          <Save className="h-5 w-5 mr-2" />
+          <Save style={{ height: 'var(--space-5)', width: 'var(--space-5)' }} />
           {t('courseForm.submit')}
         </button>
       </div>

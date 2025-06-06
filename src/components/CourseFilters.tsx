@@ -35,22 +35,43 @@ export function CourseFilters({ onFilterChange, courses }: CourseFiltersProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md space-y-4">
-      <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-        <Filter className="h-5 w-5" />
-        <h3 className="font-medium">{t('courseFilters.title')}</h3>
+    <div style={{ padding: 'var(--space-4)' }}>
+      <div className="card-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <Filter style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-secondary)' }} />
+          <h3 className="card-title">{t('courseFilters.title')}</h3>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr',
+        gap: 'var(--space-4)'
+      }} className="filters-grid">
+        <style>
+          {`
+            @media (min-width: var(--breakpoint-sm)) {
+              .filters-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+              }
+            }
+            @media (min-width: var(--breakpoint-lg)) {
+              .filters-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+              }
+            }
+          `}
+        </style>
+        
         {/* Semester Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <div className="form-group">
+          <label className="form-label">
             {t('courseFilters.semester')}
           </label>
           <select
             value={filters.semester}
             onChange={(e) => handleFilterChange('semester', e.target.value)}
-            className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="form-input form-select"
           >
             <option value="">{t('courseFilters.allSemesters')}</option>
             {semesters.map((semester) => (
@@ -62,14 +83,14 @@ export function CourseFilters({ onFilterChange, courses }: CourseFiltersProps) {
         </div>
 
         {/* Time Slot Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <div className="form-group">
+          <label className="form-label">
             {t('courseFilters.timeSlot')}
           </label>
           <select
             value={filters.timeSlot}
             onChange={(e) => handleFilterChange('timeSlot', e.target.value)}
-            className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="form-input form-select"
           >
             <option value="">{t('courseFilters.allTimeSlots')}</option>
             <option value="day">{t('courseForm.timeSlotDay')}</option>
@@ -78,8 +99,8 @@ export function CourseFilters({ onFilterChange, courses }: CourseFiltersProps) {
         </div>
 
         {/* Course Name Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <div className="form-group">
+          <label className="form-label">
             {t('courseForm.courseName')}
           </label>
           <input
@@ -87,19 +108,19 @@ export function CourseFilters({ onFilterChange, courses }: CourseFiltersProps) {
             value={filters.name}
             onChange={(e) => handleFilterChange('name', e.target.value)}
             placeholder={t('courseFilters.searchByName')}
-            className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="form-input"
           />
         </div>
 
         {/* Credits Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <div className="form-group">
+          <label className="form-label">
             {t('courseFilters.credits')}
           </label>
           <select
             value={filters.credits}
             onChange={(e) => handleFilterChange('credits', e.target.value)}
-            className="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            className="form-input form-select"
           >
             <option value="">{t('courseFilters.allCredits')}</option>
             {credits.map((credit) => (

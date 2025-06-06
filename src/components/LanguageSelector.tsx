@@ -24,11 +24,25 @@ export function LanguageSelector() {
   return (
     <button
       onClick={toggleLanguage}
-      className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 transition-colors"
+      className="btn btn-secondary btn-md"
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 'var(--space-3)',
+        padding: 'var(--space-3) var(--space-5)',
+        minWidth: '120px',
+        justifyContent: 'center',
+        fontSize: 'var(--text-sm)',
+        fontWeight: 'var(--font-medium)',
+        borderRadius: '10px',
+        transition: 'all var(--duration-normal) var(--ease-out)'
+      }}
       aria-label={t('common.language')}
     >
-      <Globe className="h-4 w-4 mr-2" />
-      {currentLanguage === 'en' ? t('common.spanish') : t('common.english')}
+      <Globe style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
+      <span style={{ whiteSpace: 'nowrap' }}>
+        {currentLanguage === 'en' ? t('common.spanish') : t('common.english')}
+      </span>
     </button>
   );
 }

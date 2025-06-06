@@ -31,3 +31,8 @@ export interface CourseEvent {
     description?: string;
   };
 }
+
+export interface UserPreferences {
+  theme?: 'light' | 'dark';
+  language?: 'en' | 'es';
+}

@@ -1,12 +1,7 @@
-import axios from 'axios';
-import { Course } from '../types';
+import { Course, UserPreferences } from '../types';
 
-const apiClient = axios.create({
-  baseURL: '/api', // This should be replaced with your actual API base URL
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Mock API client - in a real app, this would be axios or fetch
+// const apiClient = 'http://localhost:3001/api';
 
 // --- Course API ---
 
@@ -40,11 +35,6 @@ export const deleteCourse = async (id: string): Promise<void> => {
 };
 
 // --- Preferences API ---
-
-interface UserPreferences {
-  theme?: 'light' | 'dark';
-  language?: 'en' | 'es';
-}
 
 export const getUserPreferences = async (): Promise<UserPreferences> => {
   // const response = await apiClient.get('/preferences');

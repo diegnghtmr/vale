@@ -7,13 +7,23 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+      className="btn btn-secondary btn-md"
+      style={{
+        padding: 'var(--space-3)',
+        width: '52px',
+        height: '52px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '10px',
+        transition: 'all var(--duration-normal) var(--ease-out)'
+      }}
       aria-label="Toggle theme"
     >
       {theme === 'light' ? (
-        <Moon className="h-5 w-5 text-gray-800 dark:text-gray-200" />
+        <Moon style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-primary)' }} />
       ) : (
-        <Sun className="h-5 w-5 text-gray-800 dark:text-gray-200" />
+        <Sun style={{ height: 'var(--space-5)', width: 'var(--space-5)', color: 'var(--text-primary)' }} />
       )}
     </button>
   );

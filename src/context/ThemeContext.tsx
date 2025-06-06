@@ -35,9 +35,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem('theme', theme);
     if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.removeAttribute('data-theme');
     }
     
     // Sync with backend, but don't block
