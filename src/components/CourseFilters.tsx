@@ -37,20 +37,17 @@ export function CourseFilters({ onFilterChange, courses }: CourseFiltersProps) {
   return (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: '1fr',
       gap: 'var(--space-4)',
       paddingTop: 'var(--space-4)'
     }} className="filters-grid">
       <style>
         {`
-          @media (min-width: var(--breakpoint-sm)) {
-            .filters-grid {
-              grid-template-columns: repeat(2, 1fr) !important;
-            }
+          .filters-grid {
+            grid-template-columns: 1fr;
           }
-          @media (min-width: var(--breakpoint-lg)) {
+          @media (min-width: 500px) {
             .filters-grid {
-              grid-template-columns: repeat(4, 1fr) !important;
+              grid-template-columns: repeat(2, 1fr);
             }
           }
         `}
