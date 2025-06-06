@@ -19,6 +19,10 @@
     "timeSlotNight": "Night (Nocturna)",
     "group": "Group",
     "groupPlaceholder": "Enter group number/code",
+    "classroom": "Classroom",
+    "classroomPlaceholder": "e.g., D4-401 AULA",
+    "details": "Details",
+    "detailsPlaceholder": "e.g., Python Language, Additional information",
     "schedule": "Schedule",
     "addCourse": "Add Course",
     "updateSuccess": "Course updated successfully!",
@@ -32,6 +36,7 @@
     "endTime": "End Time",
     "noTimeSlots": "No time slots added yet. Click \"Add Time Slot\" to begin.",
     "errorNoTimeSlot": "Please add at least one time slot",
+    "errorSelfConflict": "The course has conflicting time slots. Please check the schedules.",
     "days": {
       "monday": "Monday",
       "tuesday": "Tuesday",
@@ -82,20 +87,26 @@
     "invalidDay": "Row {{row}}: Invalid day \"{{day}}\"",
     "invalidTimeSlot": "Row {{row}}: Invalid time slot \"{{timeSlot}}\". Must be \"day\" or \"night\"",
     "invalidTimeFormat": "Row {{row}}: Invalid time format",
+    "invalidCourse": "Invalid course",
+    "unnamedCourse": "Unnamed course",
     "uploadSchedule": "Import Courses"
   },
   "calendar": {
+    "title": "Schedule",
     "today": "Today",
     "month": "Month",
     "week": "Week",
     "day": "Day",
+    "totalCredits": "Total Credits",
+    "scheduledCourses": "Scheduled Courses",
     "conflictDetected": "Schedule Conflict Detected:",
     "courseToAdd": "Course to add",
     "conflictsWith": "Conflicts with",
     "timeOverlap": "Time overlap",
     "existingSlot": "Existing slot",
-    "selectDifferentTime": "Please select a different time slot for this course.",
+    "selectDifferentTime": "Please select a different time for this course.",
     "courseAdded": "Course added to calendar!",
-    "courseRemoved": "Course removed from calendar!"
+    "courseRemoved": "Course removed from calendar!",
+    "allDay": "All day"
   }
 }

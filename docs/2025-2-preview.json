@@ -1,0 +1,537 @@
+{
+    "courses": [
+      {
+        "name": "CÁLCULO MULTIVARIADO VECTORIAL",
+        "credits": 4,
+        "semester": 4,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-410 / D4-411 / D4-405",
+        "details": "La sesión del viernes es quincenal",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" },
+          { "day": "VIERNES",   "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ECUACIONES DIFERENCIALES",
+        "credits": 3,
+        "semester": 4,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-405",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" },
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "PROGRAMACIÓN III (Lenguaje Java)",
+        "credits": 3,
+        "semester": 4,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-410 / D4-407",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "FUNDAMENTOS DE INFRAESTRUCTURA COMPUTACIONAL",
+        "credits": 3,
+        "semester": 4,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-411 / D4-410",
+        "schedule": [
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "CÁLCULO MULTIVARIADO VECTORIAL",
+        "credits": 4,
+        "semester": 4,
+        "timeSlot": "Nocturno",
+        "group": "02 N",
+        "classroom": "D4-413 / D4-403 / D4-406",
+        "details": "La sesión del viernes es quincenal",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" },
+          { "day": "VIERNES",   "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "TEORÍA DE GRAFOS",
+        "credits": 3,
+        "semester": 5,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-302",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ESTRUCTURA DE DATOS (Lenguaje Java)",
+        "credits": 3,
+        "semester": 5,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-411 / D4-413",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ESTADÍSTICA Y PROBABILIDAD",
+        "credits": 3,
+        "semester": 5,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-410 / D4-411",
+        "schedule": [
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" },
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "SISTEMA DE INFORMACIÓN",
+        "credits": 3,
+        "semester": 5,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-303 / D4-411",
+        "schedule": [
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ESTRUCTURA DE DATOS (Lenguaje Java)",
+        "credits": 3,
+        "semester": 5,
+        "timeSlot": "Nocturno",
+        "group": "02 N",
+        "classroom": "D4-302 / D4-404",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "INFRAESTRUCTURA COMPUTACIONAL",
+        "credits": 4,
+        "semester": 6,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-405 / D4-406 / F1-110",
+        "details": "Teoría y Práctica - Práctica en Bloque de Educación",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" },
+          { "day": "VIERNES",   "startTime": "18:00", "endTime": "20:00" },
+          { "day": "SÁBADO",    "startTime": "14:00", "endTime": "16:00" }
+        ]
+      },
+      {
+        "name": "INGENIERÍA DE SOFTWARE I",
+        "credits": 3,
+        "semester": 6,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-407 / D4-410",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "BASES DE DATOS I",
+        "credits": 3,
+        "semester": 6,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-407 / D4-302",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ANÁLISIS NUMÉRICO",
+        "credits": 3,
+        "semester": 6,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-406 / D4-403",
+        "schedule": [
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" },
+          { "day": "VIERNES",   "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "DIRECCIÓN ESTRATÉGICA DE T.I.",
+        "credits": 3,
+        "semester": 6,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-410 / D4-405",
+        "schedule": [
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "INGENIERÍA DE SOFTWARE II",
+        "credits": 3,
+        "semester": 7,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-317 / D4-413",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "BASES DE DATOS II",
+        "credits": 3,
+        "semester": 7,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-205 / D4-411",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROGRAMACIÓN AVANZADA (Lenguaje Java)",
+        "credits": 3,
+        "semester": 7,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-411",
+        "schedule": [
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" },
+          { "day": "VIERNES",   "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "TEORÍA DE LENGUAJES FORMALES",
+        "credits": 3,
+        "semester": 7,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-407 / D4-403",
+        "schedule": [
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "INFRAESTRUCTURA DE COMUNICACIONES",
+        "credits": 4,
+        "semester": 7,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-402 / D4-407 / F1-108",
+        "details": "Teoría y Práctica - Práctica en Bloque de Educación",
+        "schedule": [
+          { "day": "VIERNES",   "startTime": "18:00", "endTime": "20:00" },
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" },
+          { "day": "SÁBADO",    "startTime": "14:00", "endTime": "16:00" }
+        ]
+      },
+      {
+        "name": "INGENIERÍA DE SOFTWARE III",
+        "credits": 3,
+        "semester": 8,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-303 / D4-405",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ADMINISTRACIÓN DE INFRAESTRUCTURA DE T.I.",
+        "credits": 3,
+        "semester": 8,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-408",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "INGENIERÍA ECONÓMICA",
+        "credits": 3,
+        "semester": 8,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-407 / D4-404",
+        "schedule": [
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" },
+          { "day": "VIERNES",   "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "FUNDAMENTOS DE HCI",
+        "credits": 3,
+        "semester": 8,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-403 / D4-401",
+        "schedule": [
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "SEMINARIO DE INVESTIGACIÓN",
+        "credits": 3,
+        "semester": 8,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-401 / D4-303",
+        "schedule": [
+          { "day": "VIERNES",   "startTime": "18:00", "endTime": "20:00" },
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN – VISUALIZACIÓN DE DATOS",
+        "credits": 3,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-318 / D4-404",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN INTRODUCCIÓN AL BIG DATA",
+        "credits": 3,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-318 / D4-318",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ANÁLISIS DE ALGORITMOS",
+        "credits": 3,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-303 / D4-302",
+        "schedule": [
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" },
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "ADMINISTRACIÓN",
+        "credits": 2,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-405 / D4-413",
+        "schedule": [
+          { "day": "JUEVES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "FORMULACIÓN Y EVALUACIÓN DE PROYECTOS",
+        "credits": 2,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-403",
+        "schedule": [
+          { "day": "VIERNES",   "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN INTELIGENCIA ARTIFICIAL PARA EL ANÁLISIS DE DATOS BIOMÉTRICOS Y VISUALES",
+        "credits": 3,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "02 N",
+        "classroom": "AULA",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN COMPUTACIÓN EN LA NUBE",
+        "credits": 3,
+        "semester": 9,
+        "timeSlot": "Nocturno",
+        "group": "02 N",
+        "classroom": "AULA",
+        "schedule": [
+          { "day": "MARTES",    "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "LEGISLACIÓN LABORAL Y PROPIEDAD INTELECTUAL",
+        "credits": 2,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-405",
+        "schedule": [
+          { "day": "LUNES", "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "INTELIGENCIA ARTIFICIAL",
+        "credits": 3,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-317 / D4-302",
+        "schedule": [
+          { "day": "LUNES",     "startTime": "20:00", "endTime": "22:00" },
+          { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN – DISEÑO CENTRADO EN EL USUARIO",
+        "credits": 3,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "AULA / D4-205",
+        "schedule": [
+          { "day": "MARTES",  "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",  "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN – VISIÓN ARTIFICIAL",
+        "credits": 3,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-302 / D4-303",
+        "schedule": [
+          { "day": "JUEVES",  "startTime": "18:00", "endTime": "20:00" },
+          { "day": "MARTES",  "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "SEMINARIO DE INGENIERÍA",
+        "credits": 2,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-407 / D4-411",
+        "schedule": [
+          { "day": "MIÉRCOLES", "startTime": "20:00", "endTime": "22:00" },
+          { "day": "VIERNES",   "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "ADMINISTRACIÓN DE PROYECTOS",
+        "credits": 2,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "01 N",
+        "classroom": "D4-407",
+        "schedule": [
+          { "day": "VIERNES", "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN – USABILIDAD Y EXPERIENCIA DE USUARIO",
+        "credits": 3,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "02 N",
+        "classroom": "AULA",
+        "schedule": [
+          { "day": "MARTES",  "startTime": "18:00", "endTime": "20:00" },
+          { "day": "JUEVES",  "startTime": "20:00", "endTime": "22:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN – GESTIÓN DE SERVICIOS DE T.I.",
+        "credits": 3,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "02 N",
+        "classroom": "AULA",
+        "schedule": [
+          { "day": "MARTES",  "startTime": "20:00", "endTime": "22:00" },
+          { "day": "JUEVES",  "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+        "name": "PROFUNDIZACIÓN – ARQUITECTURA ORIENTADA A MICROSERVICIOS",
+        "credits": 3,
+        "semester": 10,
+        "timeSlot": "Nocturno",
+        "group": "03 N",
+        "classroom": "AULA",
+        "schedule": [
+          { "day": "MARTES",  "startTime": "20:00", "endTime": "22:00" },
+          { "day": "JUEVES",  "startTime": "18:00", "endTime": "20:00" }
+        ]
+      },
+      {
+      "name": "ÉTICA PROFESIONAL",
+      "credits": 2,
+      "semester": 11,
+      "timeSlot": "Nocturno",
+      "group": "01 N",
+      "classroom": "D4-405",
+      "schedule": [
+        { "day": "MIÉRCOLES", "startTime": "18:00", "endTime": "20:00" },
+        { "day": "JUEVES",    "startTime": "20:00", "endTime": "22:00" }
+      ]
+    },
+    {
+      "name": "TRABAJO DE GRADO",
+      "credits": 6,
+      "semester": 11,
+      "timeSlot": "Nocturno",
+      "group": "01 N",
+      "classroom": "AULA",
+      "schedule": [
+        { "day": "SÁBADO",    "startTime": "20:00", "endTime": "22:00" }
+      ]
+    },
+    {
+      "name": "TRABAJO DE GRADO",
+      "credits": 6,
+      "semester": 10,
+      "timeSlot": "Nocturno",
+      "group": "01 N",
+      "classroom": "AULA",
+      "details": "Pensum Antiguo (Plan 20)",
+      "schedule": [
+        { "day": "SÁBADO",    "startTime": "20:00", "endTime": "22:00" }
+      ]
+    }
+  ]
+}
+  

@@ -1,21 +1,73 @@
-import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Upload as UploadIcon } from 'lucide-react';
-import { Course, CourseEvent, Schedule } from './types';
+import React, { useState, useEffect } from 'react';
+import { Course, CourseEvent } from './types';
 import { CourseForm } from './components/CourseForm';
 import { FileUpload } from './components/FileUpload';
 import { Calendar } from './components/Calendar';
 import { ThemeToggle } from './components/ThemeToggle';
+import { ThemeTransition } from './components/ThemeTransition';
 import { LanguageSelector } from './components/LanguageSelector';
 import { useTheme } from './context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { CourseList } from './components/CourseList';
 import { CourseFilters, CourseFilters as CourseFiltersType } from './components/CourseFilters';
+import * as api from './services/api';
+import { checkConflict } from './utils/schedule';
+import * as ics from 'ics';
+import { FloatingParticles, DecorativeWaves } from './components/FloatingParticles';
+import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon, DownloadIcon as AnimatedDownloadIcon } from './components/AnimatedIcons';
+import { animations } from './utils/animations';
+
+interface ExportButtonProps {
+  onClick: () => void;
+  text: string;
+}
+
+function ExportButton({ onClick, text }: ExportButtonProps) {
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (buttonRef.current) {
+      const hoverAnimation = animations.hoverScale(buttonRef.current);
+      
+      const handleMouseEnter = () => hoverAnimation.play();
+      const handleMouseLeave = () => hoverAnimation.reverse();
+      
+      const button = buttonRef.current;
+      button.addEventListener('mouseenter', handleMouseEnter);
+      button.addEventListener('mouseleave', handleMouseLeave);
+      
+      return () => {
+        button.removeEventListener('mouseenter', handleMouseEnter);
+        button.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }
+  }, []);
+
+  return (
+    <button
+      ref={buttonRef}
+      onClick={onClick}
+      className="btn btn-secondary btn-sm"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--space-2)',
+        padding: 'var(--space-2) var(--space-3)',
+        fontSize: 'var(--text-xs)',
+        minWidth: 'auto'
+      }}
+    >
+      <AnimatedDownloadIcon size={16} isActive={false} />
+      <span>{text}</span>
+    </button>
+  );
+}
 
 function AppContent() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [activeTab, setActiveTab] = useState<'form' | 'upload'>('form');
-  const { theme } = useTheme();
+  const { theme, isTransitioning } = useTheme();
   const { t } = useTranslation();
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [filters, setFilters] = useState<CourseFiltersType>({
@@ -25,6 +77,51 @@ function AppContent() {
     credits: '',
   });
 
+  const formSectionRef = React.useRef<HTMLDivElement>(null);
+  const [formHeight, setFormHeight] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => {
+      const height = entries[0]?.contentRect.height;
+      if (height) {
+        setFormHeight(height);
+      }
+    });
+
+    const node = formSectionRef.current;
+    if (node) {
+      observer.observe(node);
+    }
+
+    return () => {
+      if (node) {
+        observer.unobserve(node);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const fetchedCourses = await api.getCourses();
+        setCourses(fetchedCourses);
+      } catch {
+        toast.error('Failed to fetch courses.');
+      }
+    };
+    fetchCourses();
+  }, []);
+
   const filteredCourses = courses.filter(course => {
     if (filters.semester && course.semester.toString() !== filters.semester) return false;
     if (filters.timeSlot && course.timeSlot !== filters.timeSlot) return false;
@@ -33,21 +130,32 @@ function AppContent() {
     return true;
   });
 
-  const handleCourseSubmit = (course: Course) => {
-    if (editingCourse) {
-      setCourses(prev => prev.map(c => c.id === editingCourse.id ? { ...course, id: editingCourse.id } : c));
-      setEditingCourse(null);
-      toast.success(t('courseForm.updateSuccess'));
-    } else {
-      const newCourse = { ...course, id: crypto.randomUUID(), isInCalendar: false };
-      setCourses((prev) => [...prev, newCourse]);
-      toast.success(t('courseForm.addSuccess'));
+  // Calcular los créditos totales de las materias en el calendario
+  const coursesInCalendar = filteredCourses.filter(course => course.isInCalendar);
+  const totalCredits = coursesInCalendar.reduce((sum, course) => sum + Number(course.credits), 0);
+
+  const handleCourseSubmit = async (course: Course) => {
+    try {
+      if (editingCourse) {
+        const updatedCourse = await api.updateCourse(editingCourse.id!, { ...course, id: editingCourse.id });
+        setCourses(prev => prev.map(c => c.id === editingCourse.id ? updatedCourse : c));
+        setEditingCourse(null);
+        toast.success(t('courseForm.updateSuccess'));
+      } else {
+        const newCourse = await api.addCourse(course);
+        setCourses((prev) => [...prev, newCourse]);
+        toast.success(t('courseForm.addSuccess'));
+      }
+    } catch {
+      toast.error('Failed to save course.');
     }
   };
 
   const handleFileUpload = (data: Course[]) => {
     const validCourses = data.filter(course => {
-      const isValid = course.name && course.credits && course.schedule?.length > 0;
+      const isValid = course.name && 
+                      (course.credits !== null && course.credits !== undefined && course.credits !== '') && 
+                      course.schedule?.length > 0;
       if (!isValid) {
         toast.error(`${t('fileUpload.invalidCourse')}: ${course.name || t('fileUpload.unnamedCourse')}`);
       }
@@ -112,14 +220,17 @@ function AppContent() {
         events.push({
           id: `${course.id}-${slot.day}`,
           title: `${course.name} - S${course.semester} G${course.group} (${course.credits} cr)`,
-          description: `${slot.startTime} - ${slot.endTime}`,
+          description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`,
           start: start.toISOString(),
           end: end.toISOString(),
           backgroundColor: colors[colorIndex].bg,
           borderColor: colors[colorIndex].border,
           textColor: colors[colorIndex].text,
           extendedProps: {
-            credits: course.credits
+            credits: course.credits,
+            classroom: course.classroom,
+            details: course.details,
+            description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`
           }
         });
       });
@@ -128,14 +239,84 @@ function AppContent() {
     return events;
   };
 
+  const handleExportICS = () => {
+    const eventsToExport = generateCalendarEvents(courses.filter(c => c.isInCalendar));
+    const icsEvents = eventsToExport.map(event => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+
+      return {
+        title: event.title,
+        description: event.extendedProps?.description || '',
+        location: event.extendedProps?.classroom || '',
+        start: [start.getUTCFullYear(), start.getUTCMonth() + 1, start.getUTCDate(), start.getUTCHours(), start.getUTCMinutes()],
+        end: [end.getUTCFullYear(), end.getUTCMonth() + 1, end.getUTCDate(), end.getUTCHours(), end.getUTCMinutes()],
+        status: 'CONFIRMED',
+        busyStatus: 'BUSY',
+      } as ics.EventAttributes;
+    });
+
+    const { error, value } = ics.createEvents(icsEvents);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const blob = new Blob([value!], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'horario.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportCSV = () => {
+    const eventsToExport = generateCalendarEvents(courses.filter(c => c.isInCalendar));
+    const headers = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time', 'Description', 'Location'];
+    const rows = eventsToExport.map(event => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+      return [
+        `"${event.title}"`,
+        start.toLocaleDateString(),
+        start.toLocaleTimeString(),
+        end.toLocaleDateString(),
+        end.toLocaleTimeString(),
+        `"${event.extendedProps?.description || ''}"`,
+        `"${event.extendedProps?.classroom || ''}"`,
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'horario.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleEditCourse = (course: Course) => {
     setEditingCourse(course);
     setActiveTab('form');
+    // Scroll to the top of the form for better visibility on mobile
+    const formElement = document.querySelector('.area-forms');
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
-  const handleDeleteCourse = (id: string) => {
-    setCourses(courses.filter(course => course.id !== id));
-    toast.success(t('courseList.deleteSuccess'));
+  const handleDeleteCourse = async (id: string) => {
+    try {
+      await api.deleteCourse(id);
+      setCourses(courses.filter(course => course.id !== id));
+      toast.success(t('courseList.deleteSuccess'));
+    } catch {
+      toast.error('Failed to delete course.');
+    }
   };
 
   const handleToggleCalendar = (id: string, add: boolean) => {
@@ -143,54 +324,44 @@ function AppContent() {
       const courseToAdd = courses.find(c => c.id === id);
       if (!courseToAdd) return;
 
-      let conflictDetails: { existingCourse: Course; newSlot: Schedule; existingSlot: Schedule } | null = null;
-
-      for (const existingCourse of courses.filter(c => c.isInCalendar && c.id !== id)) {
-        for (const newSlot of courseToAdd.schedule) {
-          for (const existingSlot of existingCourse.schedule) {
-            if (newSlot.day === existingSlot.day) {
-              const newStart = new Date(`1970-01-01T${newSlot.startTime}`);
-              const newEnd = new Date(`1970-01-01T${newSlot.endTime}`);
-              const existingStart = new Date(`1970-01-01T${existingSlot.startTime}`);
-              const existingEnd = new Date(`1970-01-01T${existingSlot.endTime}`);
-
-              if (
-                (newStart >= existingStart && newStart < existingEnd) ||
-                (newEnd > existingStart && newEnd <= existingEnd) ||
-                (newStart <= existingStart && newEnd >= existingEnd)
-              ) {
-                conflictDetails = {
-                  existingCourse,
-                  newSlot,
-                  existingSlot
-                };
-                break;
-              }
-            }
-          }
-          if (conflictDetails) break;
-        }
-        if (conflictDetails) break;
-      }
+      const conflictDetails = checkConflict(
+        courses.filter(c => c.isInCalendar),
+        courseToAdd
+      );
 
       if (conflictDetails) {
-        const { existingCourse, newSlot, existingSlot } = conflictDetails;
+        const { conflictingCourse, newSlot, conflictingSlot } = conflictDetails;
         const message = [
           t('calendar.conflictDetected'),
           `\n• ${t('calendar.courseToAdd')}: "${courseToAdd.name}"`,
-          `\n• ${t('calendar.conflictsWith')}: "${existingCourse.name}"`,
+          `\n• ${t('calendar.conflictsWith')}: "${conflictingCourse.name}"`,
           `\n• ${t('calendar.day')}: ${t(`courseForm.days.${newSlot.day}`)}`,
           `\n• ${t('calendar.timeOverlap')}: ${newSlot.startTime}-${newSlot.endTime}`,
-          `\n• ${t('calendar.existingSlot')}: ${existingSlot.startTime}-${existingSlot.endTime}`,
+          `\n• ${t('calendar.existingSlot')}: ${conflictingSlot.startTime}-${conflictingSlot.endTime}`,
           `\n\n${t('calendar.selectDifferentTime')}`
         ].join('');
         
         toast.error(message, {
           duration: 6000,
           style: {
+            background: 'var(--bg-tertiary)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--error)',
+            borderLeft: '4px solid var(--error)',
+            borderRadius: '12px',
+            fontSize: 'var(--text-sm)',
+            fontFamily: 'var(--font-primary)',
+            fontWeight: 'var(--font-medium)',
+            padding: 'var(--space-5) var(--space-6)',
             maxWidth: '500px',
-            padding: '16px',
-            whiteSpace: 'pre-line'
+            minWidth: '380px',
+            whiteSpace: 'pre-line',
+            lineHeight: 'var(--leading-relaxed)',
+            boxShadow: '0 8px 25px rgba(201, 87, 77, 0.15)',
+          },
+          iconTheme: {
+            primary: '#c9574d',
+            secondary: '#ffffff',
           },
         });
         return;
@@ -204,83 +375,351 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-all duration-200">
-      <div className="max-w-7xl mx-auto">
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="flex justify-between items-center bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm dark:shadow-gray-800/20">
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
-                {t('common.appTitle')}
-              </h1>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 font-medium">
-                {t('common.appDescription')}
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <LanguageSelector />
-              <ThemeToggle />
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-gray-800/20 overflow-hidden">
-            <nav className="flex space-x-8 p-4 border-b border-gray-100 dark:border-gray-700">
-              <button
-                onClick={() => setActiveTab('form')}
-                className={`${
-                  activeTab === 'form'
-                    ? 'text-indigo-600 dark:text-indigo-400 border-indigo-600 dark:border-indigo-400'
-                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
-                } flex items-center pb-3 px-1 border-b-2 font-medium text-sm transition-all`}
-              >
-                <CalendarIcon className="h-5 w-5 mr-2" />
-                {t('courseForm.addCourse')}
-              </button>
-              <button
-                onClick={() => setActiveTab('upload')}
-                className={`${
-                  activeTab === 'upload'
-                    ? 'text-indigo-600 dark:text-indigo-400 border-indigo-600 dark:border-indigo-400'
-                    : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300'
-                } flex items-center pb-3 px-1 border-b-2 font-medium text-sm transition-all`}
-              >
-                <UploadIcon className="h-5 w-5 mr-2" />
-                {t('fileUpload.uploadSchedule')}
-              </button>
-            </nav>
-
-            <div className="p-6">
-              {activeTab === 'form' ? (
-                <CourseForm onSubmit={handleCourseSubmit} initialData={editingCourse} />
-              ) : (
-                <FileUpload onUpload={handleFileUpload} />
-              )}
-            </div>
-          </div>
-
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-gray-800/20 overflow-hidden">
-                <CourseFilters onFilterChange={setFilters} courses={courses} />
+    <>
+      {/* Theme Transition Overlay */}
+      <ThemeTransition isTransitioning={isTransitioning} targetTheme={theme} />
+      
+      {/* Partículas flotantes de fondo */}
+      <FloatingParticles count={15} maxSize={8} minSize={3} />
+      
+      <div className="container animate-fade-in" style={{ minHeight: '100vh', paddingTop: 'var(--space-8)', paddingBottom: 'var(--space-20)', position: 'relative' }}>
+        {/* Ondas decorativas fijas en la parte inferior */}
+        <DecorativeWaves />
+        
+        <div style={{ maxWidth: '1600px', margin: '0 auto', padding: '0 var(--space-4)', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
+            {/* Header */}
+            <header className="card-elevated animate-slide-in-left" style={{ 
+              padding: 'var(--space-8)',
+              borderRadius: '16px'
+            }}>
+              <div className="header-layout">
+                <style>
+                  {`
+                    .header-layout {
+                      display: flex;
+                      flex-wrap: wrap;
+                      gap: var(--space-4);
+                      justify-content: space-between;
+                      align-items: center;
+                    }
+                    .header-text {
+                      flex: 1;
+                      min-width: 280px;
+                    }
+                    .header-actions {
+                      display: flex;
+                      align-items: center;
+                      gap: var(--space-3);
+                      flex-shrink: 0;
+                    }
+                    @media (max-width: 767px) {
+                      .header-layout {
+                        flex-direction: column;
+                        align-items: center;
+                      }
+                      .header-text {
+                        width: 100%;
+                        text-align: center;
+                      }
+                      .header-actions {
+                        order: -1;
+                        width: 100%;
+                        justify-content: center;
+                        margin-bottom: var(--space-6);
+                      }
+                    }
+                  `}
+                </style>
+                <div className="header-text">
+                  <h1 className="title-section" style={{ 
+                    background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                    margin: '0 0 var(--space-2) 0',
+                    fontSize: 'var(--text-5xl)',
+                    fontWeight: 'var(--font-extrabold)',
+                    letterSpacing: '-0.02em'
+                  }}>
+                    {t('common.appTitle')}
+                  </h1>
+                  <p className="text-body" style={{ 
+                    margin: '0',
+                    color: 'var(--text-secondary)',
+                    fontWeight: 'var(--font-medium)',
+                    fontSize: 'var(--text-lg)',
+                    lineHeight: 'var(--leading-relaxed)'
+                  }}>
+                    {t('common.appDescription')}
+                  </p>
+                </div>
+                <div className="header-actions">
+                  <LanguageSelector />
+                  <ThemeToggle />
+                </div>
               </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-gray-800/20 overflow-hidden">
-                <CourseList
-                  courses={filteredCourses}
-                  onEdit={handleEditCourse}
-                  onDelete={handleDeleteCourse}
-                  onToggleCalendar={handleToggleCalendar}
-                />
-              </div>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-gray-800/20 overflow-hidden p-4">
-              <Calendar events={generateCalendarEvents(filteredCourses.filter(course => course.isInCalendar))} />
-            </div>
+            </header>
+
+            {/* Contenido Principal con Layout Horizontal */}
+            <main style={{ 
+              display: 'grid',
+              gap: 'var(--space-6)',
+              alignItems: 'start'
+            }} className="main-layout">
+              <style>
+                {`
+                  .main-layout {
+                    grid-template-columns: 1fr;
+                    grid-template-areas:
+                      "filters"
+                      "courses"
+                      "forms"
+                      "calendar";
+                  }
+                  
+                  @media (min-width: 768px) {
+                    .main-layout {
+                      grid-template-columns: 1fr 1fr;
+                      grid-template-areas:
+                        "filters filters"
+                        "forms courses"
+                        "calendar calendar";
+                    }
+                  }
+
+                  .area-forms { grid-area: forms; }
+                  .area-courses { grid-area: courses; }
+                  .area-filters { grid-area: filters; }
+                  .area-calendar { grid-area: calendar; }
+                `}
+              </style>
+
+              {/* Área de Filtros */}
+              <section className="card animate-fade-in content-section area-filters">
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('courseFilters.title', 'Course Filters')}
+                  </h2>
+                </div>
+                <div className="content-body">
+                  <CourseFilters onFilterChange={setFilters} courses={courses} />
+                </div>
+              </section>
+
+              {/* Área de Lista de Cursos */}
+              <section 
+                className="card animate-fade-in content-section area-courses"
+                style={{
+                  height: isDesktop && formHeight > 0 ? `${formHeight}px` : 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden'
+                }}
+              >
+                <div className="section-header">
+                  <h2 className="section-title">
+                    {t('courseList.title', 'Courses')}
+                  </h2>
+                  <div className="section-badge">
+                    {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                  </div>
+                </div>
+                <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+                    <div style={{padding: 'var(--space-6)'}}>
+                        <CourseList
+                            courses={filteredCourses}
+                            onEdit={handleEditCourse}
+                            onDelete={handleDeleteCourse}
+                            onToggleCalendar={handleToggleCalendar}
+                        />
+                    </div>
+                </div>
+              </section>
+
+              {/* Área de Formularios */}
+              <section ref={formSectionRef} className="card animate-fade-in area-forms" style={{ 
+                overflow: 'hidden',
+                padding: '0',
+                borderRadius: '12px'
+              }}>
+                <div style={{ 
+                  display: 'flex', 
+                  background: 'var(--bg-secondary)',
+                  borderRadius: '12px 12px 0 0'
+                }}>
+                  <button
+                    onClick={() => setActiveTab('form')}
+                    className="btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-4) var(--space-6)',
+                      backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
+                      color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRight: '1px solid var(--border-primary)',
+                      borderRadius: '12px 0 0 0',
+                      fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                      fontSize: 'var(--text-base)',
+                      height: 'auto',
+                      flex: '1',
+                      justifyContent: 'center',
+                      transition: 'all var(--duration-normal) var(--ease-out)',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <AnimatedCalendarIcon size={20} isActive={activeTab === 'form'} />
+                    {t('courseForm.addCourse')}
+                    {activeTab === 'form' && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '2px',
+                        background: 'var(--accent-primary)',
+                      }} />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('upload')}
+                    className="btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-4) var(--space-6)',
+                      backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
+                      color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRadius: '0 12px 0 0',
+                      fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                      fontSize: 'var(--text-base)',
+                      height: 'auto',
+                      flex: '1',
+                      justifyContent: 'center',
+                      transition: 'all var(--duration-normal) var(--ease-out)',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <AnimatedUploadIcon size={20} isActive={activeTab === 'upload'} />
+                    {t('fileUpload.uploadSchedule')}
+                    {activeTab === 'upload' && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '2px',
+                        background: 'var(--accent-primary)',
+                      }} />
+                    )}
+                  </button>
+                </div>
+
+                <div style={{ 
+                  padding: 'var(--space-8)',
+                  backgroundColor: 'var(--bg-primary)',
+                  borderRadius: '0 0 12px 12px'
+                }}>
+                  {activeTab === 'form' ? (
+                    <CourseForm 
+                      onSubmit={handleCourseSubmit} 
+                      initialData={editingCourse}
+                      allCourses={courses}
+                    />
+                  ) : (
+                    <FileUpload onUpload={handleFileUpload} />
+                  )}
+                </div>
+              </section>
+              
+              {/* Área del Calendario */}
+              <section className="card animate-fade-in content-section area-calendar">
+                <div className="section-header">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                    <h2 className="section-title">
+                      {t('calendar.title')}
+                    </h2>
+                    <div style={{ 
+                      display: 'flex', 
+                      flexWrap: 'wrap',
+                      gap: 'var(--space-3)', 
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap',
+                        gap: 'var(--space-3)', 
+                        alignItems: 'center'
+                      }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: 'var(--space-2)',
+                          padding: 'var(--space-2) var(--space-3)',
+                          backgroundColor: 'var(--bg-secondary)',
+                          borderRadius: '8px',
+                          border: '1px solid var(--border-primary)'
+                        }}>
+                          <div style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--accent-primary)'
+                          }} />
+                          <span style={{ fontWeight: 'var(--font-medium)' }}>
+                            {coursesInCalendar.length} {t('calendar.scheduledCourses')}
+                          </span>
+                        </div>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: 'var(--space-2)',
+                          padding: 'var(--space-2) var(--space-3)',
+                          backgroundColor: 'var(--bg-secondary)',
+                          borderRadius: '8px',
+                          border: '1px solid var(--border-primary)'
+                        }}>
+                          <div style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--accent-primary)'
+                          }} />
+                          <span style={{ fontWeight: 'var(--font-semibold)' }}>
+                            {totalCredits} {t('calendar.totalCredits')}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                        <ExportButton onClick={handleExportICS} text="iCal" />
+                        <ExportButton onClick={handleExportCSV} text="CSV" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="content-body">
+                  <div style={{ overflowX: 'auto', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
+                    <div style={{ minWidth: '700px' }}>
+                      <Calendar events={generateCalendarEvents(coursesInCalendar)} />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </main>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

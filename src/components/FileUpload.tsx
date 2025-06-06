@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -12,10 +12,32 @@ interface FileUploadProps {
 export function FileUpload({ onUpload }: FileUploadProps) {
   const { t } = useTranslation();
 
+  const mapSpanishDayToEnglish = (spanishDay: string): string => {
+    const dayMap: { [key: string]: string } = {
+      'LUNES': 'monday',
+      'MARTES': 'tuesday',
+      'MIÉRCOLES': 'wednesday',
+      'JUEVES': 'thursday',
+      'VIERNES': 'friday',
+      'SÁBADO': 'saturday',
+      'DOMINGO': 'sunday'
+    };
+    return dayMap[spanishDay.toUpperCase()] || spanishDay.toLowerCase();
+  };
+
+  const mapSpanishTimeSlotToEnglish = (timeSlot: string): string => {
+    const timeSlotMap: { [key: string]: string } = {
+      'DIURNO': 'day',
+      'NOCTURNO': 'night'
+    };
+    return timeSlotMap[timeSlot.toUpperCase()] || timeSlot.toLowerCase();
+  };
+
   const parseCSV = (text: string): Course[] => {
     const rows = text.split('\n').filter(row => row.trim());
     const headers = rows[0].split(',').map(h => h.trim());
     
+    // Solo estos campos son requeridos
     const requiredHeaders = ['name', 'credits', 'semester', 'timeSlot', 'group', 'day', 'startTime', 'endTime'];
     const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
     
@@ -31,6 +53,7 @@ export function FileUpload({ onUpload }: FileUploadProps) {
 
       const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
       
+      // Validar solo los campos requeridos
       if (!row.name || !row.credits || !row.semester || !row.timeSlot || !row.group ||
           !row.day || !row.startTime || !row.endTime) {
         toast.error(t('fileUpload.missingData', { row: i + 1 }));
@@ -60,22 +83,53 @@ export function FileUpload({ onUpload }: FileUploadProps) {
         endTime: row.endTime
       };
 
-      if (courses.has(row.name)) {
-        const course = courses.get(row.name)!;
+      // Usar nombre + grupo + semestre como clave única para evitar mezclar cursos diferentes
+      const courseKey = `${row.name}-${row.group}-${row.semester}`;
+
+      if (courses.has(courseKey)) {
+        const course = courses.get(courseKey)!;
         course.schedule.push(schedule);
       } else {
-        courses.set(row.name, {
+        // Crear el curso con todos los campos disponibles (incluyendo opcionales)
+        const courseData: Course = {
           name: row.name,
           credits: Number(row.credits),
           semester: Number(row.semester),
           timeSlot: row.timeSlot.toLowerCase() as 'day' | 'night',
           group: row.group,
           schedule: [schedule]
-        });
+        };
+
+        // Agregar campos opcionales si están presentes y no están vacíos
+        if (row.classroom && row.classroom.trim() !== '') {
+          courseData.classroom = row.classroom;
+        }
+        if (row.details && row.details.trim() !== '') {
+          courseData.details = row.details;
+        }
+
+        courses.set(courseKey, courseData);
       }
     }
 
     return Array.from(courses.values());
+  };
+
+  const processJSONData = (data: any[]): Course[] => {
+    return data.map(course => {
+      // Normalizar los horarios
+      const normalizedSchedule = course.schedule?.map((slot: any) => ({
+        day: mapSpanishDayToEnglish(slot.day),
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      })) || [];
+
+      return {
+        ...course,
+        timeSlot: mapSpanishTimeSlotToEnglish(course.timeSlot),
+        schedule: normalizedSchedule
+      };
+    });
   };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -87,17 +141,22 @@ export function FileUpload({ onUpload }: FileUploadProps) {
     reader.onload = () => {
       try {
         const text = reader.result as string;
-        const rawData = file.name.endsWith('.csv') 
-          ? parseCSV(text)
-          : JSON.parse(text);
+        let processedData: Course[];
         
-        const data = Array.isArray(rawData) ? rawData : rawData.courses;
-        
-        if (!Array.isArray(data)) {
-          throw new Error(t('fileUpload.invalidFormat'));
+        if (file.name.endsWith('.csv')) {
+          processedData = parseCSV(text);
+        } else {
+          const rawData = JSON.parse(text);
+          const data = Array.isArray(rawData) ? rawData : rawData.courses;
+          
+          if (!Array.isArray(data)) {
+            throw new Error(t('fileUpload.invalidFormat'));
+          }
+          
+          processedData = processJSONData(data);
         }
 
-        onUpload(data);
+        onUpload(processedData);
         toast.success(t('fileUpload.success'));
       } catch (error: unknown) {
         const errorMessage = error instanceof Error 
@@ -120,24 +179,142 @@ export function FileUpload({ onUpload }: FileUploadProps) {
   });
 
   return (
-    <div
-      {...getRootProps()}
-      className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors
-        ${isDragActive 
-          ? 'border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-900/20' 
-          : 'border-gray-300 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-400'
-        } dark:bg-gray-800`}
-    >
-      <input {...getInputProps()} />
-      <Upload className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-        {isDragActive
-          ? t('fileUpload.dropHere')
-          : t('fileUpload.dragAndDrop')}
-      </p>
-      <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
-        {t('fileUpload.supportedFormats')}
-      </p>
-    </div>
+    <>
+      <style>
+        {`
+          @keyframes uploadPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+          }
+          
+          @keyframes uploadIconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+          }
+          
+          @keyframes shimmerBackground {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          .upload-container {
+            padding: var(--space-12);
+            border: 2px dashed var(--border-primary);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            backgroundColor: var(--bg-tertiary);
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .upload-container:hover:not(.drag-active) {
+            border-color: var(--accent-secondary);
+            background-color: var(--bg-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+          }
+          
+          .upload-container.drag-active {
+            border-color: var(--accent-primary);
+            background-color: var(--bg-secondary);
+            animation: uploadPulse 2s ease-in-out infinite;
+          }
+          
+          .upload-icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background-color: var(--bg-secondary);
+            border-radius: 50%;
+            margin-bottom: var(--space-6);
+            transition: all var(--duration-normal) var(--ease-out);
+          }
+          
+          .upload-container.drag-active .upload-icon-container {
+            background-color: var(--accent-primary);
+            animation: uploadIconBounce 1s ease-in-out infinite;
+          }
+          
+          .upload-icon {
+            height: 32px;
+            width: 32px;
+            color: var(--accent-primary);
+            transition: all var(--duration-normal) var(--ease-out);
+          }
+          
+          .upload-container.drag-active .upload-icon {
+            color: var(--bg-primary);
+          }
+          
+          .upload-shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+              90deg,
+              transparent,
+              var(--accent-tertiary),
+              transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmerBackground 2s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--duration-normal) var(--ease-out);
+          }
+          
+          .upload-container.drag-active .upload-shimmer {
+            opacity: 1;
+          }
+        `}
+      </style>
+      
+      <div
+        {...getRootProps()}
+        className={`upload-container ${isDragActive ? 'drag-active' : ''}`}
+      >
+        <input {...getInputProps()} />
+        
+        {/* Icono de upload con animación */}
+        <div className="upload-icon-container">
+          <Upload className="upload-icon" />
+        </div>
+
+        {/* Texto principal */}
+        <p style={{
+          margin: '0 0 var(--space-3) 0',
+          fontSize: 'var(--text-lg)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--text-primary)',
+          lineHeight: 'var(--leading-snug)',
+          transition: 'all var(--duration-normal) var(--ease-out)'
+        }}>
+          {isDragActive
+            ? t('fileUpload.dropHere')
+            : t('fileUpload.dragAndDrop')}
+        </p>
+
+        {/* Texto secundario */}
+        <p style={{
+          margin: '0',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--text-secondary)',
+          lineHeight: 'var(--leading-normal)',
+          transition: 'all var(--duration-normal) var(--ease-out)'
+        }}>
+          {t('fileUpload.supportedFormats')}
+        </p>
+
+        {/* Efecto shimmer de fondo */}
+        <div className="upload-shimmer" />
+      </div>
+    </>
   );
 }

@@ -1,0 +1,9 @@
+name,credits,semester,timeSlot,group,classroom,details,day,startTime,endTime
+NOMBRE_DEL_CURSO,NÚMERO_DE_CRÉDITOS,NÚMERO_DE_SEMESTRE,JORNADA,GRUPO,AULA (opcional),DETALLES (opcional),DIA_DE_LA_SEMANA,HORA_DE_INICIO (HH:mm),HORA_DE_FIN (HH:mm)
+Matemáticas Generales,3,1,day,A,D4-401 AULA,,monday,08:00,10:00
+Matemáticas Generales,3,1,day,A,D4-401 AULA,,wednesday,08:00,10:00
+Lógica de Programación,3,1,night,B,D4-317 SALA,Lenguaje Python,tuesday,18:00,21:00
+Cálculo Diferencial,4,2,day,A,D4-402 AULA,,monday,10:00,12:00
+Cálculo Diferencial,4,2,day,A,D4-402 AULA,,friday,08:00,10:00
+Programación I,3,2,night,B,D4-317 SALA,Lenguaje Java,tuesday,18:00,20:00
+Programación I,3,2,night,B,D4-317 SALA,Lenguaje Java,thursday,20:00,22:00 
