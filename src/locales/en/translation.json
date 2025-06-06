@@ -90,16 +90,19 @@
     "uploadSchedule": "Import Courses"
   },
   "calendar": {
+    "title": "Schedule",
     "today": "Today",
     "month": "Month",
     "week": "Week",
     "day": "Day",
+    "totalCredits": "Total Credits",
+    "scheduledCourses": "Scheduled Courses",
     "conflictDetected": "Schedule Conflict Detected:",
     "courseToAdd": "Course to add",
     "conflictsWith": "Conflicts with",
     "timeOverlap": "Time overlap",
     "existingSlot": "Existing slot",
-    "selectDifferentTime": "Please select a different time slot for this course.",
+    "selectDifferentTime": "Please select a different time for this course.",
     "courseAdded": "Course added to calendar!",
     "courseRemoved": "Course removed from calendar!",
     "allDay": "All day"

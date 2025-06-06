@@ -130,6 +130,10 @@ function AppContent() {
     return true;
   });
 
+  // Calcular los créditos totales de las materias en el calendario
+  const coursesInCalendar = filteredCourses.filter(course => course.isInCalendar);
+  const totalCredits = coursesInCalendar.reduce((sum, course) => sum + Number(course.credits), 0);
+
   const handleCourseSubmit = async (course: Course) => {
     try {
       if (editingCourse) {
@@ -636,18 +640,75 @@ function AppContent() {
               {/* Área del Calendario */}
               <section className="card animate-fade-in content-section area-calendar">
                 <div className="section-header">
-                  <h2 className="section-title">
-                    {t('calendar.title', 'Schedule')}
-                  </h2>
-                  <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <ExportButton onClick={handleExportICS} text="iCal" />
-                    <ExportButton onClick={handleExportCSV} text="CSV" />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                    <h2 className="section-title">
+                      {t('calendar.title')}
+                    </h2>
+                    <div style={{ 
+                      display: 'flex', 
+                      flexWrap: 'wrap',
+                      gap: 'var(--space-3)', 
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap',
+                        gap: 'var(--space-3)', 
+                        alignItems: 'center'
+                      }}>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: 'var(--space-2)',
+                          padding: 'var(--space-2) var(--space-3)',
+                          backgroundColor: 'var(--bg-secondary)',
+                          borderRadius: '8px',
+                          border: '1px solid var(--border-primary)'
+                        }}>
+                          <div style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--accent-primary)'
+                          }} />
+                          <span style={{ fontWeight: 'var(--font-medium)' }}>
+                            {coursesInCalendar.length} {t('calendar.scheduledCourses')}
+                          </span>
+                        </div>
+                        <div style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: 'var(--space-2)',
+                          padding: 'var(--space-2) var(--space-3)',
+                          backgroundColor: 'var(--bg-secondary)',
+                          borderRadius: '8px',
+                          border: '1px solid var(--border-primary)'
+                        }}>
+                          <div style={{
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            backgroundColor: 'var(--accent-primary)'
+                          }} />
+                          <span style={{ fontWeight: 'var(--font-semibold)' }}>
+                            {totalCredits} {t('calendar.totalCredits')}
+                          </span>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                        <ExportButton onClick={handleExportICS} text="iCal" />
+                        <ExportButton onClick={handleExportCSV} text="CSV" />
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="content-body">
                   <div style={{ overflowX: 'auto', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
                     <div style={{ minWidth: '700px' }}>
-                      <Calendar events={generateCalendarEvents(filteredCourses.filter(course => course.isInCalendar))} />
+                      <Calendar events={generateCalendarEvents(coursesInCalendar)} />
                     </div>
                   </div>
                 </div>

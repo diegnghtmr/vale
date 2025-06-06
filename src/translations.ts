@@ -103,6 +103,8 @@ export const translations = {
       month: "Month",
       week: "Week",
       day: "Day",
+      totalCredits: "Total Credits",
+      scheduledCourses: "Scheduled Courses",
       conflictDetected: "Schedule Conflict Detected:",
       courseToAdd: "Course to add",
       conflictsWith: "Conflicts with",
@@ -212,11 +214,13 @@ export const translations = {
       uploadSchedule: "Importar Cursos"
     },
     calendar: {
-      title: "Horario",
+      title: "Calendario",
       today: "Hoy",
       month: "Mes",
       week: "Semana",
       day: "Día",
+      totalCredits: "Créditos Totales",
+      scheduledCourses: "Cursos Programados",
       conflictDetected: "Conflicto de Horario Detectado:",
       courseToAdd: "Curso a agregar",
       conflictsWith: "Conflicto con",

@@ -90,10 +90,13 @@
     "uploadSchedule": "Importar Cursos"
   },
   "calendar": {
+    "title": "Calendario",
     "today": "Hoy",
     "month": "Mes",
     "week": "Semana",
     "day": "Día",
+    "totalCredits": "Créditos Totales",
+    "scheduledCourses": "Materias Programadas",
     "conflictDetected": "Conflicto de Horario Detectado:",
     "courseToAdd": "Curso a agregar",
     "conflictsWith": "Conflicto con",
