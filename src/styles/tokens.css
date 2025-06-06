@@ -232,9 +232,11 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all var(--duration-normal) var(--ease-out);
   white-space: nowrap;
   gap: var(--space-2);
+  position: relative;
+  overflow: hidden;
 }
 
 /* Tamaños */
@@ -260,6 +262,7 @@
 .btn-primary {
   background-color: var(--text-primary);
   color: var(--bg-primary);
+  border: none;
 }
 
 .btn-primary:hover {
@@ -268,19 +271,21 @@
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-primary);
 }
 
 .btn-secondary:hover {
-  background-color: var(--bg-secondary);
-  border-color: var(--text-secondary);
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+  transform: translateY(-1px);
 }
 
 .btn-accent {
   background-color: var(--accent-primary);
   color: var(--bg-primary);
+  border: none;
 }
 
 .btn-accent:hover {
@@ -293,7 +298,8 @@
   border: 1px solid var(--border-secondary);
   border-radius: 12px;
   padding: var(--space-6);
-  transition: all 0.2s ease-in-out;
+  transition: all var(--duration-normal) var(--ease-out);
+  position: relative;
 }
 
 .card:hover {
@@ -304,7 +310,7 @@
 
 .card-elevated {
   background-color: var(--bg-tertiary);
-  border: none;
+  border: 1px solid var(--border-secondary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -348,7 +354,7 @@
   border-radius: 8px;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: all 0.2s ease-in-out;
+  transition: all var(--duration-normal) var(--ease-out);
 }
 
 .form-input:focus {
