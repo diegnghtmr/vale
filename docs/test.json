@@ -1,0 +1,46 @@
+{
+  "courses": [
+    {
+      "name": "PROGRAMACIÓN I",
+      "credits": 3,
+      "semester": 2,
+      "timeSlot": "day",
+      "group": "A",
+      "classroom": "D4-205 AULA",
+      "details": "Lenguaje Java - POO",
+      "schedule": [
+        {
+          "day": "monday",
+          "startTime": "08:00",
+          "endTime": "10:00"
+        },
+        {
+          "day": "wednesday",
+          "startTime": "08:00",
+          "endTime": "10:00"
+        }
+      ]
+    },
+    {
+      "name": "MATEMÁTICAS",
+      "credits": 4,
+      "semester": 1,
+      "timeSlot": "day",
+      "group": "01",
+      "classroom": "D4-401 AULA",
+      "details": "Matemáticas básicas",
+      "schedule": [
+        {
+          "day": "tuesday",
+          "startTime": "10:00",
+          "endTime": "12:00"
+        },
+        {
+          "day": "thursday",
+          "startTime": "10:00",
+          "endTime": "12:00"
+        }
+      ]
+    }
+  ]
+} 

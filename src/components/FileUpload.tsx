@@ -120,98 +120,142 @@ export function FileUpload({ onUpload }: FileUploadProps) {
   });
 
   return (
-    <div
-      {...getRootProps()}
-      style={{
-        padding: 'var(--space-12)',
-        border: `2px dashed ${isDragActive ? 'var(--accent-primary)' : 'var(--border-primary)'}`,
-        borderRadius: '16px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        transition: 'all var(--duration-normal) var(--ease-in-out)',
-        backgroundColor: isDragActive ? 'var(--bg-secondary)' : 'var(--bg-tertiary)',
-        position: 'relative',
-        overflow: 'hidden'
-      }}
-      onMouseEnter={(e) => {
-        if (!isDragActive) {
-          e.currentTarget.style.borderColor = 'var(--accent-secondary)';
-          e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
-          e.currentTarget.style.transform = 'translateY(-2px)';
-          e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isDragActive) {
-          e.currentTarget.style.borderColor = 'var(--border-primary)';
-          e.currentTarget.style.backgroundColor = 'var(--bg-tertiary)';
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = 'none';
-        }
-      }}
-    >
-      <input {...getInputProps()} />
+    <>
+      <style>
+        {`
+          @keyframes uploadPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+          }
+          
+          @keyframes uploadIconBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+          }
+          
+          @keyframes shimmerBackground {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          .upload-container {
+            padding: var(--space-12);
+            border: 2px dashed var(--border-primary);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-out);
+            backgroundColor: var(--bg-tertiary);
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .upload-container:hover:not(.drag-active) {
+            border-color: var(--accent-secondary);
+            background-color: var(--bg-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+          }
+          
+          .upload-container.drag-active {
+            border-color: var(--accent-primary);
+            background-color: var(--bg-secondary);
+            animation: uploadPulse 2s ease-in-out infinite;
+          }
+          
+          .upload-icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background-color: var(--bg-secondary);
+            border-radius: 50%;
+            margin-bottom: var(--space-6);
+            transition: all var(--duration-normal) var(--ease-out);
+          }
+          
+          .upload-container.drag-active .upload-icon-container {
+            background-color: var(--accent-primary);
+            animation: uploadIconBounce 1s ease-in-out infinite;
+          }
+          
+          .upload-icon {
+            height: 32px;
+            width: 32px;
+            color: var(--accent-primary);
+            transition: all var(--duration-normal) var(--ease-out);
+          }
+          
+          .upload-container.drag-active .upload-icon {
+            color: var(--bg-primary);
+          }
+          
+          .upload-shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+              90deg,
+              transparent,
+              var(--accent-tertiary),
+              transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmerBackground 2s ease-in-out infinite;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--duration-normal) var(--ease-out);
+          }
+          
+          .upload-container.drag-active .upload-shimmer {
+            opacity: 1;
+          }
+        `}
+      </style>
       
-      {/* Icono de upload con animación */}
-      <div style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '80px',
-        height: '80px',
-        backgroundColor: isDragActive ? 'var(--accent-primary)' : 'var(--bg-secondary)',
-        borderRadius: '50%',
-        marginBottom: 'var(--space-6)',
-        transition: 'all var(--duration-normal) var(--ease-in-out)',
-        transform: isDragActive ? 'scale(1.1)' : 'scale(1)'
-      }}>
-        <Upload 
-          style={{ 
-            height: '32px', 
-            width: '32px', 
-            color: isDragActive ? 'var(--bg-primary)' : 'var(--accent-primary)',
-            transition: 'color var(--duration-normal) var(--ease-in-out)'
-          }} 
-        />
+      <div
+        {...getRootProps()}
+        className={`upload-container ${isDragActive ? 'drag-active' : ''}`}
+      >
+        <input {...getInputProps()} />
+        
+        {/* Icono de upload con animación */}
+        <div className="upload-icon-container">
+          <Upload className="upload-icon" />
+        </div>
+
+        {/* Texto principal */}
+        <p style={{
+          margin: '0 0 var(--space-3) 0',
+          fontSize: 'var(--text-lg)',
+          fontWeight: 'var(--font-semibold)',
+          color: 'var(--text-primary)',
+          lineHeight: 'var(--leading-snug)',
+          transition: 'all var(--duration-normal) var(--ease-out)'
+        }}>
+          {isDragActive
+            ? t('fileUpload.dropHere')
+            : t('fileUpload.dragAndDrop')}
+        </p>
+
+        {/* Texto secundario */}
+        <p style={{
+          margin: '0',
+          fontSize: 'var(--text-sm)',
+          color: 'var(--text-secondary)',
+          lineHeight: 'var(--leading-normal)',
+          transition: 'all var(--duration-normal) var(--ease-out)'
+        }}>
+          {t('fileUpload.supportedFormats')}
+        </p>
+
+        {/* Efecto shimmer de fondo */}
+        <div className="upload-shimmer" />
       </div>
-
-      {/* Texto principal */}
-      <p style={{
-        margin: '0 0 var(--space-3) 0',
-        fontSize: 'var(--text-lg)',
-        fontWeight: 'var(--font-semibold)',
-        color: 'var(--text-primary)',
-        lineHeight: 'var(--leading-snug)'
-      }}>
-        {isDragActive
-          ? t('fileUpload.dropHere')
-          : t('fileUpload.dragAndDrop')}
-      </p>
-
-      {/* Texto secundario */}
-      <p style={{
-        margin: '0',
-        fontSize: 'var(--text-sm)',
-        color: 'var(--text-secondary)',
-        lineHeight: 'var(--leading-normal)'
-      }}>
-        {t('fileUpload.supportedFormats')}
-      </p>
-
-      {/* Decoración de fondo */}
-      {isDragActive && (
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `linear-gradient(45deg, transparent 30%, var(--accent-tertiary) 50%, transparent 70%)`,
-          opacity: 0.1,
-          pointerEvents: 'none',
-          animation: 'slideInLeft var(--duration-slow) var(--ease-out)'
-        }} />
-      )}
-    </div>
+    </>
   );
 }
