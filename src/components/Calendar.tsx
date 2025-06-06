@@ -103,47 +103,11 @@ export function Calendar({ events }: CalendarProps) {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '650px',
-      backgroundColor: 'var(--bg-primary)',
-      padding: 'var(--space-4)',
-      borderRadius: '12px',
-      border: '1px solid var(--border-secondary)',
-      transition: 'all var(--duration-normal) var(--ease-out)',
-      overflow: 'hidden'
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 'var(--space-4)',
-        paddingBottom: 'var(--space-3)',
-        borderBottom: '1px solid var(--border-secondary)'
-      }}>
-        <h2 style={{
-          fontSize: 'var(--text-lg)',
-          fontWeight: 'var(--font-semibold)',
-          color: 'var(--text-primary)',
-          margin: '0'
-        }}>
-          {t('calendar.title')}
-        </h2>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--space-2)'
-        }}>
-          <ExportButton onClick={handleExportICS} text="iCal" />
-          <ExportButton onClick={handleExportCSV} text="CSV" />
-        </div>
-      </div>
-      <div style={{ flex: '1', minHeight: '0' }}>
+    <div style={{ height: '650px' }}>
       <FullCalendar
         plugins={[timeGridPlugin]}
         initialView="timeGridWeek"
-          headerToolbar={false}
+        headerToolbar={false}
         locales={locales}
         locale={currentLanguage === 'es' ? 'es' : 'en'}
         allDaySlot={false}
@@ -194,7 +158,6 @@ export function Calendar({ events }: CalendarProps) {
         nowIndicator={true}
         scrollTime="07:00:00"
       />
-      </div>
     </div>
   );
 }

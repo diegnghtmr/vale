@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar as CalendarIcon, Upload as UploadIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Upload as UploadIcon, Download } from 'lucide-react';
 import { Course, CourseEvent } from './types';
 import { CourseForm } from './components/CourseForm';
 import { FileUpload } from './components/FileUpload';
@@ -13,6 +13,32 @@ import { CourseList } from './components/CourseList';
 import { CourseFilters, CourseFilters as CourseFiltersType } from './components/CourseFilters';
 import * as api from './services/api';
 import { checkConflict } from './utils/schedule';
+import * as ics from 'ics';
+
+interface ExportButtonProps {
+  onClick: () => void;
+  text: string;
+}
+
+function ExportButton({ onClick, text }: ExportButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      className="btn btn-secondary btn-sm"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--space-2)',
+        padding: 'var(--space-2) var(--space-3)',
+        fontSize: 'var(--text-xs)',
+        minWidth: 'auto'
+      }}
+    >
+      <Download style={{ width: 'var(--space-4)', height: 'var(--space-4)' }} />
+      <span>{text}</span>
+    </button>
+  );
+}
 
 function AppContent() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -168,6 +194,64 @@ function AppContent() {
     });
 
     return events;
+  };
+
+  const handleExportICS = () => {
+    const eventsToExport = generateCalendarEvents(courses.filter(c => c.isInCalendar));
+    const icsEvents = eventsToExport.map(event => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+
+      return {
+        title: event.title,
+        description: event.extendedProps?.description || '',
+        start: [start.getUTCFullYear(), start.getUTCMonth() + 1, start.getUTCDate(), start.getUTCHours(), start.getUTCMinutes()],
+        end: [end.getUTCFullYear(), end.getUTCMonth() + 1, end.getUTCDate(), end.getUTCHours(), end.getUTCMinutes()],
+        status: 'CONFIRMED',
+        busyStatus: 'BUSY',
+      } as ics.EventAttributes;
+    });
+
+    const { error, value } = ics.createEvents(icsEvents);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const blob = new Blob([value!], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'horario.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportCSV = () => {
+    const eventsToExport = generateCalendarEvents(courses.filter(c => c.isInCalendar));
+    const headers = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time', 'Description'];
+    const rows = eventsToExport.map(event => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+      return [
+        `"${event.title}"`,
+        start.toLocaleDateString(),
+        start.toLocaleTimeString(),
+        end.toLocaleDateString(),
+        end.toLocaleTimeString(),
+        `"${event.extendedProps?.description || ''}"`,
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'horario.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleEditCourse = (course: Course) => {
@@ -459,8 +543,9 @@ function AppContent() {
                 <h2 className="section-title">
                   {t('calendar.title', 'Schedule')}
                 </h2>
-                <div className="section-badge">
-                  {filteredCourses.filter(course => course.isInCalendar).length} in calendar
+                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                  <ExportButton onClick={handleExportICS} text="iCal" />
+                  <ExportButton onClick={handleExportCSV} text="CSV" />
                 </div>
               </div>
               <div className="content-body">
