@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, GraduationCap, Save, Plus, Trash2, AlertTriangle } from 'lucide-react';
+import { GraduationCap, Save, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { Course, Schedule } from '../types';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { checkConflict } from '../utils/schedule';
+import { TimeInput } from './TimeInput';
 
 interface CourseFormProps {
   onSubmit: (course: Course) => void;
@@ -300,48 +301,20 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
 
                 <div className="form-group">
                   <label className="form-label">{t('courseForm.startTime')}</label>
-                  <div style={{ position: 'relative' }}>
-                    <div style={{ 
-                      position: 'absolute', 
-                      left: 'var(--space-3)', 
-                      top: '50%', 
-                      transform: 'translateY(-50%)',
-                      pointerEvents: 'none'
-                    }}>
-                      <Clock style={{ height: 'var(--space-4)', width: 'var(--space-4)', color: 'var(--text-tertiary)' }} />
-                    </div>
-                    <input
-                      type="time"
-                      required
-                      value={schedule.startTime}
-                      onChange={(e) => handleScheduleChange(index, 'startTime', e.target.value)}
-                      className="form-input"
-                      style={{ paddingLeft: 'var(--space-10)' }}
-                    />
-                  </div>
+                  <TimeInput
+                    required
+                    value={schedule.startTime}
+                    onChange={(e) => handleScheduleChange(index, 'startTime', e.target.value)}
+                  />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">{t('courseForm.endTime')}</label>
-                  <div style={{ position: 'relative' }}>
-                    <div style={{ 
-                      position: 'absolute', 
-                      left: 'var(--space-3)', 
-                      top: '50%', 
-                      transform: 'translateY(-50%)',
-                      pointerEvents: 'none'
-                    }}>
-                      <Clock style={{ height: 'var(--space-4)', width: 'var(--space-4)', color: 'var(--text-tertiary)' }} />
-                    </div>
-                    <input
-                      type="time"
-                      required
-                      value={schedule.endTime}
-                      onChange={(e) => handleScheduleChange(index, 'endTime', e.target.value)}
-                      className="form-input"
-                      style={{ paddingLeft: 'var(--space-10)' }}
-                    />
-                  </div>
+                  <TimeInput
+                    required
+                    value={schedule.endTime}
+                    onChange={(e) => handleScheduleChange(index, 'endTime', e.target.value)}
+                  />
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'center' }}>

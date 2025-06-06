@@ -379,6 +379,28 @@ html[data-theme="dark"] .form-input.form-select,
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23d1968c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
 }
 
+/* Estilos para inputs de tipo time */
+input[type="time"].form-input {
+  /* Aseguramos espacio para el icono personalizado */
+  padding-right: var(--space-10) !important;
+}
+
+/* Ocultar el icono del selector nativo en Chrome/Edge/Safari */
+/* Esto nos permite usar nuestro propio icono en el componente React. */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  /* Lo ocultamos por completo. Nuestro icono de React lo manejará. */
+  display: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 
+  NO se agregan reglas específicas para Firefox como -moz-appearance.
+  Dejar que Firefox maneje su apariencia por defecto es clave.
+  Nuestra lógica de click en el componente se encargará de abrir el selector.
+  El error anterior fue sobre-estilizar para Firefox, eliminando su funcionalidad.
+*/
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -1024,11 +1046,20 @@ input[type="number"] {
   -moz-appearance: textfield; /* Oculta spinners en Firefox */
 }
 
-/* Ocultar spinners en navegadores WebKit (Chrome, Safari, Edge) */
+/* Ocultar spinners en navegadores WebKit SOLO para inputs de número */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   appearance: none;
+  margin: 0;
+}
+
+/* Asegurar que los inputs de tiempo mantengan sus controles nativos */
+input[type="time"]::-webkit-outer-spin-button,
+input[type="time"]::-webkit-inner-spin-button {
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+  opacity: 1 !important;
   margin: 0;
 }
 
@@ -1093,4 +1124,72 @@ input[type="number"]::-webkit-inner-spin-button {
     min-width: 280px !important;
     margin: 0 var(--space-4) !important;
   }
+}
+
+/* Estilos para el Custom Time Picker */
+.time-picker-popover {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  z-index: 50;
+  background-color: var(--bg-tertiary);
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  padding: var(--space-3);
+  width: 150px;
+  animation: fadeIn 0.2s var(--ease-out);
+}
+
+.time-picker-columns {
+  display: flex;
+  justify-content: space-between;
+  height: 180px;
+}
+
+.time-picker-column {
+  flex: 1;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-secondary);
+}
+.time-picker-column:last-child {
+  border-right: none;
+}
+
+.time-picker-item {
+  padding: var(--space-2) 0;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  transition: all 0.2s var(--ease-out);
+}
+
+.time-picker-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.time-picker-item.selected {
+  background-color: var(--accent-primary);
+  color: var(--bg-primary) !important;
+  font-weight: var(--font-bold);
+}
+
+.time-picker-button {
+  width: 100%;
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: none;
+  border-radius: 8px;
+  background-color: var(--accent-primary);
+  color: var(--bg-primary);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.time-picker-button:hover {
+  background-color: var(--accent-secondary);
 } 
