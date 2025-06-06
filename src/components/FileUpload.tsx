@@ -12,6 +12,27 @@ interface FileUploadProps {
 export function FileUpload({ onUpload }: FileUploadProps) {
   const { t } = useTranslation();
 
+  const mapSpanishDayToEnglish = (spanishDay: string): string => {
+    const dayMap: { [key: string]: string } = {
+      'LUNES': 'monday',
+      'MARTES': 'tuesday',
+      'MIÉRCOLES': 'wednesday',
+      'JUEVES': 'thursday',
+      'VIERNES': 'friday',
+      'SÁBADO': 'saturday',
+      'DOMINGO': 'sunday'
+    };
+    return dayMap[spanishDay.toUpperCase()] || spanishDay.toLowerCase();
+  };
+
+  const mapSpanishTimeSlotToEnglish = (timeSlot: string): string => {
+    const timeSlotMap: { [key: string]: string } = {
+      'DIURNO': 'day',
+      'NOCTURNO': 'night'
+    };
+    return timeSlotMap[timeSlot.toUpperCase()] || timeSlot.toLowerCase();
+  };
+
   const parseCSV = (text: string): Course[] => {
     const rows = text.split('\n').filter(row => row.trim());
     const headers = rows[0].split(',').map(h => h.trim());
@@ -78,6 +99,23 @@ export function FileUpload({ onUpload }: FileUploadProps) {
     return Array.from(courses.values());
   };
 
+  const processJSONData = (data: any[]): Course[] => {
+    return data.map(course => {
+      // Normalizar los horarios
+      const normalizedSchedule = course.schedule?.map((slot: any) => ({
+        day: mapSpanishDayToEnglish(slot.day),
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      })) || [];
+
+      return {
+        ...course,
+        timeSlot: mapSpanishTimeSlotToEnglish(course.timeSlot),
+        schedule: normalizedSchedule
+      };
+    });
+  };
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
@@ -87,17 +125,22 @@ export function FileUpload({ onUpload }: FileUploadProps) {
     reader.onload = () => {
       try {
         const text = reader.result as string;
-        const rawData = file.name.endsWith('.csv') 
-          ? parseCSV(text)
-          : JSON.parse(text);
+        let processedData: Course[];
         
-        const data = Array.isArray(rawData) ? rawData : rawData.courses;
-        
-        if (!Array.isArray(data)) {
-          throw new Error(t('fileUpload.invalidFormat'));
+        if (file.name.endsWith('.csv')) {
+          processedData = parseCSV(text);
+        } else {
+          const rawData = JSON.parse(text);
+          const data = Array.isArray(rawData) ? rawData : rawData.courses;
+          
+          if (!Array.isArray(data)) {
+            throw new Error(t('fileUpload.invalidFormat'));
+          }
+          
+          processedData = processJSONData(data);
         }
 
-        onUpload(data);
+        onUpload(processedData);
         toast.success(t('fileUpload.success'));
       } catch (error: unknown) {
         const errorMessage = error instanceof Error 

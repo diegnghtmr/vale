@@ -153,7 +153,9 @@ function AppContent() {
 
   const handleFileUpload = (data: Course[]) => {
     const validCourses = data.filter(course => {
-      const isValid = course.name && course.credits && course.schedule?.length > 0;
+      const isValid = course.name && 
+                      (course.credits !== null && course.credits !== undefined && course.credits !== '') && 
+                      course.schedule?.length > 0;
       if (!isValid) {
         toast.error(`${t('fileUpload.invalidCourse')}: ${course.name || t('fileUpload.unnamedCourse')}`);
       }

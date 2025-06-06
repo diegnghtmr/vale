@@ -1,0 +1,20 @@
+{
+    "courses": [
+      {
+        "name": "NOMBRE_DEL_CURSO",
+        "credits": NÚMERO_DE_CRÉDITOS,
+        "semester": NÚMERO_DE_SEMESTRE,
+        "timeSlot": "JORNADA",
+        "group": "GRUPO",
+        "classroom": "AULA (opcional)",
+        "details": "DETALLES (opcional)",
+        "schedule": [
+          {
+            "day": "DIA_DE_LA_SEMANA",
+            "startTime": "HORA_DE_INICIO (HH:mm)",
+            "endTime": "HORA_DE_FIN (HH:mm)"
+          }
+        ]
+      }
+    ]
+  }

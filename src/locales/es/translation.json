@@ -87,6 +87,8 @@
     "invalidDay": "Fila {{row}}: Día inválido \"{{day}}\"",
     "invalidTimeSlot": "Fila {{row}}: Jornada inválida \"{{timeSlot}}\". Debe ser \"day\" o \"night\"",
     "invalidTimeFormat": "Fila {{row}}: Formato de hora inválido",
+    "invalidCourse": "Curso inválido",
+    "unnamedCourse": "Curso sin nombre",
     "uploadSchedule": "Importar Cursos"
   },
   "calendar": {

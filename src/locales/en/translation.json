@@ -87,6 +87,8 @@
     "invalidDay": "Row {{row}}: Invalid day \"{{day}}\"",
     "invalidTimeSlot": "Row {{row}}: Invalid time slot \"{{timeSlot}}\". Must be \"day\" or \"night\"",
     "invalidTimeFormat": "Row {{row}}: Invalid time format",
+    "invalidCourse": "Invalid course",
+    "unnamedCourse": "Unnamed course",
     "uploadSchedule": "Import Courses"
   },
   "calendar": {

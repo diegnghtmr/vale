@@ -95,6 +95,8 @@ export const translations = {
       invalidDay: "Row {{row}}: Invalid day \"{{day}}\"",
       invalidTimeSlot: "Row {{row}}: Invalid time slot \"{{timeSlot}}\". Must be \"day\" or \"night\"",
       invalidTimeFormat: "Row {{row}}: Invalid time format",
+      invalidCourse: "Invalid course",
+      unnamedCourse: "Unnamed course",
       uploadSchedule: "Import Courses"
     },
     calendar: {
@@ -211,6 +213,8 @@ export const translations = {
       invalidDay: "Fila {{row}}: Día inválido \"{{day}}\"",
       invalidTimeSlot: "Fila {{row}}: Jornada inválida \"{{timeSlot}}\". Debe ser \"day\" o \"night\"",
       invalidTimeFormat: "Fila {{row}}: Formato de hora inválido",
+      invalidCourse: "Curso inválido",
+      unnamedCourse: "Curso sin nombre",
       uploadSchedule: "Importar Cursos"
     },
     calendar: {
