@@ -509,6 +509,7 @@ function AppContent() {
                       backgroundColor: activeTab === 'form' ? 'var(--bg-primary)' : 'transparent',
                       color: activeTab === 'form' ? 'var(--text-primary)' : 'var(--text-secondary)',
                       border: 'none',
+                      borderRight: '1px solid var(--border-primary)',
                       borderRadius: '12px 0 0 0',
                       fontWeight: activeTab === 'form' ? 'var(--font-semibold)' : 'var(--font-medium)',
                       fontSize: 'var(--text-base)',

@@ -135,8 +135,8 @@
   --accent-tertiary: #8c726c;      /* Color terciario - marrón cálido */
   
   /* Bordes y divisores */
-  --border-primary: #2a2a2a;       /* Bordes principales */
-  --border-secondary: #1a1a1a;     /* Bordes sutiles */
+  --border-primary: #3a3a38;       /* Bordes principales - más claro para mejor visibilidad */
+  --border-secondary: #2d2d2b;     /* Bordes sutiles - más claro para mejor contraste */
   
   /* Estados */
   --success: #9db3b7;              /* Verde azulado claro */
