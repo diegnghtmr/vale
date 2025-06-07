@@ -99,7 +99,7 @@ export const translations = {
       invalidTimeFormat: "Row {{row}}: Invalid time format",
       invalidCourse: "Invalid course",
       unnamedCourse: "Unnamed course",
-      uploadSchedule: "Import Courses"
+      uploadSchedule: "Import"
     },
     periodSelector: {
       title: "Load Academic Period",
@@ -136,6 +136,34 @@ export const translations = {
         credits: "Credits",
         details: "Additional Details"
       }
+    },
+    dashboard: {
+      title: "Dashboard",
+      subtitle: "Manage your academic subjects progress",
+      completedSubjects: "Completed Subjects",
+      totalSubjects: "Total Subjects",
+      completedCredits: "Completed Credits",
+      progress: "Progress",
+      overallProgress: "Overall Progress",
+      filters: "Filters",
+      semester: "Semester",
+      status: "Status",
+      search: "Search",
+      allSemesters: "All semesters",
+      allStatuses: "All statuses",
+      completed: "Completed",
+      pending: "Pending",
+      searchPlaceholder: "Search by name...",
+      resetFilters: "Clear Filters",
+      subjects: "Subjects",
+      subjectsFound: "subjects found",
+      noSubjects: "No subjects found with the applied filters",
+      semesterLabel: "Semester",
+      creditsLabel: "Credits",
+      groupLabel: "Group",
+      markComplete: "Mark Complete",
+      markIncomplete: "Mark Incomplete",
+      semesterNumber: "Semester {{number}}"
     }
   },
   es: {
@@ -238,7 +266,7 @@ export const translations = {
       invalidTimeFormat: "Fila {{row}}: Formato de hora inválido",
       invalidCourse: "Curso inválido",
       unnamedCourse: "Curso sin nombre",
-      uploadSchedule: "Importar Cursos"
+      uploadSchedule: "Importar"
     },
     periodSelector: {
       title: "Cargar Período Académico",
@@ -275,6 +303,34 @@ export const translations = {
         credits: "Créditos",
         details: "Detalles Adicionales"
       }
+    },
+    dashboard: {
+      title: "Dashboard",
+      subtitle: "Gestiona el progreso de tus materias académicas",
+      completedSubjects: "Materias Completadas",
+      totalSubjects: "Total de Materias",
+      completedCredits: "Créditos Completados",
+      progress: "Progreso",
+      overallProgress: "Progreso General",
+      filters: "Filtros",
+      semester: "Semestre",
+      status: "Estado",
+      search: "Buscar",
+      allSemesters: "Todos los semestres",
+      allStatuses: "Todos los estados",
+      completed: "Completadas",
+      pending: "Pendientes",
+      searchPlaceholder: "Buscar por nombre...",
+      resetFilters: "Limpiar Filtros",
+      subjects: "Materias",
+      subjectsFound: "materias encontradas",
+      noSubjects: "No se encontraron materias con los filtros aplicados",
+      semesterLabel: "Semestre",
+      creditsLabel: "Créditos",
+      groupLabel: "Grupo",
+      markComplete: "Marcar Completa",
+      markIncomplete: "Marcar Incompleta",
+      semesterNumber: "Semestre {{number}}"
     }
   }
 };

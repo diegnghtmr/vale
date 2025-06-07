@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Course, CourseInput } from '@/types';
-import * as api from '@/services/api';
-import { notificationService } from '@/services/notificationService';
+import { Course, CourseInput } from '../types';
+import * as api from '../services/api';
+import { notificationService } from '../services/notificationService';
 import { useTranslation } from 'react-i18next';
+import { createSubjectId } from '../utils/subjectId';
+import { useSubjectCompletion } from '../context/SubjectCompletionContext';
 
 interface UseCoursesReturn {
   courses: Course[];
@@ -20,6 +22,7 @@ export function useCourses(): UseCoursesReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { t, i18n } = useTranslation();
+  const { setSubjectCompleted, isSubjectCompleted } = useSubjectCompletion();
 
   // Helper function to get localized messages with fallbacks
   const getLocalizedMessage = useCallback((key: string, params: any = {}): string => {
@@ -57,7 +60,21 @@ export function useCourses(): UseCoursesReturn {
       setLoading(true);
       setError(null);
       const fetchedCourses = await api.getCourses();
-      setCourses(fetchedCourses);
+      
+      // Sync courses with subject completion state
+      const syncedCourses = fetchedCourses.map(course => {
+        // Generate subjectId if missing (for backward compatibility)
+        const subjectId = course.subjectId || createSubjectId(course.name);
+        const isCompleted = isSubjectCompleted(subjectId);
+        
+        return {
+          ...course,
+          subjectId,
+          isCompleted
+        };
+      });
+      
+      setCourses(syncedCourses);
     } catch (err) {
       const errorMessage = 'Failed to fetch courses';
       setError(errorMessage);
@@ -65,7 +82,7 @@ export function useCourses(): UseCoursesReturn {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isSubjectCompleted]);
 
   useEffect(() => {
     fetchCourses();
@@ -112,8 +129,8 @@ export function useCourses(): UseCoursesReturn {
       const course = courses.find(c => c.id === id);
       if (!course) throw new Error('Course not found');
       
-      // Find all courses with the same name (same subject)
-      const relatedCourses = courses.filter(c => c.name.trim().toLowerCase() === course.name.trim().toLowerCase());
+      // Find all courses with the same subjectId
+      const relatedCourses = courses.filter(c => c.subjectId === course.subjectId);
       const newCompletedStatus = !course.isCompleted;
       
       // Update all related courses
@@ -128,6 +145,9 @@ export function useCourses(): UseCoursesReturn {
         const updated = updatedCourses.find(uc => uc.id === c.id);
         return updated || c;
       }));
+      
+      // Update subject completion state
+      setSubjectCompleted(course.subjectId, newCompletedStatus);
       
       // Show notification with count of affected courses
       const affectedCount = relatedCourses.length;
@@ -146,7 +166,7 @@ export function useCourses(): UseCoursesReturn {
       notificationService.handleApiError(err, 'Failed to update course completion status');
       throw err;
     }
-  }, [t, courses, getLocalizedMessage]);
+  }, [t, courses, getLocalizedMessage, setSubjectCompleted]);
 
   return {
     courses,

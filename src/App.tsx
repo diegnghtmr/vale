@@ -11,20 +11,25 @@ import { useTheme } from './context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { CourseList } from './components/CourseList';
 import { CourseFilters } from './components/CourseFilters';
+import { Dashboard } from './components/Dashboard';
 import { checkConflict } from './utils/schedule';
 import * as ics from 'ics';
 import { FloatingParticles, DecorativeWaves } from './components/FloatingParticles';
-import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon } from './components/AnimatedIcons';
+import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon, DashboardIcon as AnimatedDashboardIcon } from './components/AnimatedIcons';
 import { ExportButton } from './components/ExportButton';
 import { useWindowSize, useCreditsCalculation, useCourses } from './hooks';
 import { getEventColor } from './data/themes';
 import { notificationService } from './services/notificationService';
+import { syncCoursesToStorage } from './services/api';
+import { createSubjectId } from './utils/subjectId';
+import { useSubjectCompletion } from './context/SubjectCompletionContext';
 
 function AppContent() {
   const { courses, addCourse, updateCourse, deleteCourse, toggleCompleted, setCourses } = useCourses();
-  const [activeTab, setActiveTab] = useState<'form' | 'upload'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'upload' | 'dashboard'>('form');
   const { theme, isTransitioning } = useTheme();
   const { t } = useTranslation();
+  const { isSubjectCompleted } = useSubjectCompletion();
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [filters, setFilters] = useState<CourseFiltersType>({
     semester: '',
@@ -103,16 +108,26 @@ function AppContent() {
       return;
     }
     
-    // Ensure all courses have unique IDs and proper structure
-    const coursesWithValidIds = data.map(course => ({
-      ...course,
-      id: course.id || crypto.randomUUID(), // Assign ID if missing
-      isInCalendar: false, // Reset calendar status
-    }));
+    // Process courses with subjectId and preserve completion state
+    const processedCourses = data.map(course => {
+      // Generate subjectId if missing (for backward compatibility)
+      const subjectId = course.subjectId || createSubjectId(course.name);
+      
+      // Check if this subject was previously completed
+      const isCompleted = isSubjectCompleted(subjectId);
+      
+      return {
+        ...course,
+        id: course.id || crypto.randomUUID(), // Assign ID if missing
+        subjectId,
+        isInCalendar: false, // Reset calendar status
+        isCompleted, // Preserve completion state
+      };
+    });
     
-
-    
-    setCourses(coursesWithValidIds);
+    setCourses(processedCourses);
+    // Sync to localStorage for persistence
+    syncCoursesToStorage(processedCourses);
     notificationService.success(`Successfully imported ${data.length} courses`);
   };
 
@@ -543,7 +558,8 @@ function AppContent() {
                       backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
                       color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
                       border: 'none',
-                      borderRadius: '0 12px 0 0',
+                      borderRight: '1px solid var(--border-primary)',
+                      borderRadius: '0 0 0 0',
                       fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
                       fontSize: 'var(--text-base)',
                       height: 'auto',
@@ -567,6 +583,41 @@ function AppContent() {
                       }} />
                     )}
                   </button>
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className="btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-4) var(--space-6)',
+                      backgroundColor: activeTab === 'dashboard' ? 'var(--bg-primary)' : 'transparent',
+                      color: activeTab === 'dashboard' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRadius: '0 12px 0 0',
+                      fontWeight: activeTab === 'dashboard' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                      fontSize: 'var(--text-base)',
+                      height: 'auto',
+                      flex: '1',
+                      justifyContent: 'center',
+                      transition: 'all var(--duration-normal) var(--ease-out)',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <AnimatedDashboardIcon size={20} isActive={activeTab === 'dashboard'} />
+                    {t('dashboard.title', 'Dashboard')}
+                    {activeTab === 'dashboard' && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '2px',
+                        background: 'var(--accent-primary)',
+                      }} />
+                    )}
+                  </button>
                 </div>
 
                 <div style={{ 
@@ -580,11 +631,13 @@ function AppContent() {
                       initialData={editingCourse}
                       allCourses={courses}
                     />
-                  ) : (
+                  ) : activeTab === 'upload' ? (
                     <div>
                       <PeriodSelector onUpload={handleFileUpload} />
                       <FileUpload onUpload={handleFileUpload} />
                     </div>
+                  ) : (
+                    <Dashboard />
                   )}
                 </div>
               </section>

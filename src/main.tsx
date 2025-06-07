@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { SubjectCompletionProvider } from './context/SubjectCompletionContext';
 import App from './App';
 import { i18nInstance } from './i18n';
 import './styles/tokens.css';
@@ -17,7 +18,8 @@ i18nInstance.then(() => {
     <React.StrictMode>
       <LanguageProvider>
         <ThemeProvider>
-          <Toaster 
+          <SubjectCompletionProvider>
+            <Toaster 
             position="top-center"
             containerStyle={{
               top: 20,
@@ -84,6 +86,7 @@ i18nInstance.then(() => {
             }} 
           />
           <App />
+          </SubjectCompletionProvider>
         </ThemeProvider>
       </LanguageProvider>
     </React.StrictMode>

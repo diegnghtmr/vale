@@ -333,3 +333,64 @@ export const SuccessIcon: React.FC<AnimatedIconProps> = ({
     </svg>
   );
 }; 
+
+// Icono de dashboard con barras animadas
+export const DashboardIcon: React.FC<AnimatedIconProps> = ({ 
+  size = 24, 
+  color = 'var(--accent-primary)', 
+  className = '',
+  isActive = false 
+}) => {
+  const barsRef = useRef<SVGGElement>(null);
+  const pieRef = useRef<SVGGElement>(null);
+
+  useEffect(() => {
+    if (barsRef.current && pieRef.current) {
+      const tl = animations.createTimeline({ repeat: -1 });
+      
+      // Animar las barras con stagger
+      tl.to(barsRef.current.children, {
+        scaleY: 1.2,
+        duration: 1.5,
+        stagger: 0.1,
+        ease: animations.ease.warm,
+        yoyo: true,
+        repeat: 1,
+      })
+      // Animar el gráfico circular
+      .to(pieRef.current, {
+        rotation: isActive ? 360 : 0,
+        duration: isActive ? 2 : 0.5,
+        ease: animations.ease.smooth,
+      }, 0);
+    }
+  }, [isActive]);
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      className={className}
+      style={{ color }}
+    >
+      {/* Marco del dashboard */}
+      <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+      
+      {/* Barras del gráfico */}
+      <g ref={barsRef} style={{ transformOrigin: '12px 18px' }}>
+        <rect x="6" y="14" width="2" height="4" fill="currentColor" opacity="0.7"/>
+        <rect x="9" y="12" width="2" height="6" fill="currentColor" opacity="0.8"/>
+        <rect x="12" y="10" width="2" height="8" fill="currentColor" opacity="0.9"/>
+        <rect x="15" y="13" width="2" height="5" fill="currentColor" opacity="0.8"/>
+      </g>
+      
+      {/* Gráfico circular pequeño */}
+      <g ref={pieRef} style={{ transformOrigin: '18px 7px' }}>
+        <circle cx="18" cy="7" r="2" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.6"/>
+        <path d="M 18,5 A 2,2 0 0,1 20,7" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.8"/>
+      </g>
+    </svg>
+  );
+};

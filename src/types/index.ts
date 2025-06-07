@@ -5,6 +5,7 @@ export type Language = 'en' | 'es';
 
 export interface Course {
   id: string;
+  subjectId: string;
   name: string;
   credits: number;
   semester: number;
@@ -17,7 +18,7 @@ export interface Course {
   isCompleted: boolean;
 }
 
-export interface CourseInput extends Omit<Course, 'id' | 'isInCalendar' | 'credits' | 'semester'> {
+export interface CourseInput extends Omit<Course, 'id' | 'subjectId' | 'isInCalendar' | 'credits' | 'semester'> {
   credits: string | number;
   semester: string | number;
 }
