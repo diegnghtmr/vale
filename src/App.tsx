@@ -229,6 +229,8 @@ function AppContent() {
           textColor: colors[colorIndex].text,
           extendedProps: {
             credits: course.credits,
+            semester: course.semester,
+            group: course.group,
             classroom: course.classroom,
             details: course.details,
             description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`

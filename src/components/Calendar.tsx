@@ -1,12 +1,10 @@
+import { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import esLocale from '@fullcalendar/core/locales/es';
-import * as ics from 'ics';
-import { Download } from 'lucide-react';
 import { CourseEvent } from '../types';
-import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useTranslation } from 'react-i18next';
+import { EventDetailsModal } from './EventDetailsModal';
 
 // Explicitly import esLocale to ensure it's included in the build
 const locales = [esLocale];
@@ -15,149 +13,92 @@ interface CalendarProps {
   events: CourseEvent[];
 }
 
-interface ExportButtonProps {
-  onClick: () => void;
-  text: string;
-}
-
-function ExportButton({ onClick, text }: ExportButtonProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="btn btn-secondary btn-sm"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--space-2)',
-        padding: 'var(--space-2) var(--space-3)',
-        fontSize: 'var(--text-xs)',
-        minWidth: 'auto'
-      }}
-    >
-      <Download style={{ width: 'var(--space-4)', height: 'var(--space-4)' }} />
-      <span>{text}</span>
-    </button>
-  );
-}
-
 export function Calendar({ events }: CalendarProps) {
-  const { theme } = useTheme();
   const { currentLanguage } = useLanguage();
-  const { t } = useTranslation();
-  const isDark = theme === 'dark';
+  
+  const [selectedEvent, setSelectedEvent] = useState<CourseEvent | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleExportICS = () => {
-    const icsEvents = events.map(event => {
-      const start = new Date(event.start);
-      const end = new Date(event.end);
-
-      return {
-        title: event.title,
-        description: event.extendedProps?.description || '',
-        start: [start.getUTCFullYear(), start.getUTCMonth() + 1, start.getUTCDate(), start.getUTCHours(), start.getUTCMinutes()],
-        end: [end.getUTCFullYear(), end.getUTCMonth() + 1, end.getUTCDate(), end.getUTCHours(), end.getUTCMinutes()],
-        status: 'CONFIRMED',
-        busyStatus: 'BUSY',
-      } as ics.EventAttributes;
-    });
-
-    const { error, value } = ics.createEvents(icsEvents);
-
-    if (error) {
-      console.error(error);
-      return;
+  const handleEventClick = (clickInfo: any) => {
+    const event = events.find(e => e.id === clickInfo.event.id);
+    if (event) {
+      setSelectedEvent(event);
+      setIsModalOpen(true);
     }
-
-    const blob = new Blob([value!], { type: 'text/calendar;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'horario.ics';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
-  const handleExportCSV = () => {
-    const headers = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time', 'Description'];
-    const rows = events.map(event => {
-      const start = new Date(event.start);
-      const end = new Date(event.end);
-      return [
-        `"${event.title}"`,
-        start.toLocaleDateString(),
-        start.toLocaleTimeString(),
-        end.toLocaleDateString(),
-        end.toLocaleTimeString(),
-        `"${event.extendedProps?.description || ''}"`,
-      ].join(',');
-    });
-
-    const csvContent = [headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'horario.csv';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
   };
 
   return (
-    <div style={{ height: '650px' }}>
-      <FullCalendar
-        plugins={[timeGridPlugin]}
-        initialView="timeGridWeek"
-        headerToolbar={false}
-        locales={locales}
-        locale={currentLanguage === 'es' ? 'es' : 'en'}
-        allDaySlot={false}
-        slotMinTime="06:00:00"
-        slotMaxTime="23:00:00"
-        weekends={true}
-        events={events}
-        height="100%"
-        slotDuration="00:30:00"
-        expandRows={true}
-        eventContent={(eventInfo) => {
-          return (
+    <>
+      <div style={{ height: '650px' }}>
+        <FullCalendar
+          plugins={[timeGridPlugin]}
+          initialView="timeGridWeek"
+          headerToolbar={false}
+          locales={locales}
+          locale={currentLanguage === 'es' ? 'es' : 'en'}
+          allDaySlot={false}
+          slotMinTime="06:00:00"
+          slotMaxTime="23:00:00"
+          weekends={true}
+          events={events}
+          height="100%"
+          slotDuration="00:30:00"
+          expandRows={true}
+          eventClick={handleEventClick}
+          eventContent={(eventInfo) => {
+            // Extract course name from title (everything before the first " - ")
+            const titleParts = eventInfo.event.title.split(' - ');
+            const courseName = titleParts[0] || eventInfo.event.title;
+            
+            return (
               <div style={{
                 width: '100%',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
+                justifyContent: 'center',
                 padding: 'var(--space-1)',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                cursor: 'pointer',
+                transition: 'all var(--duration-fast) var(--ease-out)'
               }}>
                 <div style={{
                   fontWeight: 'var(--font-semibold)',
                   fontSize: 'var(--text-xs)',
-                  whiteSpace: 'nowrap',
+                  lineHeight: 'var(--leading-tight)',
+                  wordWrap: 'break-word',
                   overflow: 'hidden',
-                  textOverflow: 'ellipsis'
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
+                  textAlign: 'center'
                 }}>
-                  {eventInfo.event.title}
+                  {courseName}
                 </div>
-                <div style={{
-                  fontSize: 'var(--text-xs)',
-                  opacity: '0.9',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}>
-                  {eventInfo.event.extendedProps.description}
-                </div>
-            </div>
-          );
-        }}
-        slotLabelFormat={{
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true
-        }}
-        titleFormat={{ month: 'long', year: 'numeric' }}
-        nowIndicator={true}
-        scrollTime="07:00:00"
+              </div>
+            );
+          }}
+          slotLabelFormat={{
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          }}
+          titleFormat={{ month: 'long', year: 'numeric' }}
+          nowIndicator={true}
+          scrollTime="07:00:00"
+        />
+      </div>
+      
+      <EventDetailsModal 
+        event={selectedEvent} 
+        isOpen={isModalOpen} 
+        onClose={closeModal} 
       />
-    </div>
+    </>
   );
 }

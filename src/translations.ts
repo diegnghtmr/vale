@@ -121,7 +121,17 @@ export const translations = {
       existingSlot: "Existing slot",
       selectDifferentTime: "Please select a different time slot for this course.",
       courseAdded: "Course added to calendar!",
-      courseRemoved: "Course removed from calendar!"
+      courseRemoved: "Course removed from calendar!",
+      eventDetails: {
+        title: "Event Details",
+        course: "Course",
+        schedule: "Schedule",
+        day: "Day",
+        time: "Time",
+        classroom: "Classroom",
+        credits: "Credits",
+        details: "Additional Details"
+      }
     }
   },
   es: {
@@ -246,7 +256,17 @@ export const translations = {
       existingSlot: "Horario existente",
       selectDifferentTime: "Por favor selecciona un horario diferente para este curso.",
       courseAdded: "¡Curso agregado al calendario!",
-      courseRemoved: "¡Curso removido del calendario!"
+      courseRemoved: "¡Curso removido del calendario!",
+      eventDetails: {
+        title: "Detalles del Evento",
+        course: "Curso",
+        schedule: "Horario",
+        day: "Día",
+        time: "Hora",
+        classroom: "Aula",
+        credits: "Créditos",
+        details: "Detalles Adicionales"
+      }
     }
   }
 };
