@@ -169,23 +169,47 @@ function AppContent() {
   const generateCalendarEvents = (coursesToShow: Course[]): CourseEvent[] => {
     const events: CourseEvent[] = [];
     const colors = theme === 'light' ? [
-      { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' },
-      { bg: '#dcfce7', border: '#22c55e', text: '#166534' },
-      { bg: '#fee2e2', border: '#ef4444', text: '#991b1b' },
-      { bg: '#ede9fe', border: '#8b5cf6', text: '#5b21b6' },
-      { bg: '#ffedd5', border: '#f97316', text: '#9a3412' },
-      { bg: '#fef3c7', border: '#f59e0b', text: '#92400e' },
-      { bg: '#fce7f3', border: '#ec4899', text: '#9d174d' },
-      { bg: '#ccfbf1', border: '#14b8a6', text: '#115e59' },
+      // Cobre principal - acorde al accent primary
+      { bg: '#f5ebe8', border: '#c5775b', text: '#8b4513' },
+      // Coral cálido - acorde al accent secondary  
+      { bg: '#f7ede9', border: '#cb9a88', text: '#a0755e' },
+      // Verde azulado - acorde al success
+      { bg: '#eef4f6', border: '#698aa2', text: '#4a6b7a' },
+      // Beige cálido - acorde al accent tertiary
+      { bg: '#f8f2ed', border: '#eac5a7', text: '#c49a7a' },
+      // Terracota suave
+      { bg: '#f4e7e4', border: '#b8746b', text: '#8d5550' },
+      // Gris cálido - acorde al texto secundario
+      { bg: '#f0edea', border: '#877070', text: '#6b5656' },
+      // Marrón caoba - mejor contraste
+      { bg: '#f2e9e4', border: '#a67c5a', text: '#6b4423' },
+      // Rosa tierra
+      { bg: '#f6ebe9', border: '#c5877c', text: '#9a675e' },
+      // Verde oliva
+      { bg: '#f2f4f0', border: '#8fa785', text: '#6d7d63' },
+      // Lavanda suave
+      { bg: '#f3f0f4', border: '#a497a3', text: '#7d7279' },
     ] : [
-      { bg: '#1d4ed8', border: '#60a5fa', text: '#ffffff' },
-      { bg: '#15803d', border: '#4ade80', text: '#ffffff' },
-      { bg: '#b91c1c', border: '#f87171', text: '#ffffff' },
-      { bg: '#6d28d9', border: '#a78bfa', text: '#ffffff' },
-      { bg: '#c2410c', border: '#fb923c', text: '#ffffff' },
-      { bg: '#b45309', border: '#fbbf24', text: '#ffffff' },
-      { bg: '#be185d', border: '#f472b6', text: '#ffffff' },
-      { bg: '#0f766e', border: '#2dd4bf', text: '#ffffff' },
+      // Cobre brillante para modo oscuro
+      { bg: '#d1968c', border: '#e7beac', text: '#262624' },
+      // Coral profundo
+      { bg: '#cb9a88', border: '#e7beac', text: '#262624' },
+      // Verde azulado claro
+      { bg: '#9db3b7', border: '#b5c8cc', text: '#262624' },
+      // Beige cálido profundo
+      { bg: '#c49a7a', border: '#d4b896', text: '#262624' },
+      // Terracota vibrante
+      { bg: '#c5877c', border: '#d4a399', text: '#262624' },
+      // Gris cálido claro
+      { bg: '#9a9997', border: '#b5b3b0', text: '#262624' },
+      // Marrón caoba brillante
+      { bg: '#a67c5a', border: '#c49a7a', text: '#faf5f4' },
+      // Rosa tierra vibrante
+      { bg: '#c5877c', border: '#d4a399', text: '#262624' },
+      // Verde oliva claro
+      { bg: '#8fa785', border: '#a8bb9f', text: '#262624' },
+      // Lavanda claro
+      { bg: '#a497a3', border: '#b8adb4', text: '#262624' },
     ];
 
     const today = new Date();
