@@ -21,7 +21,7 @@ import { getEventColor } from './data/themes';
 import { notificationService } from './services/notificationService';
 
 function AppContent() {
-  const { courses, addCourse, updateCourse, deleteCourse, setCourses } = useCourses();
+  const { courses, addCourse, updateCourse, deleteCourse, toggleCompleted, setCourses } = useCourses();
   const [activeTab, setActiveTab] = useState<'form' | 'upload'>('form');
   const { theme, isTransitioning } = useTheme();
   const { t } = useTranslation();
@@ -63,6 +63,8 @@ function AppContent() {
 
   const filteredCourses = useMemo(() => {
     return courses.filter(course => {
+      // Exclude completed courses from the available courses list
+      if (course.isCompleted) return false;
       if (filters.semester && course.semester.toString() !== filters.semester) return false;
       if (filters.timeSlot && course.timeSlot !== filters.timeSlot) return false;
       if (filters.name && !course.name.toLowerCase().includes(filters.name.toLowerCase())) return false;
@@ -310,6 +312,14 @@ function AppContent() {
     notificationService.success(add ? t('calendar.courseAdded') : t('calendar.courseRemoved'));
   };
 
+  const handleToggleCompleted = async (id: string) => {
+    try {
+      await toggleCompleted(id);
+    } catch (error) {
+      notificationService.handleApiError(error, 'Failed to update course completion status');
+    }
+  };
+
   return (
     <>
       {/* Theme Transition Overlay */}
@@ -469,6 +479,7 @@ function AppContent() {
                             onEdit={handleEditCourse}
                             onDelete={handleDeleteCourse}
                             onToggleCalendar={handleToggleCalendar}
+                            onToggleCompleted={handleToggleCompleted}
                         />
                     </div>
                 </div>

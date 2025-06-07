@@ -11,6 +11,7 @@ interface UseCoursesReturn {
   addCourse: (course: CourseInput) => Promise<void>;
   updateCourse: (id: string, updates: Partial<Course>) => Promise<void>;
   deleteCourse: (id: string) => Promise<void>;
+  toggleCompleted: (id: string) => Promise<void>;
   setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
 }
 
@@ -18,9 +19,38 @@ export function useCourses(): UseCoursesReturn {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-
+  // Helper function to get localized messages with fallbacks
+  const getLocalizedMessage = useCallback((key: string, params: any = {}): string => {
+    const translated = String(t(key, params));
+    if (translated === key) {
+      // Translation failed, use language-appropriate fallback
+      const isSpanish = i18n.language === 'es';
+      
+      switch (key) {
+        case 'courseList.completed':
+          return isSpanish 
+            ? `"${params.name}" marcado como completado!`
+            : `"${params.name}" marked as completed!`;
+        case 'courseList.uncompleted':
+          return isSpanish 
+            ? `"${params.name}" marcado como incompleto!`
+            : `"${params.name}" marked as incomplete!`;
+        case 'courseList.completedMultiple':
+          return isSpanish 
+            ? `${params.count} cursos de "${params.name}" marcados como completados!`
+            : `${params.count} courses of "${params.name}" marked as completed!`;
+        case 'courseList.uncompletedMultiple':
+          return isSpanish 
+            ? `${params.count} cursos de "${params.name}" marcados como incompletos!`
+            : `${params.count} courses of "${params.name}" marked as incomplete!`;
+        default:
+          return translated;
+      }
+    }
+    return translated;
+  }, [t, i18n]);
 
   const fetchCourses = useCallback(async () => {
     try {
@@ -77,6 +107,47 @@ export function useCourses(): UseCoursesReturn {
     }
   }, []);
 
+  const toggleCompleted = useCallback(async (id: string) => {
+    try {
+      const course = courses.find(c => c.id === id);
+      if (!course) throw new Error('Course not found');
+      
+      // Find all courses with the same name (same subject)
+      const relatedCourses = courses.filter(c => c.name.trim().toLowerCase() === course.name.trim().toLowerCase());
+      const newCompletedStatus = !course.isCompleted;
+      
+      // Update all related courses
+      const updatePromises = relatedCourses.map(relatedCourse => 
+        api.toggleCompleted(relatedCourse.id, relatedCourse, newCompletedStatus)
+      );
+      
+      const updatedCourses = await Promise.all(updatePromises);
+      
+      // Update local state for all affected courses
+      setCourses(prev => prev.map(c => {
+        const updated = updatedCourses.find(uc => uc.id === c.id);
+        return updated || c;
+      }));
+      
+      // Show notification with count of affected courses
+      const affectedCount = relatedCourses.length;
+      if (affectedCount > 1) {
+        const message = newCompletedStatus 
+          ? getLocalizedMessage('courseList.completedMultiple', { count: affectedCount, name: course.name })
+          : getLocalizedMessage('courseList.uncompletedMultiple', { count: affectedCount, name: course.name });
+        notificationService.success(message);
+      } else {
+        const message = newCompletedStatus 
+          ? getLocalizedMessage('courseList.completed', { name: course.name })
+          : getLocalizedMessage('courseList.uncompleted', { name: course.name });
+        notificationService.success(message);
+      }
+    } catch (err) {
+      notificationService.handleApiError(err, 'Failed to update course completion status');
+      throw err;
+    }
+  }, [t, courses, getLocalizedMessage]);
+
   return {
     courses,
     loading,
@@ -84,6 +155,7 @@ export function useCourses(): UseCoursesReturn {
     addCourse,
     updateCourse,
     deleteCourse,
+    toggleCompleted,
     setCourses,
   };
 } 

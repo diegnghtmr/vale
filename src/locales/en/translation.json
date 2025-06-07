@@ -50,11 +50,17 @@
     "title": "Courses",
     "noCourses": "No courses available",
     "deleteSuccess": "Course deleted successfully!",
+    "completed": "{{name}} marked as completed!",
+    "uncompleted": "{{name}} marked as incomplete!",
+    "completedMultiple": "{{count}} courses of {{name}} marked as completed!",
+    "uncompletedMultiple": "{{count}} courses of {{name}} marked as incomplete!",
     "actions": {
       "edit": "Edit",
       "delete": "Delete",
       "addToCalendar": "Add to Calendar",
-      "removeFromCalendar": "Remove from Calendar"
+      "removeFromCalendar": "Remove from Calendar",
+      "markAsCompleted": "Mark as Completed",
+      "markAsIncomplete": "Mark as Incomplete"
     }
   },
   "courseFilters": {

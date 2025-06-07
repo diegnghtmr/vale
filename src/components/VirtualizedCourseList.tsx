@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { FixedSizeList as List } from 'react-window';
-import { Pencil, Trash2, CalendarPlus, CalendarX } from 'lucide-react';
+import { Pencil, Trash2, CalendarPlus, CalendarX, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '../types';
 
@@ -9,6 +9,7 @@ interface VirtualizedCourseListProps {
   onEdit: (course: Course) => void;
   onDelete: (id: string) => void;
   onToggleCalendar: (id: string, add: boolean) => void;
+  onToggleCompleted: (id: string) => void;
   height?: number;
   width?: number | string;
   itemHeight?: number;
@@ -22,7 +23,9 @@ interface CourseItemProps {
     onEdit: (course: Course) => void;
     onDelete: (id: string) => void;
     onToggleCalendar: (id: string, add: boolean) => void;
+    onToggleCompleted: (id: string) => void;
     t: any;
+    i18n: any;
   };
 }
 
@@ -30,7 +33,7 @@ interface CourseItemProps {
  * Individual course item component for virtualized list
  */
 const CourseItem = memo(function CourseItem({ index, style, data }: CourseItemProps) {
-  const { courses, onEdit, onDelete, onToggleCalendar, t } = data;
+  const { courses, onEdit, onDelete, onToggleCalendar, onToggleCompleted, t, i18n } = data;
   const course = courses[index];
 
   if (!course) return null;
@@ -42,6 +45,8 @@ const CourseItem = memo(function CourseItem({ index, style, data }: CourseItemPr
           padding: 'var(--space-4)',
           borderTop: index > 0 ? '1px solid var(--border-secondary)' : 'none',
           backgroundColor: 'var(--bg-secondary)',
+          opacity: course.isCompleted ? 0.6 : 1,
+          textDecoration: course.isCompleted ? 'line-through' : 'none'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -186,6 +191,55 @@ const CourseItem = memo(function CourseItem({ index, style, data }: CourseItemPr
               </button>
             )}
             <button
+              onClick={() => onToggleCompleted(course.id!)}
+              className="btn-sm"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: 'var(--space-2)',
+                color: course.isCompleted ? 'var(--warning)' : 'var(--success)',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                transition: 'all var(--duration-normal) var(--ease-out)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--accent-tertiary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+              aria-label={(() => {
+                const key = course.isCompleted ? 'courseList.actions.markAsIncomplete' : 'courseList.actions.markAsCompleted';
+                const translated = t(key);
+                // If translation failed (returns the key), use language-appropriate fallback
+                if (translated === key) {
+                  if (i18n.language === 'es') {
+                    return course.isCompleted ? 'Marcar como Incompleto' : 'Marcar como Completado';
+                  } else {
+                    return course.isCompleted ? 'Mark as Incomplete' : 'Mark as Completed';
+                  }
+                }
+                return translated;
+              })()}
+              title={(() => {
+                const key = course.isCompleted ? 'courseList.actions.markAsIncomplete' : 'courseList.actions.markAsCompleted';
+                const translated = t(key);
+                // If translation failed (returns the key), use language-appropriate fallback
+                if (translated === key) {
+                  if (i18n.language === 'es') {
+                    return course.isCompleted ? 'Marcar como Incompleto' : 'Marcar como Completado';
+                  } else {
+                    return course.isCompleted ? 'Mark as Incomplete' : 'Mark as Completed';
+                  }
+                }
+                return translated;
+              })()}
+            >
+              <CheckCircle style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
+            </button>
+            <button
               onClick={() => onDelete(course.id!)}
               className="btn-sm"
               style={{
@@ -226,11 +280,12 @@ export const VirtualizedCourseList = memo(function VirtualizedCourseList({
   onEdit,
   onDelete,
   onToggleCalendar,
+  onToggleCompleted,
   height = 400,
   width = "100%",
   itemHeight = 120,
 }: VirtualizedCourseListProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   if (courses.length === 0) {
     return (
@@ -273,7 +328,9 @@ export const VirtualizedCourseList = memo(function VirtualizedCourseList({
               onEdit,
               onDelete,
               onToggleCalendar,
-              t,
+                              onToggleCompleted,
+                t,
+                i18n,
             }}
           />
         ))}
@@ -301,7 +358,9 @@ export const VirtualizedCourseList = memo(function VirtualizedCourseList({
           onEdit,
           onDelete,
           onToggleCalendar,
-          t,
+                      onToggleCompleted,
+            t,
+            i18n,
         }}
       >
         {CourseItem}

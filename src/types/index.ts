@@ -14,6 +14,7 @@ export interface Course {
   details?: string;
   schedule: Schedule[];
   isInCalendar: boolean;
+  isCompleted: boolean;
 }
 
 export interface CourseInput extends Omit<Course, 'id' | 'isInCalendar' | 'credits' | 'semester'> {

@@ -65,6 +65,7 @@ export const addCourse = async (courseInput: CourseInput): Promise<Course> => {
       credits: Number(courseInput.credits),
       semester: Number(courseInput.semester),
       isInCalendar: false,
+      isCompleted: false,
     };
     return await apiClient.post<Course>('/courses', course);
   } catch (error) {
@@ -83,6 +84,18 @@ export const updateCourse = async (id: string, course: Course): Promise<Course> 
 export const deleteCourse = async (id: string): Promise<void> => {
   try {
     return await apiClient.delete(`/courses/${id}`);
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const toggleCompleted = async (id: string, course: Course, newStatus?: boolean): Promise<Course> => {
+  try {
+    const updatedCourse = { 
+      ...course, 
+      isCompleted: newStatus !== undefined ? newStatus : !course.isCompleted 
+    };
+    return await apiClient.put<Course>(`/courses/${id}`, updatedCourse);
   } catch (error) {
     return handleApiError(error);
   }

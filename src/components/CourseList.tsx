@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Pencil, Trash2, CalendarPlus, CalendarX } from 'lucide-react';
+import { Pencil, Trash2, CalendarPlus, CalendarX, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '../types';
 
@@ -8,10 +8,11 @@ interface CourseListProps {
   onEdit: (course: Course) => void;
   onDelete: (id: string) => void;
   onToggleCalendar: (id: string, add: boolean) => void;
+  onToggleCompleted: (id: string) => void;
 }
 
-export const CourseList = memo(function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: CourseListProps) {
-  const { t } = useTranslation();
+export const CourseList = memo(function CourseList({ courses, onEdit, onDelete, onToggleCalendar, onToggleCompleted }: CourseListProps) {
+  const { t, i18n } = useTranslation();
 
   if (courses.length === 0) {
     return (
@@ -38,7 +39,9 @@ export const CourseList = memo(function CourseList({ courses, onEdit, onDelete, 
       {courses.map((course, index) => (
         <div key={course.id || `course-${index}-${course.name}-${course.group}`} style={{
           padding: 'var(--space-4)',
-          borderTop: index > 0 ? '1px solid var(--border-secondary)' : 'none'
+          borderTop: index > 0 ? '1px solid var(--border-secondary)' : 'none',
+          opacity: course.isCompleted ? 0.6 : 1,
+          textDecoration: course.isCompleted ? 'line-through' : 'none'
         }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <div>
@@ -177,6 +180,55 @@ export const CourseList = memo(function CourseList({ courses, onEdit, onDelete, 
                   <CalendarPlus style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
                 </button>
               )}
+              <button
+                onClick={() => onToggleCompleted(course.id!)}
+                className="btn-sm"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: 'var(--space-2)',
+                  color: course.isCompleted ? 'var(--warning)' : 'var(--success)',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  transition: 'all var(--duration-normal) var(--ease-out)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--accent-tertiary)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+                aria-label={(() => {
+                  const key = course.isCompleted ? 'courseList.actions.markAsIncomplete' : 'courseList.actions.markAsCompleted';
+                  const translated = t(key);
+                  // If translation failed (returns the key), use language-appropriate fallback
+                  if (translated === key) {
+                    if (i18n.language === 'es') {
+                      return course.isCompleted ? 'Marcar como Incompleto' : 'Marcar como Completado';
+                    } else {
+                      return course.isCompleted ? 'Mark as Incomplete' : 'Mark as Completed';
+                    }
+                  }
+                  return translated;
+                })()}
+                title={(() => {
+                  const key = course.isCompleted ? 'courseList.actions.markAsIncomplete' : 'courseList.actions.markAsCompleted';
+                  const translated = t(key);
+                  // If translation failed (returns the key), use language-appropriate fallback
+                  if (translated === key) {
+                    if (i18n.language === 'es') {
+                      return course.isCompleted ? 'Marcar como Incompleto' : 'Marcar como Completado';
+                    } else {
+                      return course.isCompleted ? 'Mark as Incomplete' : 'Mark as Completed';
+                    }
+                  }
+                  return translated;
+                })()}
+              >
+                <CheckCircle style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
+              </button>
               <button
                 onClick={() => onDelete(course.id!)}
                 className="btn-sm"
