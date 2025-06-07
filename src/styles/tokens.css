@@ -1046,6 +1046,59 @@ input, select, textarea {
   background: var(--text-secondary);
 }
 
+/* Custom scrollbars for courses area */
+.courses-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.courses-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 6px;
+  margin: var(--space-2) 0;
+}
+
+.courses-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--accent-tertiary);
+  border-radius: 6px;
+  transition: all var(--duration-normal) var(--ease-out);
+  min-height: 20px;
+}
+
+.courses-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+  transform: scaleX(1.3);
+}
+
+.courses-scroll-area::-webkit-scrollbar-thumb:active {
+  background: var(--accent-primary);
+}
+
+/* Smooth scrolling behavior for courses area */
+.courses-scroll-area {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-secondary) transparent;
+  position: relative;
+}
+
+/* Enhanced scrollbar for modern browsers */
+@supports (scrollbar-width: thin) {
+  .courses-scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-secondary) transparent;
+  }
+}
+
+/* Scroll fade effects for courses area - Simplified */
+.area-courses {
+  position: relative;
+}
+
+/* Scroll indicator for courses area - Simplified */
+.area-courses .section-header {
+  position: relative;
+}
+
 /* Table styling */
 .fc-scrollgrid table {
   width: 100%;

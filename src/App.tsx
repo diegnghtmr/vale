@@ -135,6 +135,8 @@ function AppContent() {
   const coursesInCalendar = filteredCourses.filter(course => course.isInCalendar);
   const totalCredits = coursesInCalendar.reduce((sum, course) => sum + Number(course.credits), 0);
 
+
+
   const handleCourseSubmit = async (course: Course) => {
     try {
       if (editingCourse) {
@@ -550,10 +552,10 @@ function AppContent() {
                     {t('courseList.title', 'Courses')}
                   </h2>
                   <div className="section-badge">
-                    {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                    {t('courseList.courseCount', { count: filteredCourses.length })}
                   </div>
                 </div>
-                <div className="content-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+                <div className="content-body courses-scroll-area" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
                     <div style={{padding: 'var(--space-6)'}}>
                         <CourseList
                             courses={filteredCourses}
@@ -707,7 +709,7 @@ function AppContent() {
                             backgroundColor: 'var(--accent-primary)'
                           }} />
                           <span style={{ fontWeight: 'var(--font-medium)' }}>
-                            {coursesInCalendar.length} {t('calendar.scheduledCourses')}
+                            {t('calendar.scheduledCoursesCount', { count: coursesInCalendar.length })}
                           </span>
                         </div>
                         <div style={{ 
