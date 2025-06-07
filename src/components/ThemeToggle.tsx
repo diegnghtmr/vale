@@ -2,9 +2,11 @@ import { useTheme } from '../context/ThemeContext';
 import { ThemeIcon } from './AnimatedIcons';
 import { useEffect, useRef } from 'react';
 import { animations } from '../utils/animations';
+import { useTranslation } from 'react-i18next';
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslation();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -35,23 +37,28 @@ export function ThemeToggle() {
       onClick={handleClick}
       className="btn btn-secondary btn-md"
       style={{
-        padding: 'var(--space-3)',
-        width: '52px',
-        height: '52px',
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
+        gap: 'var(--space-3)',
+        padding: 'var(--space-3) var(--space-5)',
+        minWidth: '120px',
+        height: '52px',
+        fontSize: 'var(--text-sm)',
+        fontWeight: 'var(--font-medium)',
         borderRadius: '10px',
         transition: 'all var(--duration-normal) var(--ease-out)',
-        overflow: 'hidden',
       }}
       aria-label="Toggle theme"
     >
       <ThemeIcon 
-        size={20} 
+        size={16} 
         isDark={theme === 'dark'}
         color="var(--text-primary)"
       />
+      <span>
+        {theme === 'dark' ? t('common.lightMode') : t('common.darkMode')}
+      </span>
     </button>
   );
 }

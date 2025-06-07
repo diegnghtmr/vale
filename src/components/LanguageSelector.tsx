@@ -25,18 +25,19 @@ export function LanguageSelector() {
       style={{
         display: 'inline-flex',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 'var(--space-3)',
         padding: 'var(--space-3) var(--space-5)',
         minWidth: '120px',
-        justifyContent: 'center',
+        height: '52px',
         fontSize: 'var(--text-sm)',
         fontWeight: 'var(--font-medium)',
         borderRadius: '10px',
-        transition: 'all var(--duration-normal) var(--ease-out)'
+        transition: 'all var(--duration-normal) var(--ease-out)',
       }}
       aria-label={t('common.language')}
     >
-      <Globe style={{ height: 'var(--space-4)', width: 'var(--space-4)' }} />
+      <Globe size={16} color="var(--text-primary)" />
       <span style={{ whiteSpace: 'nowrap' }}>
         {currentLanguage === 'en' ? t('common.spanish') : t('common.english')}
       </span>
