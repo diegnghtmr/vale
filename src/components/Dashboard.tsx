@@ -457,82 +457,176 @@ export function Dashboard() {
               <div
                 key={subject.subjectId}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '16px',
+                  padding: '20px',
                   border: '1px solid var(--border-primary)',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   background: subject.isCompleted ? 'var(--bg-tertiary)' : 'var(--bg-primary)',
                   transition: 'all 0.2s ease',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
                 }}
               >
-                <div style={{ flex: 1 }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    marginBottom: '4px',
-                  }}>
+                {/* Header with title and status */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: '16px',
+                  gap: '16px',
+                }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <h4 style={{
-                      fontSize: '1rem',
-                      fontWeight: '500',
+                      fontSize: '1.125rem',
+                      fontWeight: '600',
                       color: 'var(--text-primary)',
+                      margin: '0',
+                      lineHeight: '1.4',
                       textDecoration: subject.isCompleted ? 'line-through' : 'none',
                       opacity: subject.isCompleted ? 0.7 : 1,
                     }}>
                       {subject.name}
                     </h4>
-                    {subject.isCompleted && (
+                  </div>
+                  
+                  <button
+                    onClick={() => handleToggleSubject(subject.subjectId)}
+                    style={{
+                      padding: '10px 20px',
+                      border: 'none',
+                      borderRadius: '8px',
+                      background: subject.isCompleted ? 'var(--error)' : 'var(--accent-primary)',
+                      color: 'white',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      whiteSpace: 'nowrap',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    {subject.isCompleted ? '↶ Reactivar' : '✓ Completar'}
+                  </button>
+                </div>
+
+                {/* Subject details */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: 'auto auto',
+                  gap: '16px',
+                  padding: '12px 0 0 0',
+                  borderTop: '1px solid var(--border-primary)',
+                }}>
+                  {/* Row 1: Semestre | Créditos */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                  }}>
+                    <span style={{
+                      fontSize: '0.75rem',
+                      fontWeight: '500',
+                      color: 'var(--text-secondary)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                    }}>
+                      Semestre
+                    </span>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: 'var(--text-primary)',
+                    }}>
+                      {subject.semester}
+                    </span>
+                  </div>
+                  
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                  }}>
+                    <span style={{
+                      fontSize: '0.75rem',
+                      fontWeight: '500',
+                      color: 'var(--text-secondary)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                    }}>
+                      Créditos
+                    </span>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: 'var(--text-primary)',
+                    }}>
+                      {subject.credits}
+                    </span>
+                  </div>
+                  
+                  {/* Row 2: Grupo | Estado */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                  }}>
+                    <span style={{
+                      fontSize: '0.75rem',
+                      fontWeight: '500',
+                      color: 'var(--text-secondary)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                    }}>
+                      Grupo
+                    </span>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: 'var(--text-primary)',
+                    }}>
+                      {subject.group}
+                    </span>
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '2px',
+                    justifyContent: 'flex-end',
+                  }}>
+                    {subject.isCompleted ? (
                       <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
                         fontSize: '0.75rem',
-                        padding: '2px 8px',
+                        padding: '4px 10px',
                         background: 'var(--accent-primary)',
                         color: 'white',
-                        borderRadius: '12px',
+                        borderRadius: '16px',
                         fontWeight: '500',
+                        gap: '4px',
+                        alignSelf: 'flex-start',
                       }}>
                         ✓ {t('dashboard.completed', 'Completada')}
                       </span>
+                    ) : (
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        fontSize: '0.75rem',
+                        padding: '4px 10px',
+                        background: 'var(--bg-tertiary)',
+                        color: 'var(--text-secondary)',
+                        border: '1px solid var(--border-primary)',
+                        borderRadius: '16px',
+                        fontWeight: '500',
+                        gap: '4px',
+                        alignSelf: 'flex-start',
+                      }}>
+                        ⏳ {t('dashboard.pending', 'Pendiente')}
+                      </span>
                     )}
                   </div>
-                  <div style={{
-                    display: 'flex',
-                    gap: '16px',
-                    fontSize: '0.875rem',
-                    color: 'var(--text-secondary)',
-                  }}>
-                    <span>
-                      {t('dashboard.semesterLabel', 'Semestre')}: {subject.semester}
-                    </span>
-                    <span>
-                      {t('dashboard.creditsLabel', 'Créditos')}: {subject.credits}
-                    </span>
-                    <span>
-                      {t('dashboard.groupLabel', 'Grupo')}: {subject.group}
-                    </span>
-                  </div>
                 </div>
-                
-                <button
-                  onClick={() => handleToggleSubject(subject.subjectId)}
-                  style={{
-                    padding: '8px 16px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    background: subject.isCompleted ? 'var(--error)' : 'var(--accent-primary)',
-                    color: 'white',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
-                  {subject.isCompleted 
-                    ? t('dashboard.markIncomplete', 'Marcar Incompleta')
-                    : t('dashboard.markComplete', 'Marcar Completa')
-                  }
-                </button>
               </div>
             ))}
             </div>

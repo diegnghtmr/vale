@@ -117,10 +117,10 @@ function AppContent() {
       const isCompleted = isSubjectCompleted(subjectId);
       
       return {
-        ...course,
-        id: course.id || crypto.randomUUID(), // Assign ID if missing
+      ...course,
+      id: course.id || crypto.randomUUID(), // Assign ID if missing
         subjectId,
-        isInCalendar: false, // Reset calendar status
+      isInCalendar: false, // Reset calendar status
         isCompleted, // Preserve completion state
       };
     });
