@@ -91,6 +91,13 @@
     "unnamedCourse": "Unnamed course",
     "uploadSchedule": "Import Courses"
   },
+  "periodSelector": {
+    "title": "Load Academic Period",
+    "selectPeriod": "-- Select period --",
+    "loading": "Loading...",
+    "loadingData": "Loading academic period data...",
+    "helpText": "Select a period to automatically load available courses"
+  },
   "calendar": {
     "title": "Schedule",
     "today": "Today",

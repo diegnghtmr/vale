@@ -99,6 +99,13 @@ export const translations = {
       unnamedCourse: "Unnamed course",
       uploadSchedule: "Import Courses"
     },
+    periodSelector: {
+      title: "Load Academic Period",
+      selectPeriod: "-- Select period --",
+      loading: "Loading...",
+      loadingData: "Loading academic period data...",
+      helpText: "Select a period to automatically load available courses"
+    },
     calendar: {
       title: "Schedule",
       today: "Today",
@@ -216,6 +223,13 @@ export const translations = {
       invalidCourse: "Curso inválido",
       unnamedCourse: "Curso sin nombre",
       uploadSchedule: "Importar Cursos"
+    },
+    periodSelector: {
+      title: "Cargar Período Académico",
+      selectPeriod: "-- Seleccionar período --",
+      loading: "Cargando...",
+      loadingData: "Cargando datos del período académico...",
+      helpText: "Selecciona un período para cargar automáticamente los cursos disponibles"
     },
     calendar: {
       title: "Calendario",
