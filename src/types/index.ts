@@ -30,6 +30,8 @@ export interface CourseEvent {
   textColor?: string;
   extendedProps?: {
     credits: string | number;
+    semester?: string | number;
+    group?: string;
     classroom?: string;
     details?: string;
     description?: string;
