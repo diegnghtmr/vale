@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
-import { Course, Schedule } from '../types';
+import { Course } from '../types';
+import { fileValidationService } from '../services/fileValidation';
+import { notificationService } from '../services/notificationService';
 
 interface FileUploadProps {
   onUpload: (data: Course[]) => void;
@@ -12,161 +13,23 @@ interface FileUploadProps {
 export function FileUpload({ onUpload }: FileUploadProps) {
   const { t } = useTranslation();
 
-  const mapSpanishDayToEnglish = (spanishDay: string): string => {
-    const dayMap: { [key: string]: string } = {
-      'LUNES': 'monday',
-      'MARTES': 'tuesday',
-      'MIÉRCOLES': 'wednesday',
-      'JUEVES': 'thursday',
-      'VIERNES': 'friday',
-      'SÁBADO': 'saturday',
-      'DOMINGO': 'sunday'
-    };
-    return dayMap[spanishDay.toUpperCase()] || spanishDay.toLowerCase();
-  };
+  // File processing is now handled by the fileValidationService
 
-  const mapSpanishTimeSlotToEnglish = (timeSlot: string): string => {
-    const timeSlotMap: { [key: string]: string } = {
-      'DIURNO': 'day',
-      'NOCTURNO': 'night'
-    };
-    return timeSlotMap[timeSlot.toUpperCase()] || timeSlot.toLowerCase();
-  };
-
-  const parseCSV = (text: string): Course[] => {
-    const rows = text.split('\n').filter(row => row.trim());
-    const headers = rows[0].split(',').map(h => h.trim());
-    
-    // Solo estos campos son requeridos
-    const requiredHeaders = ['name', 'credits', 'semester', 'timeSlot', 'group', 'day', 'startTime', 'endTime'];
-    const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
-    
-    if (missingHeaders.length > 0) {
-      throw new Error(t('fileUpload.missingColumns', { columns: missingHeaders.join(', ') }));
-    }
-
-    const courses = new Map<string, Course>();
-
-    for (let i = 1; i < rows.length; i++) {
-      const values = rows[i].split(',').map(v => v.trim());
-      if (values.length !== headers.length) continue;
-
-      const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
-      
-      // Validar solo los campos requeridos
-      if (!row.name || !row.credits || !row.semester || !row.timeSlot || !row.group ||
-          !row.day || !row.startTime || !row.endTime) {
-        toast.error(t('fileUpload.missingData', { row: i + 1 }));
-        continue;
-      }
-
-      const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-      if (!validDays.includes(row.day.toLowerCase())) {
-        toast.error(t('fileUpload.invalidDay', { row: i + 1, day: row.day }));
-        continue;
-      }
-
-      if (!['day', 'night'].includes(row.timeSlot.toLowerCase())) {
-        toast.error(t('fileUpload.invalidTimeSlot', { row: i + 1, timeSlot: row.timeSlot }));
-        continue;
-      }
-
-      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-      if (!timeRegex.test(row.startTime) || !timeRegex.test(row.endTime)) {
-        toast.error(t('fileUpload.invalidTimeFormat', { row: i + 1 }));
-        continue;
-      }
-
-      const schedule: Schedule = {
-        day: row.day.toLowerCase() as Schedule['day'],
-        startTime: row.startTime,
-        endTime: row.endTime
-      };
-
-      // Usar nombre + grupo + semestre como clave única para evitar mezclar cursos diferentes
-      const courseKey = `${row.name}-${row.group}-${row.semester}`;
-
-      if (courses.has(courseKey)) {
-        const course = courses.get(courseKey)!;
-        course.schedule.push(schedule);
-      } else {
-        // Crear el curso con todos los campos disponibles (incluyendo opcionales)
-        const courseData: Course = {
-          name: row.name,
-          credits: Number(row.credits),
-          semester: Number(row.semester),
-          timeSlot: row.timeSlot.toLowerCase() as 'day' | 'night',
-          group: row.group,
-          schedule: [schedule]
-        };
-
-        // Agregar campos opcionales si están presentes y no están vacíos
-        if (row.classroom && row.classroom.trim() !== '') {
-          courseData.classroom = row.classroom;
-        }
-        if (row.details && row.details.trim() !== '') {
-          courseData.details = row.details;
-        }
-
-        courses.set(courseKey, courseData);
-      }
-    }
-
-    return Array.from(courses.values());
-  };
-
-  const processJSONData = (data: any[]): Course[] => {
-    return data.map(course => {
-      // Normalizar los horarios
-      const normalizedSchedule = course.schedule?.map((slot: any) => ({
-        day: mapSpanishDayToEnglish(slot.day),
-        startTime: slot.startTime,
-        endTime: slot.endTime
-      })) || [];
-
-      return {
-        ...course,
-        timeSlot: mapSpanishTimeSlotToEnglish(course.timeSlot),
-        schedule: normalizedSchedule
-      };
-    });
-  };
-
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    const reader = new FileReader();
-
-    reader.onabort = () => toast.error(t('fileUpload.readAborted'));
-    reader.onerror = () => toast.error(t('fileUpload.readError'));
-    reader.onload = () => {
-      try {
-        const text = reader.result as string;
-        let processedData: Course[];
-        
-        if (file.name.endsWith('.csv')) {
-          processedData = parseCSV(text);
-        } else {
-          const rawData = JSON.parse(text);
-          const data = Array.isArray(rawData) ? rawData : rawData.courses;
-          
-          if (!Array.isArray(data)) {
-            throw new Error(t('fileUpload.invalidFormat'));
-          }
-          
-          processedData = processJSONData(data);
-        }
-
-        onUpload(processedData);
-        toast.success(t('fileUpload.success'));
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : t('fileUpload.unknownError');
-        toast.error(t('fileUpload.processingError', { error: errorMessage }));
+    
+    try {
+      const result = await fileValidationService.validateAndParseFile(file);
+      
+      if (result.isValid && result.data) {
+        onUpload(result.data);
+        notificationService.success(t('fileUpload.success'));
+      } else {
+        notificationService.handleFileUploadError(result.errors);
       }
-    };
-
-    reader.readAsText(file);
+    } catch (error) {
+      notificationService.handleApiError(error, 'File upload failed');
+    }
   }, [onUpload, t]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

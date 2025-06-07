@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pencil, Trash2, CalendarPlus, CalendarX } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '../types';
@@ -9,7 +10,7 @@ interface CourseListProps {
   onToggleCalendar: (id: string, add: boolean) => void;
 }
 
-export function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: CourseListProps) {
+export const CourseList = memo(function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: CourseListProps) {
   const { t } = useTranslation();
 
   if (courses.length === 0) {
@@ -35,7 +36,7 @@ export function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: Cour
       overflow: 'hidden'
     }}>
       {courses.map((course, index) => (
-        <div key={course.id} style={{
+        <div key={course.id || `course-${index}-${course.name}-${course.group}`} style={{
           padding: 'var(--space-4)',
           borderTop: index > 0 ? '1px solid var(--border-secondary)' : 'none'
         }}>
@@ -91,7 +92,7 @@ export function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: Cour
               
               <div style={{ marginTop: 'var(--space-1)', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
                 {course.schedule.map((slot, index) => (
-                  <p key={index} className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                  <p key={`${slot.day}-${slot.startTime}-${slot.endTime}-${index}`} className="text-caption" style={{ color: 'var(--text-secondary)' }}>
                     {t(`courseForm.days.${slot.day}`)}: {slot.startTime} - {slot.endTime}
                   </p>
                 ))}
@@ -207,4 +208,4 @@ export function CourseList({ courses, onEdit, onDelete, onToggleCalendar }: Cour
       ))}
     </div>
   );
-}
+});

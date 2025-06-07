@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { GraduationCap, Save, Plus, Trash2, Hash, Bookmark, Users, MapPin, FileText } from 'lucide-react';
-import { Course, Schedule } from '../types';
+import { Course, CourseInput, Schedule } from '../types';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { checkConflict, checkSelfConflict } from '../utils/schedule';
@@ -9,14 +9,14 @@ import { FormError } from './FormError';
 import { handleNumericInput } from '../utils/input';
 
 interface CourseFormProps {
-  onSubmit: (course: Course) => void;
+  onSubmit: (course: CourseInput) => void;
   initialData?: Course | null;
   allCourses: Course[];
 }
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
 
-const initialCourse: Course = {
+const initialCourse: CourseInput = {
   name: '',
   credits: '',
   semester: '',
@@ -27,18 +27,37 @@ const initialCourse: Course = {
   schedule: [],
 };
 
-export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProps) {
+export const CourseForm = memo(function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProps) {
   const { t, i18n } = useTranslation();
-  const [course, setCourse] = useState<Course>(initialData || initialCourse);
+  const [course, setCourse] = useState<CourseInput>(() => {
+    if (initialData) {
+      return {
+        name: initialData.name,
+        credits: initialData.credits.toString(),
+        semester: initialData.semester.toString(),
+        timeSlot: initialData.timeSlot,
+        group: initialData.group,
+        classroom: initialData.classroom || '',
+        details: initialData.details || '',
+        schedule: initialData.schedule,
+      };
+    }
+    return initialCourse;
+  });
   const [conflictError, setConflictError] = useState<string | null>(null);
   const [hasSelfConflict, setHasSelfConflict] = useState(false);
 
   useEffect(() => {
     if (initialData) {
       setCourse({
-        ...initialData,
+        name: initialData.name,
+        credits: initialData.credits.toString(),
+        semester: initialData.semester.toString(),
+        timeSlot: initialData.timeSlot,
+        group: initialData.group,
         classroom: initialData.classroom || '',
-        details: initialData.details || ''
+        details: initialData.details || '',
+        schedule: initialData.schedule,
       });
     } else {
       setCourse(initialCourse);
@@ -49,7 +68,21 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
   useEffect(() => {
     if (course.schedule.length > 0 && initialData?.isInCalendar) {
       const coursesInCalendar = allCourses.filter(c => c.isInCalendar);
-      const conflict = checkConflict(coursesInCalendar, course, initialData?.id);
+      // Convert CourseInput to Course for conflict checking
+      const courseForConflictCheck: Course = {
+        id: initialData?.id || '',
+        name: course.name,
+        credits: Number(course.credits),
+        semester: Number(course.semester),
+        timeSlot: course.timeSlot,
+        group: course.group,
+        classroom: course.classroom,
+        details: course.details,
+        schedule: course.schedule,
+        isInCalendar: initialData?.isInCalendar || false,
+      };
+      
+      const conflict = checkConflict(coursesInCalendar, courseForConflictCheck, initialData?.id);
       
       if (conflict) {
         const { conflictingCourse, newSlot, conflictingSlot } = conflict;
@@ -85,7 +118,7 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
       toast.error(t('calendar.selectDifferentTime'));
       return;
     }
-    onSubmit({ ...course, credits: Number(course.credits) });
+    onSubmit(course);
     setCourse(initialCourse);
   };
 
@@ -352,7 +385,7 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
 
           {course.schedule.map((schedule, index) => (
             <div
-              key={index}
+              key={`schedule-${schedule.day}-${schedule.startTime}-${schedule.endTime}-${index}`}
               className="card"
               style={{ 
                 padding: 'var(--space-6)',
@@ -490,4 +523,4 @@ export function CourseForm({ onSubmit, initialData, allCourses }: CourseFormProp
       </div>
     </form>
   );
-}
+});

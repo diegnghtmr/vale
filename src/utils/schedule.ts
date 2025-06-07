@@ -1,5 +1,12 @@
 import { Course, Schedule } from '../types';
 
+/**
+ * Checks if a new course conflicts with existing courses in the calendar
+ * @param coursesToCheck - Array of existing courses to check against
+ * @param newCourse - The new course to validate
+ * @param ignoreCourseId - Optional course ID to ignore during conflict checking (useful for editing)
+ * @returns Conflict details if found, null otherwise
+ */
 export function checkConflict(
   coursesToCheck: Course[],
   newCourse: Course,
@@ -33,6 +40,11 @@ export function checkConflict(
   return null;
 }
 
+/**
+ * Checks if a course has internal schedule conflicts (overlapping time slots on the same day)
+ * @param schedule - Array of schedule slots for a single course
+ * @returns true if conflicts are found, false otherwise
+ */
 export function checkSelfConflict(schedule: Schedule[]): boolean {
   for (let i = 0; i < schedule.length; i++) {
     for (let j = i + 1; j < schedule.length; j++) {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { X, Clock, MapPin, GraduationCap, FileText, Calendar } from 'lucide-react';
 import { CourseEvent } from '../types';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +9,18 @@ interface EventDetailsModalProps {
   onClose: () => void;
 }
 
-export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalProps) {
+export const EventDetailsModal = memo(function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalProps) {
   const { t } = useTranslation();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('modal-open');
+      // Focus the close button when modal opens
+      setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 100);
     } else {
       document.body.classList.remove('modal-open');
     }
@@ -23,6 +29,19 @@ export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalP
       document.body.classList.remove('modal-open');
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen, onClose]);
 
   if (!isOpen || !event) return null;
 
@@ -47,8 +66,12 @@ export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalP
     <div 
       className="modal-overlay" 
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
     >
       <div 
+        ref={modalRef}
         className="modal modal-card" 
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -58,18 +81,24 @@ export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalP
         }}
       >
         <div className="modal-header">
-          <h3 className="modal-title" style={{ 
-            fontSize: 'var(--text-xl)',
-            fontWeight: 'var(--font-semibold)',
-            color: 'var(--text-primary)',
-            margin: 0,
-            lineHeight: 'var(--leading-snug)'
-          }}>
+          <h3 
+            id="modal-title"
+            className="modal-title" 
+            style={{ 
+              fontSize: 'var(--text-xl)',
+              fontWeight: 'var(--font-semibold)',
+              color: 'var(--text-primary)',
+              margin: 0,
+              lineHeight: 'var(--leading-snug)'
+            }}
+          >
             {t('calendar.eventDetails.title')}
           </h3>
           <button 
+            ref={closeButtonRef}
             className="modal-close"
             onClick={onClose}
+            aria-label={t('common.close')}
             style={{
               background: 'none',
               border: 'none',
@@ -307,4 +336,4 @@ export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalP
       </div>
     </div>
   );
-} 
+}); 
