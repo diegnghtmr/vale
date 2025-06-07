@@ -91,6 +91,13 @@
     "unnamedCourse": "Curso sin nombre",
     "uploadSchedule": "Importar Cursos"
   },
+  "periodSelector": {
+    "title": "Cargar Período Académico",
+    "selectPeriod": "-- Seleccionar período --",
+    "loading": "Cargando...",
+    "loadingData": "Cargando datos del período académico...",
+    "helpText": "Selecciona un período para cargar automáticamente los cursos disponibles"
+  },
   "calendar": {
     "title": "Calendario",
     "today": "Hoy",

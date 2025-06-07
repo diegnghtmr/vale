@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Course, CourseEvent } from './types';
 import { CourseForm } from './components/CourseForm';
 import { FileUpload } from './components/FileUpload';
+import { PeriodSelector } from './components/PeriodSelector';
 import { Calendar } from './components/Calendar';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ThemeTransition } from './components/ThemeTransition';
@@ -634,7 +635,10 @@ function AppContent() {
                       allCourses={courses}
                     />
                   ) : (
-                    <FileUpload onUpload={handleFileUpload} />
+                    <div>
+                      <PeriodSelector onUpload={handleFileUpload} />
+                      <FileUpload onUpload={handleFileUpload} />
+                    </div>
                   )}
                 </div>
               </section>
