@@ -33,13 +33,7 @@ export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalP
     return date.toLocaleTimeString('es-CO', { 
       hour: '2-digit', 
       minute: '2-digit',
-      hour12: true 
-    });
-  };
-
-  const formatDay = (date: Date) => {
-    return date.toLocaleDateString('es-CO', { 
-      weekday: 'long'
+      hour12: false
     });
   };
 
@@ -196,7 +190,7 @@ export function EventDetailsModal({ event, isOpen, onClose }: EventDetailsModalP
                 color: 'var(--text-primary)',
                 textTransform: 'capitalize'
               }}>
-                {formatDay(startTime)}
+                {event.extendedProps?.dayKey ? t(`courseForm.days.${event.extendedProps.dayKey}`) : ''}
               </span>
               <span style={{ 
                 fontSize: 'var(--text-sm)',

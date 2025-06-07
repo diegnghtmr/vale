@@ -35,6 +35,7 @@ export interface CourseEvent {
     classroom?: string;
     details?: string;
     description?: string;
+    dayKey?: string;
   };
 }
 

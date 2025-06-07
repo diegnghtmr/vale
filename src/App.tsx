@@ -259,7 +259,8 @@ function AppContent() {
             group: course.group,
             classroom: course.classroom,
             details: course.details,
-            description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`
+            description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`,
+            dayKey: slot.day 
           }
         });
       });

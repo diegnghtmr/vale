@@ -41,9 +41,10 @@ export function Calendar({ events }: CalendarProps) {
           headerToolbar={false}
           locales={locales}
           locale={currentLanguage === 'es' ? 'es' : 'en'}
+          firstDay={0}
           allDaySlot={false}
           slotMinTime="06:00:00"
-          slotMaxTime="23:00:00"
+          slotMaxTime="24:00:00"
           weekends={true}
           events={events}
           height="100%"
@@ -84,9 +85,9 @@ export function Calendar({ events }: CalendarProps) {
             );
           }}
           slotLabelFormat={{
-            hour: 'numeric',
+            hour: '2-digit',
             minute: '2-digit',
-            hour12: true
+            hour12: false
           }}
           titleFormat={{ month: 'long', year: 'numeric' }}
           nowIndicator={true}
