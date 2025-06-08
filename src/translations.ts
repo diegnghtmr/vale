@@ -169,6 +169,13 @@ export const translations = {
       markComplete: "Mark Complete",
       markIncomplete: "Mark Incomplete",
       semesterNumber: "Semester {{number}}"
+    },
+    github: {
+      title: "Open Source Project",
+      subtitle: "Help us grow!",
+      description: "Vale is an open source project that helps students manage their academic schedules. If you find it useful, please consider giving us a star on GitHub!",
+      starButton: "Star on GitHub",
+      badgeText: "Star us!"
     }
   },
   es: {
@@ -341,6 +348,13 @@ export const translations = {
       markComplete: "Marcar Completa",
       markIncomplete: "Marcar Incompleta",
       semesterNumber: "Semestre {{number}}"
+    },
+    github: {
+      title: "Proyecto Open Source",
+      subtitle: "¡Ayúdanos a crecer!",
+      description: "Vale es un proyecto de código abierto que ayuda a los estudiantes a gestionar sus horarios académicos. Si te resulta útil, ¡considera darnos una estrella en GitHub!",
+      starButton: "Dar Estrella en GitHub",
+      badgeText: "¡Danos una estrella!"
     }
   }
 };

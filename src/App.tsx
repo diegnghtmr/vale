@@ -23,6 +23,8 @@ import { notificationService } from './services/notificationService';
 import { syncCoursesToStorage } from './services/api';
 import { createSubjectId } from './utils/subjectId';
 import { useSubjectCompletion } from './context/SubjectCompletionContext';
+import { GitHubPromotion } from './components/GitHubPromotion';
+import { GitHubBadge } from './components/GitHubBadge';
 
 function AppContent() {
   const { courses, addCourse, updateCourse, deleteCourse, toggleCompleted, setCourses } = useCourses();
@@ -36,6 +38,11 @@ function AppContent() {
     timeSlot: '',
     name: '',
     credits: '',
+  });
+  const [showGitHubPromotion, setShowGitHubPromotion] = useState(() => {
+    // Check localStorage to see if user has dismissed the promotion
+    const dismissed = localStorage.getItem('vale-github-promotion-dismissed');
+    return !dismissed;
   });
 
   const formSectionRef = React.useRef<HTMLDivElement>(null);
@@ -338,6 +345,11 @@ function AppContent() {
     }
   };
 
+  const handleDismissGitHubPromotion = () => {
+    setShowGitHubPromotion(false);
+    localStorage.setItem('vale-github-promotion-dismissed', 'true');
+  };
+
   return (
     <>
       {/* Theme Transition Overlay */}
@@ -425,6 +437,13 @@ function AppContent() {
                 </div>
               </div>
             </header>
+
+            {/* GitHub Promotion */}
+            {showGitHubPromotion && (
+              <div className="animate-fade-in">
+                <GitHubPromotion onDismiss={handleDismissGitHubPromotion} />
+              </div>
+            )}
 
             {/* Contenido Principal con Layout Horizontal */}
             <main style={{ 
@@ -725,6 +744,9 @@ function AppContent() {
           </div>
         </div>
       </div>
+      
+      {/* GitHub Badge - appears when main promotion is dismissed */}
+      {!showGitHubPromotion && <GitHubBadge />}
     </>
   );
 }
