@@ -29,8 +29,8 @@ i18nInstance.then(() => {
               // Configuración global para todos los toasts
               duration: 4000,
               style: {
-                background: 'var(--bg-tertiary)',
-                color: 'var(--text-primary)',
+                background: 'white',
+                color: '#333',
                 border: '1px solid var(--border-primary)',
                 borderRadius: '12px',
                 fontSize: 'var(--text-sm)',
@@ -45,8 +45,8 @@ i18nInstance.then(() => {
               success: {
                 duration: 3000,
                 style: {
-                  background: 'var(--bg-tertiary)',
-                  color: 'var(--text-primary)',
+                  background: 'white',
+                  color: '#333',
                   border: '1px solid var(--accent-primary)',
                   borderLeft: '4px solid var(--accent-primary)',
                 },
@@ -59,8 +59,8 @@ i18nInstance.then(() => {
               error: {
                 duration: 5000,
                 style: {
-                  background: 'var(--bg-tertiary)',
-                  color: 'var(--text-primary)',
+                  background: 'white',
+                  color: '#333',
                   border: '1px solid var(--error)',
                   borderLeft: '4px solid var(--error)',
                   whiteSpace: 'pre-line',
@@ -73,8 +73,8 @@ i18nInstance.then(() => {
               // Estilos específicos para toast de loading
               loading: {
                 style: {
-                  background: 'var(--bg-tertiary)',
-                  color: 'var(--text-primary)',
+                  background: 'white',
+                  color: '#333',
                   border: '1px solid var(--accent-primary)',
                   borderLeft: '4px solid var(--accent-primary)',
                 },

@@ -104,7 +104,10 @@ function AppContent() {
 
   const handleFileUpload = (data: Course[]) => {
     if (data.length === 0) {
-      notificationService.warning('No valid courses found in the uploaded file');
+      notificationService.warning('No courses available for this academic period', {
+        icon: '!',
+        duration: 4000
+      });
       return;
     }
     
