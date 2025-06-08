@@ -1,4 +1,4 @@
-# ✨ vale – Versatile Academic Logistics Environment ✨
+# ✨ vale – Versatile Academic Logistics Environment
 
 Welcome to **vale**! An open-source schedule planner designed with students in mind. We get it, juggling courses can be tough. That's why we built **vale** to help you effortlessly manage your classes, visualize your week at a glance, and export your schedule to your favorite calendar app.
 
@@ -6,7 +6,7 @@ Our interface is clean, friendly, and responsive, packed with powerful features 
 
 ![Contributors](https://contrib.rocks/image?repo=diegnghtmr/vale)
 
-## Why VALE?
+## 🌟 Why VALE?
 
 * **Visual first** – drag & drop classes on a live calendar  
 * **Always with you** – works completely offline thanks to local storage  
@@ -14,7 +14,7 @@ Our interface is clean, friendly, and responsive, packed with powerful features 
 * **Dark-mode delight** – one click and your eyes relax  
 * **Multilingual** – 🇬🇧 English & 🇨🇴 Spanish (plug-and-play for more)
 
-## 🌟 Key Features
+## 🚀 Key Features
 
 * 🎨 **Express Yourself with Themes**: Switch between a sleek light mode and a cool dark mode with smooth, satisfying transitions.
 * 🌐 **Speak Your Language**: Fully supports English and Spanish right out of the box. ¡Hola!
