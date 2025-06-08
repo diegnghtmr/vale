@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import esLocale from '@fullcalendar/core/locales/es';
@@ -13,7 +13,7 @@ interface CalendarProps {
   events: CourseEvent[];
 }
 
-export function Calendar({ events }: CalendarProps) {
+export const Calendar = memo(function Calendar({ events }: CalendarProps) {
   const { currentLanguage } = useLanguage();
   
   const [selectedEvent, setSelectedEvent] = useState<CourseEvent | null>(null);
@@ -102,4 +102,4 @@ export function Calendar({ events }: CalendarProps) {
       />
     </>
   );
-}
+});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Filter } from 'lucide-react';
+// import { Filter } from 'lucide-react'; // Unused for now
 import { useTranslation } from 'react-i18next';
 import { Course } from '../types';
 

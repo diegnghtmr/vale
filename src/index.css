@@ -88,3 +88,50 @@ svg {
               fill var(--duration-normal) var(--ease-out),
               stroke var(--duration-normal) var(--ease-out);
 }
+
+/* Estilos mejorados para notificaciones */
+[data-hot-toast] {
+  animation: slideInFromRight var(--duration-normal) var(--ease-out) !important;
+}
+
+[data-hot-toast][data-visible="false"] {
+  animation: slideOutToRight var(--duration-normal) var(--ease-in) !important;
+}
+
+/* Hover mejorado para notificaciones */
+[data-hot-toast]:hover {
+  transform: scale(1.02) translateY(-2px) !important;
+  transition: transform var(--duration-fast) var(--ease-out) !important;
+}
+
+/* Animaciones personalizadas para notificaciones */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Responsive para notificaciones */
+@media (max-width: 480px) {
+  [data-hot-toast] {
+    max-width: calc(100vw - var(--space-8)) !important;
+    margin: 0 var(--space-4) !important;
+    word-wrap: break-word !important;
+  }
+}

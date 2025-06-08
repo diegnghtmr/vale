@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Course, CourseEvent } from './types';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Course, CourseEvent, CourseInput, CourseFilters as CourseFiltersType } from './types';
 import { CourseForm } from './components/CourseForm';
 import { FileUpload } from './components/FileUpload';
 import { PeriodSelector } from './components/PeriodSelector';
@@ -9,67 +9,29 @@ import { ThemeTransition } from './components/ThemeTransition';
 import { LanguageSelector } from './components/LanguageSelector';
 import { useTheme } from './context/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 import { CourseList } from './components/CourseList';
-import { CourseFilters, CourseFilters as CourseFiltersType } from './components/CourseFilters';
-import * as api from './services/api';
+import { CourseFilters } from './components/CourseFilters';
+import { Dashboard } from './components/Dashboard';
 import { checkConflict } from './utils/schedule';
 import * as ics from 'ics';
 import { FloatingParticles, DecorativeWaves } from './components/FloatingParticles';
-import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon, DownloadIcon as AnimatedDownloadIcon } from './components/AnimatedIcons';
-import { animations } from './utils/animations';
-
-interface ExportButtonProps {
-  onClick: () => void;
-  text: string;
-}
-
-function ExportButton({ onClick, text }: ExportButtonProps) {
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
-
-  React.useEffect(() => {
-    if (buttonRef.current) {
-      const hoverAnimation = animations.hoverScale(buttonRef.current);
-      
-      const handleMouseEnter = () => hoverAnimation.play();
-      const handleMouseLeave = () => hoverAnimation.reverse();
-      
-      const button = buttonRef.current;
-      button.addEventListener('mouseenter', handleMouseEnter);
-      button.addEventListener('mouseleave', handleMouseLeave);
-      
-      return () => {
-        button.removeEventListener('mouseenter', handleMouseEnter);
-        button.removeEventListener('mouseleave', handleMouseLeave);
-      };
-    }
-  }, []);
-
-  return (
-    <button
-      ref={buttonRef}
-      onClick={onClick}
-      className="btn btn-secondary btn-sm"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--space-2)',
-        padding: 'var(--space-2) var(--space-3)',
-        fontSize: 'var(--text-xs)',
-        minWidth: 'auto'
-      }}
-    >
-      <AnimatedDownloadIcon size={16} isActive={false} />
-      <span>{text}</span>
-    </button>
-  );
-}
+import { CalendarIcon as AnimatedCalendarIcon, UploadIcon as AnimatedUploadIcon, DashboardIcon as AnimatedDashboardIcon } from './components/AnimatedIcons';
+import { ExportButton } from './components/ExportButton';
+import { useWindowSize, useCreditsCalculation, useCourses } from './hooks';
+import { getEventColor } from './data/themes';
+import { notificationService } from './services/notificationService';
+import { syncCoursesToStorage } from './services/api';
+import { createSubjectId } from './utils/subjectId';
+import { useSubjectCompletion } from './context/SubjectCompletionContext';
+import { GitHubPromotion } from './components/GitHubPromotion';
+import { GitHubBadge } from './components/GitHubBadge';
 
 function AppContent() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [activeTab, setActiveTab] = useState<'form' | 'upload'>('form');
+  const { courses, addCourse, updateCourse, deleteCourse, toggleCompleted, setCourses } = useCourses();
+  const [activeTab, setActiveTab] = useState<'form' | 'upload' | 'dashboard'>('form');
   const { theme, isTransitioning } = useTheme();
   const { t } = useTranslation();
+  const { isSubjectCompleted } = useSubjectCompletion();
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [filters, setFilters] = useState<CourseFiltersType>({
     semester: '',
@@ -77,19 +39,15 @@ function AppContent() {
     name: '',
     credits: '',
   });
+  const [showGitHubPromotion, setShowGitHubPromotion] = useState(() => {
+    // Check localStorage to see if user has dismissed the promotion
+    const dismissed = localStorage.getItem('vale-github-promotion-dismissed');
+    return !dismissed;
+  });
 
   const formSectionRef = React.useRef<HTMLDivElement>(null);
   const [formHeight, setFormHeight] = useState(0);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const { isDesktop } = useWindowSize();
 
   useEffect(() => {
     const observer = new ResizeObserver(entries => {
@@ -111,108 +69,80 @@ function AppContent() {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const fetchedCourses = await api.getCourses();
-        setCourses(fetchedCourses);
-      } catch {
-        toast.error('Failed to fetch courses.');
-      }
-    };
-    fetchCourses();
-  }, []);
-
-  const filteredCourses = courses.filter(course => {
-    if (filters.semester && course.semester.toString() !== filters.semester) return false;
-    if (filters.timeSlot && course.timeSlot !== filters.timeSlot) return false;
-    if (filters.name && !course.name.toLowerCase().includes(filters.name.toLowerCase())) return false;
-    if (filters.credits && course.credits.toString() !== filters.credits) return false;
-    return true;
-  });
-
-  // Calcular los créditos totales de las materias en el calendario
-  const coursesInCalendar = filteredCourses.filter(course => course.isInCalendar);
-  const totalCredits = coursesInCalendar.reduce((sum, course) => sum + Number(course.credits), 0);
+  // Courses are now managed by the useCourses hook
 
 
 
-  const handleCourseSubmit = async (course: Course) => {
+  const filteredCourses = useMemo(() => {
+    return courses.filter(course => {
+      // Exclude completed courses from the available courses list
+      if (course.isCompleted) return false;
+      if (filters.semester && course.semester.toString() !== filters.semester) return false;
+      if (filters.timeSlot && course.timeSlot !== filters.timeSlot) return false;
+      if (filters.name && !course.name.toLowerCase().includes(filters.name.toLowerCase())) return false;
+      if (filters.credits && course.credits.toString() !== filters.credits) return false;
+      return true;
+    });
+  }, [courses, filters]);
+
+  // Calcular los créditos totales usando el hook personalizado
+  const totalCredits = useCreditsCalculation(filteredCourses);
+
+
+
+  const handleCourseSubmit = async (courseInput: CourseInput) => {
     try {
       if (editingCourse) {
-        const updatedCourse = await api.updateCourse(editingCourse.id!, { ...course, id: editingCourse.id });
-        setCourses(prev => prev.map(c => c.id === editingCourse.id ? updatedCourse : c));
+        // Convert CourseInput to Course updates
+        const updates: Partial<Course> = {
+          ...courseInput,
+          credits: Number(courseInput.credits),
+          semester: Number(courseInput.semester),
+        };
+        await updateCourse(editingCourse.id, updates);
         setEditingCourse(null);
-        toast.success(t('courseForm.updateSuccess'));
       } else {
-        const newCourse = await api.addCourse(course);
-        setCourses((prev) => [...prev, newCourse]);
-        toast.success(t('courseForm.addSuccess'));
+        await addCourse(courseInput);
       }
-    } catch {
-      toast.error('Failed to save course.');
+    } catch (error) {
+      notificationService.handleApiError(error, 'Failed to save course');
     }
   };
 
   const handleFileUpload = (data: Course[]) => {
-    const validCourses = data.filter(course => {
-      const isValid = course.name && 
-                      (course.credits !== null && course.credits !== undefined && course.credits !== '') && 
-                      course.schedule?.length > 0;
-      if (!isValid) {
-        toast.error(`${t('fileUpload.invalidCourse')}: ${course.name || t('fileUpload.unnamedCourse')}`);
-      }
-      return isValid;
-    }).map(course => ({ ...course, id: crypto.randomUUID(), isInCalendar: false }));
-
-    setCourses(validCourses);
+    if (data.length === 0) {
+      notificationService.warning('No courses available for this academic period', {
+        icon: '!',
+        duration: 4000
+      });
+      return;
+    }
+    
+    // Process courses with subjectId and preserve completion state
+    const processedCourses = data.map(course => {
+      // Generate subjectId if missing (for backward compatibility)
+      const subjectId = course.subjectId || createSubjectId(course.name);
+      
+      // Check if this subject was previously completed
+      const isCompleted = isSubjectCompleted(subjectId);
+      
+      return {
+      ...course,
+      id: course.id || crypto.randomUUID(), // Assign ID if missing
+        subjectId,
+      isInCalendar: false, // Reset calendar status
+        isCompleted, // Preserve completion state
+      };
+    });
+    
+    setCourses(processedCourses);
+    // Sync to localStorage for persistence
+    syncCoursesToStorage(processedCourses);
+    notificationService.success(`Successfully imported ${data.length} courses`);
   };
 
   const generateCalendarEvents = (coursesToShow: Course[]): CourseEvent[] => {
     const events: CourseEvent[] = [];
-    const colors = theme === 'light' ? [
-      // Cobre principal - acorde al accent primary
-      { bg: '#f5ebe8', border: '#c5775b', text: '#8b4513' },
-      // Coral cálido - acorde al accent secondary  
-      { bg: '#f7ede9', border: '#cb9a88', text: '#a0755e' },
-      // Verde azulado - acorde al success
-      { bg: '#eef4f6', border: '#698aa2', text: '#4a6b7a' },
-      // Beige cálido - acorde al accent tertiary
-      { bg: '#f8f2ed', border: '#eac5a7', text: '#c49a7a' },
-      // Terracota suave
-      { bg: '#f4e7e4', border: '#b8746b', text: '#8d5550' },
-      // Gris cálido - acorde al texto secundario
-      { bg: '#f0edea', border: '#877070', text: '#6b5656' },
-      // Marrón caoba - mejor contraste
-      { bg: '#f2e9e4', border: '#a67c5a', text: '#6b4423' },
-      // Rosa tierra
-      { bg: '#f6ebe9', border: '#c5877c', text: '#9a675e' },
-      // Verde oliva
-      { bg: '#f2f4f0', border: '#8fa785', text: '#6d7d63' },
-      // Lavanda suave
-      { bg: '#f3f0f4', border: '#a497a3', text: '#7d7279' },
-    ] : [
-      // Cobre brillante para modo oscuro
-      { bg: '#d1968c', border: '#e7beac', text: '#262624' },
-      // Coral profundo
-      { bg: '#cb9a88', border: '#e7beac', text: '#262624' },
-      // Verde azulado claro
-      { bg: '#9db3b7', border: '#b5c8cc', text: '#262624' },
-      // Beige cálido profundo
-      { bg: '#c49a7a', border: '#d4b896', text: '#262624' },
-      // Terracota vibrante
-      { bg: '#c5877c', border: '#d4a399', text: '#262624' },
-      // Gris cálido claro
-      { bg: '#9a9997', border: '#b5b3b0', text: '#262624' },
-      // Marrón caoba brillante
-      { bg: '#a67c5a', border: '#c49a7a', text: '#faf5f4' },
-      // Rosa tierra vibrante
-      { bg: '#c5877c', border: '#d4a399', text: '#262624' },
-      // Verde oliva claro
-      { bg: '#8fa785', border: '#a8bb9f', text: '#262624' },
-      // Lavanda claro
-      { bg: '#a497a3', border: '#b8adb4', text: '#262624' },
-    ];
 
     const today = new Date();
     const monday = new Date(today);
@@ -220,7 +150,7 @@ function AppContent() {
     monday.setHours(0, 0, 0, 0);
 
     coursesToShow.forEach((course, courseIndex) => {
-      const colorIndex = courseIndex % colors.length;
+      const eventColor = getEventColor(theme, courseIndex);
       
       course.schedule.forEach((slot) => {
         const dayOffset = {
@@ -250,9 +180,9 @@ function AppContent() {
           description: `${slot.startTime} - ${slot.endTime}${course.classroom ? ` • ${course.classroom}` : ''}`,
           start: start.toISOString(),
           end: end.toISOString(),
-          backgroundColor: colors[colorIndex].bg,
-          borderColor: colors[colorIndex].border,
-          textColor: colors[colorIndex].text,
+          backgroundColor: eventColor.bg,
+          borderColor: eventColor.border,
+          textColor: eventColor.text,
           extendedProps: {
             credits: course.credits,
             semester: course.semester,
@@ -341,18 +271,25 @@ function AppContent() {
 
   const handleDeleteCourse = async (id: string) => {
     try {
-      await api.deleteCourse(id);
-      setCourses(courses.filter(course => course.id !== id));
-      toast.success(t('courseList.deleteSuccess'));
-    } catch {
-      toast.error('Failed to delete course.');
+      await deleteCourse(id);
+    } catch (error) {
+      notificationService.handleApiError(error, 'Failed to delete course');
     }
   };
 
   const handleToggleCalendar = (id: string, add: boolean) => {
+    // Safety check: Ensure ID is valid
+    if (!id || id === 'undefined') {
+      console.error('❌ Invalid course ID provided:', id);
+      notificationService.error('Error: Invalid course ID. Please refresh the page and try again.');
+      return;
+    }
+    
     if (add) {
       const courseToAdd = courses.find(c => c.id === id);
-      if (!courseToAdd) return;
+      if (!courseToAdd) {
+        return;
+      }
 
       const conflictDetails = checkConflict(
         courses.filter(c => c.isInCalendar),
@@ -371,7 +308,7 @@ function AppContent() {
           `\n\n${t('calendar.selectDifferentTime')}`
         ].join('');
         
-        toast.error(message, {
+        notificationService.error(message, {
           duration: 6000,
           style: {
             background: 'var(--bg-tertiary)',
@@ -389,10 +326,6 @@ function AppContent() {
             lineHeight: 'var(--leading-relaxed)',
             boxShadow: '0 8px 25px rgba(201, 87, 77, 0.15)',
           },
-          iconTheme: {
-            primary: '#c9574d',
-            secondary: '#ffffff',
-          },
         });
         return;
       }
@@ -401,7 +334,20 @@ function AppContent() {
     setCourses(prev => prev.map(course =>
       course.id === id ? { ...course, isInCalendar: add } : course
     ));
-    toast.success(add ? t('calendar.courseAdded') : t('calendar.courseRemoved'));
+    notificationService.success(add ? t('calendar.courseAdded') : t('calendar.courseRemoved'));
+  };
+
+  const handleToggleCompleted = async (id: string) => {
+    try {
+      await toggleCompleted(id);
+    } catch (error) {
+      notificationService.handleApiError(error, 'Failed to update course completion status');
+    }
+  };
+
+  const handleDismissGitHubPromotion = () => {
+    setShowGitHubPromotion(false);
+    localStorage.setItem('vale-github-promotion-dismissed', 'true');
   };
 
   return (
@@ -492,6 +438,13 @@ function AppContent() {
               </div>
             </header>
 
+            {/* GitHub Promotion */}
+            {showGitHubPromotion && (
+              <div className="animate-fade-in">
+                <GitHubPromotion onDismiss={handleDismissGitHubPromotion} />
+              </div>
+            )}
+
             {/* Contenido Principal con Layout Horizontal */}
             <main style={{ 
               display: 'grid',
@@ -563,6 +516,7 @@ function AppContent() {
                             onEdit={handleEditCourse}
                             onDelete={handleDeleteCourse}
                             onToggleCalendar={handleToggleCalendar}
+                            onToggleCompleted={handleToggleCompleted}
                         />
                     </div>
                 </div>
@@ -626,7 +580,8 @@ function AppContent() {
                       backgroundColor: activeTab === 'upload' ? 'var(--bg-primary)' : 'transparent',
                       color: activeTab === 'upload' ? 'var(--text-primary)' : 'var(--text-secondary)',
                       border: 'none',
-                      borderRadius: '0 12px 0 0',
+                      borderRight: '1px solid var(--border-primary)',
+                      borderRadius: '0 0 0 0',
                       fontWeight: activeTab === 'upload' ? 'var(--font-semibold)' : 'var(--font-medium)',
                       fontSize: 'var(--text-base)',
                       height: 'auto',
@@ -650,6 +605,41 @@ function AppContent() {
                       }} />
                     )}
                   </button>
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className="btn"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-2)',
+                      padding: 'var(--space-4) var(--space-6)',
+                      backgroundColor: activeTab === 'dashboard' ? 'var(--bg-primary)' : 'transparent',
+                      color: activeTab === 'dashboard' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: 'none',
+                      borderRadius: '0 12px 0 0',
+                      fontWeight: activeTab === 'dashboard' ? 'var(--font-semibold)' : 'var(--font-medium)',
+                      fontSize: 'var(--text-base)',
+                      height: 'auto',
+                      flex: '1',
+                      justifyContent: 'center',
+                      transition: 'all var(--duration-normal) var(--ease-out)',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <AnimatedDashboardIcon size={20} isActive={activeTab === 'dashboard'} />
+                    {t('dashboard.title', 'Dashboard')}
+                    {activeTab === 'dashboard' && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '2px',
+                        background: 'var(--accent-primary)',
+                      }} />
+                    )}
+                  </button>
                 </div>
 
                 <div style={{ 
@@ -663,11 +653,13 @@ function AppContent() {
                       initialData={editingCourse}
                       allCourses={courses}
                     />
-                  ) : (
+                  ) : activeTab === 'upload' ? (
                     <div>
                       <PeriodSelector onUpload={handleFileUpload} />
                       <FileUpload onUpload={handleFileUpload} />
                     </div>
+                  ) : (
+                    <Dashboard />
                   )}
                 </div>
               </section>
@@ -710,7 +702,7 @@ function AppContent() {
                             backgroundColor: 'var(--accent-primary)'
                           }} />
                           <span style={{ fontWeight: 'var(--font-medium)' }}>
-                            {t('calendar.scheduledCoursesCount', { count: coursesInCalendar.length })}
+                            {t('calendar.scheduledCoursesCount', { count: filteredCourses.filter(c => c.isInCalendar).length })}
                           </span>
                         </div>
                         <div style={{ 
@@ -743,7 +735,7 @@ function AppContent() {
                 <div className="content-body">
                   <div style={{ overflowX: 'auto', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
                     <div style={{ minWidth: '700px' }}>
-                      <Calendar events={generateCalendarEvents(coursesInCalendar)} />
+                      <Calendar events={generateCalendarEvents(filteredCourses.filter(c => c.isInCalendar))} />
                     </div>
                   </div>
                 </div>
@@ -752,6 +744,9 @@ function AppContent() {
           </div>
         </div>
       </div>
+      
+      {/* GitHub Badge - appears when main promotion is dismissed */}
+      {!showGitHubPromotion && <GitHubBadge />}
     </>
   );
 }

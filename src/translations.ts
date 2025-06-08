@@ -56,6 +56,10 @@ export const translations = {
       title: "Courses",
       noCourses: "No courses available",
       deleteSuccess: "Course deleted successfully!",
+      completed: "\"{{name}}\" marked as completed!",
+      uncompleted: "\"{{name}}\" marked as incomplete!",
+      completedMultiple: "{{count}} courses of \"{{name}}\" marked as completed!",
+      uncompletedMultiple: "{{count}} courses of \"{{name}}\" marked as incomplete!",
       courseCount_one: "{{count}} course",
       courseCount_other: "{{count}} courses",
       actions: {
@@ -99,7 +103,7 @@ export const translations = {
       invalidTimeFormat: "Row {{row}}: Invalid time format",
       invalidCourse: "Invalid course",
       unnamedCourse: "Unnamed course",
-      uploadSchedule: "Import Courses"
+      uploadSchedule: "Import"
     },
     periodSelector: {
       title: "Load Academic Period",
@@ -136,6 +140,42 @@ export const translations = {
         credits: "Credits",
         details: "Additional Details"
       }
+    },
+    dashboard: {
+      title: "Dashboard",
+      subtitle: "Manage your academic subjects progress",
+      completedSubjects: "Completed Subjects",
+      totalSubjects: "Total Subjects",
+      completedCredits: "Completed Credits",
+      progress: "Progress",
+      overallProgress: "Overall Progress",
+      filters: "Filters",
+      semester: "Semester",
+      status: "Status",
+      search: "Search",
+      allSemesters: "All semesters",
+      allStatuses: "All statuses",
+      completed: "Completed",
+      pending: "Pending",
+      searchPlaceholder: "Search by name...",
+      resetFilters: "Clear Filters",
+      subjects: "Subjects",
+      subjectsFound: "subjects found",
+      noSubjects: "No subjects found with the applied filters",
+      semesterLabel: "Semester",
+      creditsLabel: "Credits",
+      statusLabel: "Status",
+      groupLabel: "Group",
+      markComplete: "Mark Complete",
+      markIncomplete: "Mark Incomplete",
+      semesterNumber: "Semester {{number}}"
+    },
+    github: {
+      title: "Open Source Project",
+      subtitle: "Help us grow!",
+      description: "Vale is an open source project that helps students manage their academic schedules. If you find it useful, please consider giving us a star on GitHub!",
+      starButton: "Star on GitHub",
+      badgeText: "Star us!"
     }
   },
   es: {
@@ -195,6 +235,10 @@ export const translations = {
       title: "Cursos",
       noCourses: "No hay cursos disponibles",
       deleteSuccess: "¡Curso eliminado exitosamente!",
+      completed: "\"{{name}}\" marcado como completado!",
+      uncompleted: "\"{{name}}\" marcado como incompleto!",
+      completedMultiple: "{{count}} cursos de \"{{name}}\" marcados como completados!",
+      uncompletedMultiple: "{{count}} cursos de \"{{name}}\" marcados como incompletos!",
       courseCount_one: "{{count}} curso",
       courseCount_other: "{{count}} cursos",
       actions: {
@@ -238,7 +282,7 @@ export const translations = {
       invalidTimeFormat: "Fila {{row}}: Formato de hora inválido",
       invalidCourse: "Curso inválido",
       unnamedCourse: "Curso sin nombre",
-      uploadSchedule: "Importar Cursos"
+      uploadSchedule: "Importar"
     },
     periodSelector: {
       title: "Cargar Período Académico",
@@ -275,6 +319,42 @@ export const translations = {
         credits: "Créditos",
         details: "Detalles Adicionales"
       }
+    },
+    dashboard: {
+      title: "Dashboard",
+      subtitle: "Gestiona el progreso de tus materias académicas",
+      completedSubjects: "Materias Completadas",
+      totalSubjects: "Total de Materias",
+      completedCredits: "Créditos Completados",
+      progress: "Progreso",
+      overallProgress: "Progreso General",
+      filters: "Filtros",
+      semester: "Semestre",
+      status: "Estado",
+      search: "Buscar",
+      allSemesters: "Todos los semestres",
+      allStatuses: "Todos los estados",
+      completed: "Completada",
+      pending: "Pendiente",
+      searchPlaceholder: "Buscar por nombre...",
+      resetFilters: "Limpiar Filtros",
+      subjects: "Materias",
+      subjectsFound: "materias encontradas",
+      noSubjects: "No se encontraron materias con los filtros aplicados",
+      semesterLabel: "Semestre",
+      creditsLabel: "Créditos",
+      statusLabel: "Estado",
+      groupLabel: "Grupo",
+      markComplete: "Marcar Completa",
+      markIncomplete: "Marcar Incompleta",
+      semesterNumber: "Semestre {{number}}"
+    },
+    github: {
+      title: "Proyecto Open Source",
+      subtitle: "¡Ayúdanos a crecer!",
+      description: "Vale es un proyecto de código abierto que ayuda a los estudiantes a gestionar sus horarios académicos. Si te resulta útil, ¡considera darnos una estrella en GitHub!",
+      starButton: "Dar Estrella en GitHub",
+      badgeText: "¡Danos una estrella!"
     }
   }
 };

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { SubjectCompletionProvider } from './context/SubjectCompletionContext';
 import App from './App';
 import { i18nInstance } from './i18n';
 import './styles/tokens.css';
@@ -17,7 +18,8 @@ i18nInstance.then(() => {
     <React.StrictMode>
       <LanguageProvider>
         <ThemeProvider>
-          <Toaster 
+          <SubjectCompletionProvider>
+            <Toaster 
             position="top-center"
             containerStyle={{
               top: 20,
@@ -27,7 +29,7 @@ i18nInstance.then(() => {
               // Configuración global para todos los toasts
               duration: 4000,
               style: {
-                background: 'var(--bg-tertiary)',
+                background: 'var(--bg-primary)',
                 color: 'var(--text-primary)',
                 border: '1px solid var(--border-primary)',
                 borderRadius: '12px',
@@ -43,7 +45,7 @@ i18nInstance.then(() => {
               success: {
                 duration: 3000,
                 style: {
-                  background: 'var(--bg-tertiary)',
+                  background: 'var(--bg-primary)',
                   color: 'var(--text-primary)',
                   border: '1px solid var(--accent-primary)',
                   borderLeft: '4px solid var(--accent-primary)',
@@ -57,7 +59,7 @@ i18nInstance.then(() => {
               error: {
                 duration: 5000,
                 style: {
-                  background: 'var(--bg-tertiary)',
+                  background: 'var(--bg-primary)',
                   color: 'var(--text-primary)',
                   border: '1px solid var(--error)',
                   borderLeft: '4px solid var(--error)',
@@ -71,7 +73,7 @@ i18nInstance.then(() => {
               // Estilos específicos para toast de loading
               loading: {
                 style: {
-                  background: 'var(--bg-tertiary)',
+                  background: 'var(--bg-primary)',
                   color: 'var(--text-primary)',
                   border: '1px solid var(--accent-primary)',
                   borderLeft: '4px solid var(--accent-primary)',
@@ -84,6 +86,7 @@ i18nInstance.then(() => {
             }} 
           />
           <App />
+          </SubjectCompletionProvider>
         </ThemeProvider>
       </LanguageProvider>
     </React.StrictMode>
