@@ -143,7 +143,14 @@ export function useCourses(): UseCoursesReturn {
       // Update local state for all affected courses
       setCourses(prev => prev.map(c => {
         const updated = updatedCourses.find(uc => uc.id === c.id);
-        return updated || c;
+        if (updated) {
+          return {
+            ...updated,
+            // Si el curso se marca como completado, automáticamente lo removemos del calendario
+            isInCalendar: newCompletedStatus ? false : updated.isInCalendar
+          };
+        }
+        return c;
       }));
       
       // Update subject completion state

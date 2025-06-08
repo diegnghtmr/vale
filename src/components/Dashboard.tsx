@@ -510,17 +510,17 @@ export function Dashboard() {
                 {/* Subject details */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gridTemplateRows: 'auto auto',
-                  gap: '16px',
-                  padding: '12px 0 0 0',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gap: '24px',
+                  padding: '16px 0 0 0',
                   borderTop: '1px solid var(--border-primary)',
+                  alignItems: 'center',
                 }}>
-                  {/* Row 1: Semestre | Créditos */}
+                  {/* Semestre */}
                   <div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '2px',
+                    gap: '4px',
                   }}>
                     <span style={{
                       fontSize: '0.75rem',
@@ -529,7 +529,7 @@ export function Dashboard() {
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                     }}>
-                      Semestre
+                      {t('dashboard.semesterLabel', 'Semestre')}
                     </span>
                     <span style={{
                       fontSize: '0.875rem',
@@ -540,10 +540,11 @@ export function Dashboard() {
                     </span>
                   </div>
                   
+                  {/* Créditos */}
                   <div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '2px',
+                    gap: '4px',
                   }}>
                     <span style={{
                       fontSize: '0.75rem',
@@ -552,7 +553,7 @@ export function Dashboard() {
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                     }}>
-                      Créditos
+                      {t('dashboard.creditsLabel', 'Créditos')}
                     </span>
                     <span style={{
                       fontSize: '0.875rem',
@@ -563,11 +564,12 @@ export function Dashboard() {
                     </span>
                   </div>
                   
-                  {/* Row 2: Grupo | Estado */}
+                  {/* Estado */}
                   <div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '2px',
+                    gap: '4px',
+                    alignItems: 'flex-end',
                   }}>
                     <span style={{
                       fontSize: '0.75rem',
@@ -575,36 +577,20 @@ export function Dashboard() {
                       color: 'var(--text-secondary)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px',
-                    }}>
-                      Grupo
-                    </span>
-                    <span style={{
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      color: 'var(--text-primary)',
-                    }}>
-                      {subject.group}
-                    </span>
-                  </div>
-
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '2px',
-                    justifyContent: 'flex-end',
-                  }}>
+                                          }}>
+                        {t('dashboard.statusLabel', 'Estado')}
+                      </span>
                     {subject.isCompleted ? (
                       <span style={{
                         display: 'inline-flex',
                         alignItems: 'center',
                         fontSize: '0.75rem',
-                        padding: '4px 10px',
+                        padding: '6px 12px',
                         background: 'var(--accent-primary)',
                         color: 'white',
                         borderRadius: '16px',
                         fontWeight: '500',
                         gap: '4px',
-                        alignSelf: 'flex-start',
                       }}>
                         ✓ {t('dashboard.completed', 'Completada')}
                       </span>
@@ -613,14 +599,13 @@ export function Dashboard() {
                         display: 'inline-flex',
                         alignItems: 'center',
                         fontSize: '0.75rem',
-                        padding: '4px 10px',
+                        padding: '6px 12px',
                         background: 'var(--bg-tertiary)',
                         color: 'var(--text-secondary)',
                         border: '1px solid var(--border-primary)',
                         borderRadius: '16px',
                         fontWeight: '500',
                         gap: '4px',
-                        alignSelf: 'flex-start',
                       }}>
                         ⏳ {t('dashboard.pending', 'Pendiente')}
                       </span>

@@ -150,9 +150,12 @@ export const deleteCourse = async (id: string): Promise<void> => {
 
 export const toggleCompleted = async (id: string, course: Course, newStatus?: boolean): Promise<Course> => {
   try {
+    const isCompleted = newStatus !== undefined ? newStatus : !course.isCompleted;
     const updatedCourse = { 
       ...course, 
-      isCompleted: newStatus !== undefined ? newStatus : !course.isCompleted 
+      isCompleted,
+      // Si el curso se marca como completado, automáticamente lo removemos del calendario
+      isInCalendar: isCompleted ? false : course.isInCalendar
     };
     return await apiClient.put<Course>(`/courses/${id}`, updatedCourse);
   } catch (error) {
