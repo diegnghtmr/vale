@@ -29,8 +29,8 @@ class NotificationService {
       duration: options?.duration || 4000,
       position: options?.position || 'top-right',
       style: {
-        background: 'white',
-        color: '#333',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
         border: '1px solid var(--success)',
         borderRadius: '12px',
         padding: 'var(--space-4) var(--space-5)',
@@ -59,8 +59,8 @@ class NotificationService {
       duration: options?.duration || 6000,
       position: options?.position || 'top-right',
       style: {
-        background: 'white',
-        color: '#333',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
         border: '1px solid var(--error)',
         borderRadius: '12px',
         padding: 'var(--space-4) var(--space-5)',
@@ -89,8 +89,8 @@ class NotificationService {
       duration: options?.duration || 5000,
       position: options?.position || 'top-right',
       style: {
-        background: 'white',
-        color: '#333',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
         border: '1px solid var(--accent-secondary)',
         borderRadius: '12px',
         padding: 'var(--space-4) var(--space-5)',
@@ -112,8 +112,8 @@ class NotificationService {
       duration: options?.duration || 4000,
       position: options?.position || 'top-right',
       style: {
-        background: 'white',
-        color: '#333',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
         border: '1px solid var(--border-primary)',
         borderRadius: '12px',
         padding: 'var(--space-4) var(--space-5)',
@@ -134,8 +134,8 @@ class NotificationService {
     return toast.loading(message, {
       position: options?.position || 'top-right',
       style: {
-        background: 'white',
-        color: '#333',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
         border: '1px solid var(--border-primary)',
         borderRadius: '12px',
         padding: 'var(--space-4) var(--space-5)',
