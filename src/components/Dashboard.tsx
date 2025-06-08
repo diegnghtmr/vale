@@ -350,8 +350,8 @@ export function Dashboard() {
               }}
             >
               <option value="all">{t('dashboard.allStatuses', 'Todos los estados')}</option>
-              <option value="completed">{t('dashboard.completed', 'Completadas')}</option>
-              <option value="pending">{t('dashboard.pending', 'Pendientes')}</option>
+              <option value="completed">{t('dashboard.completed', 'Completada')}</option>
+              <option value="pending">{t('dashboard.pending', 'Pendiente')}</option>
             </select>
           </div>
 
@@ -585,12 +585,13 @@ export function Dashboard() {
                         display: 'inline-flex',
                         alignItems: 'center',
                         fontSize: '0.75rem',
-                        padding: '6px 12px',
+                        padding: '6px 16px',
                         background: 'var(--accent-primary)',
                         color: 'white',
                         borderRadius: '16px',
                         fontWeight: '500',
                         gap: '4px',
+                        whiteSpace: 'nowrap'
                       }}>
                         ✓ {t('dashboard.completed', 'Completada')}
                       </span>
@@ -599,13 +600,14 @@ export function Dashboard() {
                         display: 'inline-flex',
                         alignItems: 'center',
                         fontSize: '0.75rem',
-                        padding: '6px 12px',
+                        padding: '6px 16px',
                         background: 'var(--bg-tertiary)',
                         color: 'var(--text-secondary)',
                         border: '1px solid var(--border-primary)',
                         borderRadius: '16px',
                         fontWeight: '500',
                         gap: '4px',
+                        whiteSpace: 'nowrap'
                       }}>
                         ⏳ {t('dashboard.pending', 'Pendiente')}
                       </span>
