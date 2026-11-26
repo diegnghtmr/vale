@@ -1,129 +1,112 @@
-# ✨ vale – Versatile Academic Logistics Environment
+<!-- markdownlint-disable-next-line MD041 -->
+<div align="center">
 
-Welcome to **vale**! An open-source schedule planner designed with students in mind. We get it, juggling courses can be tough. That's why we built **vale** to help you effortlessly manage your classes, visualize your week at a glance, and export your schedule to your favorite calendar app.
+<h1>Vale</h1>
 
-Our interface is clean, friendly, and responsive, packed with powerful features to make your academic life a little easier.
+<p><strong>A weekly timetable planner for students comparing course sections.</strong></p>
 
-![Contributors](https://contrib.rocks/image?repo=diegnghtmr/vale)
+<p>
+<a href="https://github.com/diegnghtmr/vale/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/diegnghtmr/vale/ci.yml?branch=main&style=for-the-badge&labelColor=1F1F28&label=CI" alt="CI"></a>
+<img src="https://img.shields.io/badge/React-18-E0C15A?style=for-the-badge&labelColor=1F1F28" alt="React 18">
+<img src="https://img.shields.io/badge/Vite-6-E0C15A?style=for-the-badge&labelColor=1F1F28" alt="Vite 6">
+<img src="https://img.shields.io/badge/FullCalendar-6-E0C15A?style=for-the-badge&labelColor=1F1F28" alt="FullCalendar 6">
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-7FB4CA?style=for-the-badge&labelColor=1F1F28" alt="License: MIT"></a>
+</p>
 
-## 🌟 Why VALE?
+<p>
+<a href="https://diegnghtmr.me/en/work/vale/"><strong>Case study</strong></a> &bull;
+<a href="#quick-start"><strong>Quick start</strong></a> &bull;
+<a href="#architecture"><strong>Architecture</strong></a>
+</p>
 
-* **Visual first** – drag & drop classes on a live calendar  
-* **Always with you** – works completely offline thanks to local storage  
-* **Zero-friction import / export** – CSV ⇄ JSON ⇄ ICS  
-* **Dark-mode delight** – one click and your eyes relax  
-* **Multilingual** – 🇬🇧 English & 🇨🇴 Spanish (plug-and-play for more)
+</div>
 
-## 🚀 Key Features
+<p align="center"><img width="100%" alt="Weekly grid with color-coded course meetings and buttons to export the selected week to iCal or CSV." src="docs/assets/weekly-schedule.png"></p>
 
-* 🎨 **Express Yourself with Themes**: Switch between a sleek light mode and a cool dark mode with smooth, satisfying transitions.
-* 🌐 **Speak Your Language**: Fully supports English and Spanish right out of the box. ¡Hola!
-* 🗓 **Interactive Drag & Drop Calendar**: Powered by FullCalendar, arranging your schedule is as simple as dragging and dropping.
-* 📦 **Works Offline**: Your data is safely stored in your browser's local storage, so you can access your schedule even without an internet connection.
-* 📥 **Easy Data Import**: Got a list of courses in a CSV or JSON file? Import them in seconds using our handy templates.
-* 📤 **Export to Your Favorite Calendar**: Generate `.ics` files compatible with Google Calendar, Apple Calendar, or Outlook, or export your data as a `.csv` file.
-* 🔔 **Stay in the Loop**: Get friendly toast notifications that provide instant feedback on your actions.
-* 📊 **Track Your Progress**: A simple dashboard helps you keep an eye on your completed courses and credit progress.
+Course lists show times and sections, but they don't show how the week fits together. Vale (Versatile Academic Logistics Environment) lets you compare alternatives, add a section only when its meetings fit, and export your selected timetable. It keeps course data in your browser without a server or sign-in.
 
-## 🛠️ Quick Start
+## Features
 
-```bash
-npm install
-```
+- **Course imports.** Add sections manually, import JSON or CSV using the bundled templates, or load a sample academic period.
+- **Section filters.** Narrow the list by name, semester, shift, and credit range; use the course list to toggle sections onto the timetable.
+- **Conflict checks.** Reject overlapping meetings before changing the selection and allow back-to-back classes.
+- **Weekly calendar.** Select a meeting to see its section, time, room, credits, and notes; toast messages report actions and conflicts.
+- **Calendar exports.** Download the selected week as iCalendar (`.ics`) for Google Calendar, Apple Calendar, or Outlook, or as CSV; exports do not create a semester-long recurring series.
+- **Progress by subject.** Record completion and review subject and credit totals without counting alternative sections twice.
+- **Browser preferences.** Switch between light and dark themes and English and Spanish; course data and preferences are stored locally rather than synchronized between devices.
 
-### Development
+## Preview
 
-Run the development server with hot reloading:
+![Calendar meeting details for Data Structures, including its room, credits, and lab note.](docs/assets/event-details.png)
 
-```bash
+Selecting a meeting opens its details without leaving the week.
+
+![Import panel with a bundled academic period, a JSON or CSV upload area, and two Data Structures sections.](docs/assets/import-courses.png)
+
+Load a bundled period, then compare matching sections in the course list.
+
+## Quick start
+
+Install Node.js **18+** and npm; CI uses Node.js **24**. No app environment variables or backend are needed.
+
+```sh
+git clone https://github.com/diegnghtmr/vale.git
+cd vale
+npm ci
 npm run dev
 ```
 
-Lint and format the codebase:
+Open the URL printed by Vite (normally `http://localhost:5173`). Start with **Course Details** or import from [CSV and JSON templates](docs/templates/) and [sample academic periods](docs/academic-periods/). Use **Export** after selecting the meetings you want to keep, or open the dashboard to track completed courses.
 
-```bash
-npm run lint
-npm run format
+Build with `npm run build` and inspect the production output with `npm run preview`. The [Vercel configuration](vercel.json) supports static deployment. Use the [hosted app](https://vale-sage.vercel.app/) to try the planner without installing it.
+
+## Architecture
+
+The React app validates incoming files and generates exports entirely in the browser. `MockApiClient` implements the API contract with `localStorage`; exchanging it for another implementation of `ApiClient` is the integration point for a backend. The completion key normalizes the subject name, so sections share a status; distinct subjects with the same normalized name also share a status.
+
+```mermaid
+flowchart LR
+    Student["Student"] --> UI["React planner and FullCalendar"]
+    Data["CSV / JSON uploads and bundled periods"] -->|"Validate and load"| UI
+    UI -->|"Read and write through MockApiClient"| Storage[("Browser localStorage")]
+    UI -->|"Download one selected week"| Export["iCalendar and CSV files"]
 ```
 
-Run tests with Jest:
+## Tech stack
 
-```bash
-npm test
-```
+| Layer | Technology |
+| --- | --- |
+| App and build | React 18, TypeScript 5, Vite 6 |
+| Calendar and export | FullCalendar 6, `ics` |
+| UI and localization | i18next, GSAP, react-hot-toast |
+| Testing and style | Jest, Testing Library, ESLint, Prettier |
 
-### Build & Deployment
+## Testing
 
-Generate a production build:
-
-```bash
+```sh
+npm test -- --runInBand
 npm run build
+npm run lint
+npm run format:check
 ```
 
-The project is configured for deployment on Vercel (see `vercel.json`). You can also preview a production build locally:
+CI runs the Jest suite and production build after a lockfile install. Jest covers scheduling, subject keys, and credits. `npm run format` applies formatting to source files.
 
-```bash
-npm run preview
-```
-
-## 🗂️ Project Structure
+## Project structure
 
 ```text
-/               – Root configuration and entry
-├─ src/         – React components, hooks and services
-│  ├─ components/   – UI building blocks (Calendar, CourseForm…)
-│  ├─ context/      – React context providers
-│  ├─ hooks/        – Custom hooks (`useCourses`, `useWindowSize`, ...)
-│  ├─ locales/      – Translation files (en, es)
-│  ├─ services/     – API abstraction and utilities
-│  └─ utils/        – Helper functions and unit tests
-├─ public/      – Static assets
-└─ docs/        – Templates and sample academic periods
+src/components/  Calendar, course forms, and dashboard
+src/context/     Theme and language providers
+src/hooks/       Courses and UI state
+src/locales/     English and Spanish translations
+src/services/    Browser-backed API interface
+src/utils/       Scheduling and import/export logic
+public/          Static assets
+docs/            Templates and sample periods
 ```
 
-## 🤝 Contributing
+For extensions, see the [API adapter](src/services/api.ts), [theme definitions](src/data/themes.ts), and [translations](src/locales/). Report bugs or propose changes through GitHub issues and pull requests.
 
-Contributions are welcome! 🎉 Fork the repository and open a pull request. We follow conventional GitHub workflow with branches and pull requests. The contributors list is automatically generated using [contrib.rocks](https://contrib.rocks).
+## License
 
-```markdown
-![Contributors](https://contrib.rocks/image?repo=diegnghtmr/vale)
-```
-
-Feel free to add yourself by committing to the repository—your GitHub avatar will appear above on the next build!
-
-## 🙏 Acknowledgements
-
-This project leverages several open source libraries:
-
-- [React](https://reactjs.org/)
-- [Vite](https://vitejs.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [FullCalendar](https://fullcalendar.io/)
-- [react-hot-toast](https://react-hot-toast.com/)
-- [i18next](https://www.i18next.com/)
-- [GSAP](https://greensock.com/gsap/)
-
-We appreciate every contributor and tester who helped shape **vale**. Your feedback makes this tool better for students everywhere! 💜
-
-## 📜 License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
-
-## 💡 Usage Tips
-
-1. Start by adding courses manually via the **Course Details** form or upload a structured file.
-2. Use the filters to focus on a particular semester, time slot or credit range.
-3. Toggle courses into the calendar to visualize potential conflicts. Conflicts are detected automatically with friendly messages.
-4. Export your schedule using the **Export** button (`.ics` or `.csv`).
-5. Track your progress in the dashboard – completed courses are separated from available ones and reflected in the statistics.
-
-Sample templates for CSV/JSON imports are located under [`docs/templates`](docs/templates). Academic period datasets are stored in [`docs/academic-periods`](docs/academic-periods).
-
-## 🔌 Extending
-
-The app currently uses a mock API backed by `localStorage`. To integrate a real backend, implement the `ApiClient` interface in `src/services/api.ts` and replace the `MockApiClient` instance. You can also customize themes by editing the files inside `src/data/themes` and add more languages by providing new translation files under `src/locales`.
-
-## 🌍 Community
-
-Join the conversation by opening issues or discussions on GitHub. We welcome bug reports, feature requests and general feedback. Let's build a flexible academic planner together! 🚀
+[MIT](LICENSE).
