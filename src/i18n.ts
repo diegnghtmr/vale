@@ -26,7 +26,7 @@ const initI18n = () => {
         useSuspense: false,
       },
       // Ensure translations are loaded synchronously
-      initImmediate: false,
+      initAsync: false,
       // Save language preference
       detection: {
         lookupLocalStorage: 'i18nextLng',

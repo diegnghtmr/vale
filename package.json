@@ -25,7 +25,7 @@
     "axios": "^1.6.7",
     "clsx": "^2.1.0",
     "gsap": "^3.13.0",
-    "i18next": "^24.2.2",
+    "i18next": "^26.3.4",
     "i18next-browser-languagedetector": "^8.0.2",
     "ics": "^3.8.1",
     "lucide-react": "^0.344.0",
@@ -64,5 +64,11 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.1"
+    },
+    "brace-expansion@1": "1.1.22"
   }
 }

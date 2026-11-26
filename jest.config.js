@@ -9,6 +9,7 @@ export default {
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
       useESM: true,
+      tsconfig: { esModuleInterop: true },
     }],
   },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
